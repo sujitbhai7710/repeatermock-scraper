@@ -16,8 +16,9 @@ on:
         required: false
         default: 'false'
 
-  schedule:
-    - cron: '10 * * * *'  # Every hour at :10
+  # Schedule disabled — user runs locally. Re-enable by uncommenting the line below.
+  # schedule:
+  #   - cron: '10 * * * *'  # Every hour at :10
 
   push:
     branches: [main]
