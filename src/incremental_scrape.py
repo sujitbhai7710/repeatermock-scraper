@@ -11,11 +11,20 @@ Usage:
 """
 import asyncio
 import json
+import logging
 import os
 import sys
 import time
 from pathlib import Path
 from typing import Any
+
+# Configure logging to stdout (critical for CI debugging)
+logging.basicConfig(
+    level=logging.DEBUG,
+    format='%(asctime)s [%(levelname)s] %(message)s',
+    datefmt='%H:%M:%S',
+    stream=sys.stdout,
+)
 
 sys.path.insert(0, str(Path(__file__).parent.parent))
 from src.cookie_manager import load_cookies, save_cookies
