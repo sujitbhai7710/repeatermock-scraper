@@ -316,6 +316,69 @@ async def refresh_cookies_if_needed(context, page, original_cookies: list[dict] 
     return None
 
 
+async def force_refresh_cookies(context, page, original_cookies: list[dict] = None) -> list[dict[str, Any]] | None:
+    """
+    Force a token refresh — ALWAYS calls /auth/refresh, regardless of whether
+    /auth/me would succeed. This is used proactively (every 2 tests) to keep
+    the access token fresh, since RepeaterMock's access tokens expire very
+    quickly (~2-3 minutes).
+
+    CRITICAL: refresh tokens are SINGLE-USE and ROTATE on every /auth/refresh
+    call. The new refresh token is captured from the Set-Cookie header and
+    returned to the caller (which must persist it).
+    """
+    import logging
+    logger = logging.getLogger("repeatermock_scraper")
+
+    if original_cookies:
+        cookies_for_header = original_cookies
+    else:
+        cookies_for_header = await context.cookies()
+
+    cookie_str = "; ".join(f'{c["name"]}={c["value"]}' for c in cookies_for_header if "repeatermock" in c.get("domain", ""))
+    has_refresh = any(c["name"] == "refreshToken" for c in cookies_for_header)
+    if not has_refresh:
+        logger.warning("  No refreshToken — cannot force refresh")
+        return None
+
+    logger.info("  Force-refreshing access token (proactive)...")
+    try:
+        resp = await context.request.post(f"{API_BASE}/auth/refresh", headers={
+            "Accept": "application/json",
+            "Content-Type": "application/json",
+            "Cookie": cookie_str,
+            "Origin": "https://repeatermock.com",
+            "Referer": "https://repeatermock.com/",
+        }, data="{}")
+        body = await resp.text()
+        logger.info(f"  /auth/refresh → {resp.status}: {body[:80]}")
+
+        if resp.status == 200:
+            # Capture new tokens from Set-Cookie header
+            set_cookie = resp.headers.get("set-cookie", "")
+            captured = []
+            if set_cookie:
+                import re as _re
+                for cookie_name in ["accessToken", "refreshToken", "totpVerified"]:
+                    match = _re.search(rf'{cookie_name}=([^;]+)', set_cookie)
+                    if match:
+                        new_value = match.group(1)
+                        if new_value:
+                            for c in cookies_for_header:
+                                if c["name"] == cookie_name:
+                                    c["value"] = new_value
+                                    captured.append(cookie_name)
+                                    break
+            logger.info(f"  ✓ Captured new tokens: {captured}")
+            return cookies_for_header
+        else:
+            logger.warning(f"  Force refresh failed: HTTP {resp.status}")
+            return None
+    except Exception as e:
+        logger.warning(f"  Force refresh error: {e}")
+        return None
+
+
 async def try_auth_with_fallback(cookies_list: list[list[dict]], page_factory) -> tuple[Any, Any, Any, list[dict]] | None:
     """
     Try multiple cookie sets (accounts). Return first that works.

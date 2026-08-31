@@ -33,6 +33,7 @@ from src.image_downloader import download_images_for_test
 from src.scraper import (
     create_browser_session,
     refresh_cookies_if_needed,
+    force_refresh_cookies,
     fetch_series_details,
     fetch_all_tests_for_series,
     parse_series_url,
@@ -47,7 +48,7 @@ from src.series_config import TARGET_SERIES, get_all_series_urls, get_series_met
 PROGRESS_FILE = Path(__file__).parent.parent / "data" / "progress.json"
 DEFAULT_TIME_LIMIT_MINUTES = 45
 DEFAULT_RATE_LIMIT_SECONDS = 3
-REFRESH_EVERY_N_TESTS = 5  # Check token validity every 5 tests
+REFRESH_EVERY_N_TESTS = 2  # Proactively refresh access token every 2 tests (it expires fast)
 
 
 # ─── Progress tracking (granular) ──────────────────────────────────────────
@@ -218,10 +219,10 @@ async def run_incremental_scrape(
 
     async def refresh_active_cookies_callback():
         """Called by scrape_test_full when submit returns 401.
-        Refreshes cookies, persists them, and returns the new list."""
+        Force-refreshes cookies, persists them, and returns the new list."""
         nonlocal active_cookies, consecutive_auth_failures
-        print("    ↻ Refreshing cookies due to 401 from submit...")
-        refreshed = await refresh_cookies_if_needed(context, page, original_cookies=active_cookies)
+        print("    ↻ Force-refreshing cookies due to 401 from submit...")
+        refreshed = await force_refresh_cookies(context, page, original_cookies=active_cookies)
         if refreshed is not None:
             active_cookies = refreshed
             save_account_cookies(active_account_idx, refreshed)
@@ -229,7 +230,7 @@ async def run_incremental_scrape(
             return refreshed
         else:
             consecutive_auth_failures += 1
-            print(f"    ✗ Refresh failed (consecutive: {consecutive_auth_failures})")
+            print(f"    ✗ Force refresh failed (consecutive: {consecutive_auth_failures})")
             return None
 
     try:
@@ -304,18 +305,21 @@ async def run_incremental_scrape(
                     print(f"\n  Max tests limit reached ({max_tests})")
                     break
 
-                # Proactive refresh every N tests (check /auth/me, rotate if needed)
+                # Proactive refresh every N tests — FORCE refresh (not just check)
+                # because access tokens expire very fast (~2-3 min) and we can't
+                # afford to wait for a 401 mid-scrape
                 if (tests_scraped_this_run + tests_partial_this_run + tests_failed_this_run) > 0 and \
                    (tests_scraped_this_run + tests_partial_this_run + tests_failed_this_run) % REFRESH_EVERY_N_TESTS == 0:
-                    print(f"\n  Proactive cookie check ({tests_scraped_this_run + tests_partial_this_run + tests_failed_this_run} tests done)...")
-                    refreshed = await refresh_cookies_if_needed(context, page, original_cookies=active_cookies)
+                    print(f"\n  Proactive token refresh ({tests_scraped_this_run + tests_partial_this_run + tests_failed_this_run} tests done)...")
+                    refreshed = await force_refresh_cookies(context, page, original_cookies=active_cookies)
                     if refreshed is not None:
                         active_cookies = refreshed
                         save_account_cookies(active_account_idx, refreshed)
                         consecutive_auth_failures = 0
+                        print(f"  ✓ Token refreshed proactively")
                     else:
                         consecutive_auth_failures += 1
-                        print(f"  ⚠ Cookie refresh failed (attempt {consecutive_auth_failures})")
+                        print(f"  ⚠ Force refresh failed (attempt {consecutive_auth_failures})")
                         if consecutive_auth_failures >= 3:
                             print("  ✗ 3 consecutive auth failures — aborting run")
                             break
