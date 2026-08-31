@@ -266,7 +266,7 @@ async def run_incremental_scrape(
                 print(f"  [{tests_scraped_this_run+1}] ({mins_left}m left) {test_title}")
 
                 try:
-                    result = await scrape_test_full(context, test, variant, slug)
+                    result = await scrape_test_full(context, page, test, variant, slug)
                     if result:
                         # Download images and replace CDN URLs with local paths
                         result = await download_images_for_test(context, result, slug)

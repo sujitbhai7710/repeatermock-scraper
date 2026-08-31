@@ -125,21 +125,35 @@ def build_payloads(test_id: str, questions: list[dict]) -> list[dict]:
     ]
 
 
-async def submit_attempt(context, test_id: str, questions: list[dict], variant: str = "tb") -> bool:
+async def submit_attempt(context, page, test_id: str, questions: list[dict], variant: str = "tb", slug: str = "ssc-cgl") -> bool:
     """
     Submit a dummy attempt for a test.
+    
+    KEY FIX: Before submitting, we must visit the /attempt page via page.goto()
+    to create an "active attempt" on the server. Without this, the submit API
+    returns "No active attempt found".
     
     Returns True if the submit succeeded, False otherwise.
     """
     api_prefix = "/api/v1" if variant in ("tb", "tb-pro") else "/api/v2"
     submit_url = f"{API_BASE}{api_prefix}/attempts/{test_id}/submit"
-
+    attempt_url = f"https://repeatermock.com/{variant}/test-series/{slug}/test/{test_id}/attempt"
+    
+    # Step 1: Visit /attempt page via page.goto() to create an active attempt
+    # The server creates an attempt record when the page is loaded in a browser
+    print(f"  Creating active attempt (visiting /attempt page)...", flush=True)
+    try:
+        await page.goto(attempt_url, timeout=30000, wait_until="domcontentloaded")
+        await asyncio.sleep(5)  # Wait for JS to create the attempt
+    except Exception as e:
+        print(f"  ⚠ page.goto failed: {e}", flush=True)
+    
+    # Step 2: Now try to submit
     # Check if we already have a working format
     working = load_working_format()
     if working:
         print(f"  Using saved submit format: {working['name']}", flush=True)
         payload = working["payload"].copy()
-        # Update testId-specific fields if needed
         if "testId" in payload:
             payload["testId"] = test_id
 

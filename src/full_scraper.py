@@ -66,7 +66,7 @@ def extract_json_object(payload: str, key: str) -> dict | None:
     return None
 
 
-async def scrape_test_full(context, test: dict, variant: str, slug: str) -> dict | None:
+async def scrape_test_full(context, page, test: dict, variant: str, slug: str) -> dict | None:
     """Scrape a single test: questions + answers + solutions + analysis."""
     test_id = test["id"]
     title = test.get("title", "Unknown")
@@ -113,7 +113,7 @@ async def scrape_test_full(context, test: dict, variant: str, slug: str) -> dict
     # 1b. Submit dummy attempt (so /solution and /analysis return data)
     if result["questions"]:
         print(f"    Submitting dummy attempt...", flush=True)
-        submitted = await submit_attempt(context, test_id, result["questions"], variant)
+        submitted = await submit_attempt(context, page, test_id, result["questions"], variant, slug)
         if submitted:
             print(f"    ✓ Attempt submitted — solutions/analysis will have data", flush=True)
             await asyncio.sleep(2)  # Wait for server to process
