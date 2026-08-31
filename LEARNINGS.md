@@ -386,3 +386,43 @@ curl -X POST "https://api.github.com/repos/sujitbhai7710/repeatermock-scraper/ac
   -H "Accept: application/vnd.github.v3+json" \
   -d '{"ref":"main","inputs":{"time_limit_minutes":"45","max_tests":"0"}}'
 ```
+
+---
+
+## Update: Submit API + Image Downloader + Two Workflows
+
+### Submit API Discovery (Added 2025-08-31)
+- The submit endpoint is `POST /api/v1/attempts/{testId}/submit`
+- The payload format is being discovered by trying multiple formats (see `src/submit_attempt.py`)
+- Once a working format is found, it's saved to `data/submit_format.json` for reuse
+- After submitting a dummy attempt (all questions skipped, 1 second time), `/solution` and `/analysis` pages return real data
+
+### Image Downloader (Added 2025-08-31)
+- `src/image_downloader.py` downloads images from `cdn.repeatermock.com`
+- Images are saved to `frontend/img/{series_slug}/{test_id}/{filename}`
+- CDN URLs in JSON are replaced with local paths (e.g., `/img/ssc-cgl/{testId}/hash.png`)
+- This ensures images work even if RepeaterMock blocks hotlinking
+
+### Two GitHub Actions Workflows (Added 2025-08-31)
+1. **scrape.yml** — Runs every 15 min (gap logic: 15-min gap, 45-min time limit)
+   - Scrapes questions + submits dummy attempt + fetches answers/solutions/analysis + downloads images
+   - Auto-deploys frontend to Cloudflare Pages after each run
+   - Checks if all tests are done → skips if complete
+2. **daily-update.yml** — Runs once daily at 3 AM UTC
+   - Refreshes analysis data (rank, average, cutoffs) for all scraped tests
+   - Checks for new tests added to any series
+   - Deploys updated frontend
+
+### Cloudflare Secrets (Added 2025-08-31)
+- `CLOUDFLARE_API_TOKEN` — For auto-deploy from GitHub Actions
+- `CLOUDFLARE_ACCOUNT_ID` — For auto-deploy
+- `REPEATERMOCK_COOKIES_JSON` — Auth cookies (must be fresh!)
+
+### Important: Cookie Management
+- NEVER use cookies locally if they're also in the GitHub secret
+- The refresh token rotates on every use — using it locally invalidates it for CI
+- If CI fails with "Invalid or expired refresh token", the user must:
+  1. Log into RepeaterMock (fresh login)
+  2. Export cookies immediately
+  3. Update the `REPEATERMOCK_COOKIES_JSON` secret
+  4. DO NOT use those cookies locally

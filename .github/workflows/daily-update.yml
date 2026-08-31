@@ -1,0 +1,200 @@
+name: Daily Update (Rank + Average + New Tests)
+
+on:
+  # Run once daily at 3 AM UTC
+  schedule:
+    - cron: '0 3 * * *'
+  # Manual trigger
+  workflow_dispatch:
+
+env:
+  PYTHON_VERSION: '3.12'
+  PYTHONUNBUFFERED: '1'
+
+# Never run at the same time as the scrape workflow
+concurrency:
+  group: scrape-repeatermock
+  cancel-in-progress: false
+
+jobs:
+  daily-update:
+    runs-on: ubuntu-latest
+    timeout-minutes: 60
+
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+
+      - name: Setup Python
+        uses: actions/setup-python@v5
+        with:
+          python-version: ${{ env.PYTHON_VERSION }}
+
+      - name: Install deps
+        run: |
+          pip install -r requirements.txt
+          playwright install chromium --with-deps
+
+      - name: Restore cached state
+        uses: actions/cache@v4
+        with:
+          path: |
+            data/cookies.json
+            data/progress.json
+            data/submit_format.json
+            data/tests/
+            data/series/
+            frontend/tests/
+            frontend/img/
+          key: scrape-state-v3
+          restore-keys: scrape-state-v3
+
+      - name: Setup cookies
+        run: |
+          mkdir -p data/tests data/series frontend/tests frontend/img
+          if [ -f data/cookies.json ]; then
+            python3 -c "
+          import json
+          with open('data/cookies.json') as f: d = json.load(f)
+          with open('.env', 'w') as f: f.write(f'REPEATERMOCK_COOKIES_JSON={json.dumps(d[\"cookies\"])}\n')
+          "
+          else
+            printf 'REPEATERMOCK_COOKIES_JSON=%s\n' '${{ secrets.REPEATERMOCK_COOKIES_JSON }}' > .env
+          fi
+
+      - name: Daily update — refresh analysis data + check for new tests
+        run: |
+          echo "=== Daily Update ==="
+          echo "1. Refreshing analysis data (rank, average, cutoffs) for all scraped tests..."
+          echo "2. Checking for new tests in all series..."
+          echo "3. Downloading new images..."
+          python3 << 'EOF'
+          import asyncio, json, sys, time
+          from pathlib import Path
+          sys.path.insert(0, '.')
+          from dotenv import load_dotenv
+          load_dotenv('.env')
+          from src.cookie_manager import load_cookies, save_cookies
+          from src.scraper import create_browser_session, refresh_cookies_if_needed, COOKIES_FILE, TESTS_DIR, parse_series_url, fetch_series_details, fetch_all_tests_for_series
+          from src.full_scraper import extract_json_object
+          from src.question_parser import extract_flight_payload
+          from src.image_downloader import download_images_for_test
+
+          ALL_SERIES = [
+              "https://repeatermock.com/tb/test-series/ssc-cgl",
+              "https://repeatermock.com/tb-pro/test-series/ssc-cgl",
+              "https://repeatermock.com/tb/test-series/ssc-maths-previous-year-questions",
+              "https://repeatermock.com/tb-pro/test-series/ssc-maths-previous-year-questions",
+              "https://repeatermock.com/tb/test-series/ssc-chsl",
+              "https://repeatermock.com/gd/test-series/ssc-cgl",
+              "https://repeatermock.com/tb-pro/test-series/ssc-english-previous-year-questions",
+              "https://repeatermock.com/tb/test-series/ssc-english-previous-year-questions",
+          ]
+
+          async def main():
+              cookies = load_cookies(COOKIES_FILE)
+              p, browser, context = await create_browser_session(cookies)
+              page = await context.new_page()
+              try:
+                  cookies = await refresh_cookies_if_needed(context, page)
+                  if cookies is None:
+                      print("✗ Auth failed — update cookies")
+                      return
+
+                  progress = json.loads(Path("data/progress.json").read_text()) if Path("data/progress.json").exists() else {"scraped_test_ids": [], "series_cache": {}}
+                  scraped_ids = set(progress.get("scraped_test_ids", []))
+                  series_cache = progress.get("series_cache", {})
+
+                  # Step 1: Refresh analysis data for already-scraped tests
+                  print("\n=== Step 1: Refreshing analysis data ===")
+                  refreshed = 0
+                  for test_file in sorted(TESTS_DIR.glob("*.json"))[:50]:  # Limit to 50 per day
+                      test_data = json.loads(test_file.read_text())
+                      test_id = test_data.get("test_id", "")
+                      if not test_id: continue
+
+                      # Re-fetch /analysis page
+                      variant = test_data.get("variant", "tb")
+                      slug = "ssc-cgl"  # Default
+                      base_url = f"https://repeatermock.com/{variant}/test-series/{slug}/test/{test_id}"
+
+                      try:
+                          resp = await context.request.get(f"{base_url}/analysis",
+                              headers={"Accept": "text/html", "Referer": "https://repeatermock.com/"})
+                          html = await resp.text()
+                          if len(html) > 30000:
+                              payload = extract_flight_payload(html)
+                              analysis_data = extract_json_object(payload, "analysisData")
+                              if analysis_data:
+                                  test_data["analysis"] = analysis_data
+                                  test_data["analysis_updated_at"] = time.strftime("%Y-%m-%d %H:%M:%S UTC", time.gmtime())
+                                  test_file.write_text(json.dumps(test_data, indent=2, ensure_ascii=False), encoding="utf-8")
+                                  refreshed += 1
+                                  print(f"  ✓ Refreshed: {test_data.get('title', test_id)[:50]}")
+                      except Exception as e:
+                          print(f"  ✗ Error refreshing {test_id}: {e}")
+
+                      await asyncio.sleep(2)
+
+                  print(f"\n  Refreshed analysis for {refreshed} tests")
+
+                  # Step 2: Check for new tests in all series
+                  print("\n=== Step 2: Checking for new tests ===")
+                  new_tests_found = 0
+                  for series_url in ALL_SERIES:
+                      config = parse_series_url(series_url)
+                      try:
+                          details = await fetch_series_details(context, config["slug"], config["variant"], config["api_version"])
+                          all_tests = await fetch_all_tests_for_series(context, details, config["variant"], config["api_version"])
+                          
+                          # Check if any tests are new (not in scraped_ids)
+                          new_tests = [t for t in all_tests if t["id"] not in scraped_ids]
+                          if new_tests:
+                              print(f"  [{config['slug']}] Found {len(new_tests)} new tests!")
+                              new_tests_found += len(new_tests)
+                              # Update series cache
+                              series_cache[series_url] = {
+                                  "name": details.get("name", ""),
+                                  "tests": all_tests,
+                                  "fetched_at": time.time(),
+                              }
+                          else:
+                              print(f"  [{config['slug']}] No new tests ({len(all_tests)} total)")
+                      except Exception as e:
+                          print(f"  ✗ Error checking {series_url}: {e}")
+
+                  # Save updated progress
+                  progress["series_cache"] = series_cache
+                  progress["last_daily_update"] = time.time()
+                  Path("data/progress.json").write_text(json.dumps(progress, indent=2, ensure_ascii=False))
+                  print(f"\n=== Summary: Refreshed {refreshed} analyses, found {new_tests_found} new tests ===")
+
+              finally:
+                  save_cookies(await context.cookies(), COOKIES_FILE)
+                  await browser.close()
+                  await p.stop()
+
+          asyncio.run(main())
+          EOF
+
+      - name: Copy updated data to frontend + deploy
+        if: success()
+        env:
+          CLOUDFLARE_API_TOKEN: ${{ secrets.CLOUDFLARE_API_TOKEN }}
+          CLOUDFLARE_ACCOUNT_ID: ${{ secrets.CLOUDFLARE_ACCOUNT_ID }}
+        run: |
+          cp data/tests/*.json frontend/tests/ 2>/dev/null || true
+          echo "=== Deploying updated frontend ==="
+          npx wrangler pages deploy frontend/ \
+            --project-name=pwthor-mock-tests \
+            --branch=main \
+            --commit-dirty=true \
+            2>&1 | tail -5
+
+      - name: Summary
+        if: always()
+        run: |
+          echo "## Daily Update Summary" >> $GITHUB_STEP_SUMMARY
+          echo "- Updated analysis data (rank, average, cutoffs)" >> $GITHUB_STEP_SUMMARY
+          echo "- Checked for new tests across all series" >> $GITHUB_STEP_SUMMARY
+          echo "- Deployed updated frontend to Cloudflare Pages" >> $GITHUB_STEP_SUMMARY

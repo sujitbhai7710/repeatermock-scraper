@@ -1,19 +1,19 @@
-name: Scrape RepeaterMock Tests
+name: Scrape Tests (Every 70 min)
 
 on:
   workflow_dispatch:
     inputs:
       time_limit_minutes:
-        description: 'Time limit per run (minutes)'
+        description: 'Time limit (minutes)'
         required: false
         default: '45'
       max_tests:
-        description: 'Max tests per run (0 = unlimited)'
+        description: 'Max tests (0 = unlimited)'
         required: false
         default: '0'
 
   schedule:
-    - cron: '*/15 * * * *'
+    - cron: '*/15 * * * *'  # Check every 15 min, gap logic decides whether to run
 
   push:
     branches: [main]
@@ -25,9 +25,10 @@ env:
   PYTHON_VERSION: '3.12'
   PYTHONUNBUFFERED: '1'
 
+# NEVER run two scrape workflows at the same time
 concurrency:
   group: scrape-repeatermock
-  cancel-in_progress: false
+  cancel-in-progress: false
 
 jobs:
   scrape:
@@ -35,168 +36,121 @@ jobs:
     timeout-minutes: 60
 
     steps:
-      - name: Checkout code
+      - name: Checkout
         uses: actions/checkout@v4
 
-      - name: Set up Python
+      - name: Setup Python
         uses: actions/setup-python@v5
         with:
           python-version: ${{ env.PYTHON_VERSION }}
 
-      - name: Install dependencies
+      - name: Install deps
         run: |
-          echo "=== Installing dependencies ==="
-          pip install -r requirements.txt 2>&1 | tail -5
-          echo "=== Installing Playwright Chromium ==="
-          playwright install chromium --with-deps 2>&1 | tail -5
-          echo "=== Dependencies installed ==="
+          pip install -r requirements.txt
+          playwright install chromium --with-deps
 
-      - name: Restore cached state (cookies + progress + scraped tests)
-        id: cache-restore
+      - name: Restore cached state
+        id: cache
         uses: actions/cache@v4
         with:
           path: |
             data/cookies.json
             data/progress.json
+            data/submit_format.json
             data/tests/
             data/series/
-          key: repeatermock-scrape-state-v2
-          restore-keys: |
-            repeatermock-scrape-state-v2
+            frontend/tests/
+            frontend/img/
+          key: scrape-state-v3
+          restore-keys: scrape-state-v3
 
-      - name: Set up cookies and logging
+      - name: Setup cookies
         run: |
-          mkdir -p data/tests data/series
+          mkdir -p data/tests data/series frontend/tests frontend/img
 
-          # Set up Python logging
-          cat > src/logging_config.py << 'PYEOF'
-          import logging
-          import sys
-
-          def setup_logging():
-              handler = logging.StreamHandler(sys.stdout)
-              handler.setLevel(logging.DEBUG)
-              formatter = logging.Formatter(
-                  '%(asctime)s [%(levelname)s] %(name)s: %(message)s',
-                  datefmt='%H:%M:%S'
-              )
-              handler.setFormatter(formatter)
-              root = logging.getLogger()
-              root.setLevel(logging.INFO)
-              root.addHandler(handler)
-              logging.getLogger("repeatermock_scraper").setLevel(logging.DEBUG)
-          PYEOF
-
-          # Check for cached cookies
           if [ -f data/cookies.json ]; then
-            echo "=== Found cached cookies from previous run ==="
+            echo "✓ Using cached cookies"
             python3 -c "
           import json
-          with open('data/cookies.json') as f:
-              data = json.load(f)
-          print(f'  Cookies: {len(data[\"cookies\"])}')
-          for c in data['cookies']:
-              print(f'    - {c[\"name\"]}: {c[\"value\"][:30]}...')
+          with open('data/cookies.json') as f: d = json.load(f)
+          with open('.env', 'w') as f: f.write(f'REPEATERMOCK_COOKIES_JSON={json.dumps(d[\"cookies\"])}\n')
           "
-            # Write cached cookies to .env
-            python3 -c "
-          import json
-          with open('data/cookies.json') as f:
-              data = json.load(f)
-          with open('.env', 'w') as f:
-              f.write(f'REPEATERMOCK_COOKIES_JSON={json.dumps(data[\"cookies\"])}\n')
-          "
-            echo "  ✓ Using cached cookies"
           else
-            echo "=== No cached cookies — using REPEATERMOCK_COOKIES_JSON secret ==="
+            echo "Using REPEATERMOCK_COOKIES_JSON secret"
             if [ -z "${{ secrets.REPEATERMOCK_COOKIES_JSON }}" ]; then
-              echo "ERROR: REPEATERMOCK_COOKIES_JSON secret is not set!"
-              echo "Go to: Settings → Secrets and variables → Actions → New repository secret"
-              echo "Name: REPEATERMOCK_COOKIES_JSON"
-              echo "Value: JSON cookie array from browser DevTools"
-              exit 1
+              echo "ERROR: Secret not set"; exit 1
             fi
-            # Use printf to avoid shell quoting issues
             printf 'REPEATERMOCK_COOKIES_JSON=%s\n' '${{ secrets.REPEATERMOCK_COOKIES_JSON }}' > .env
-            echo "  ✓ .env created from secret"
           fi
 
-          # Verify cookies are valid JSON
-          echo "=== Verifying cookies ==="
-          python3 -c "
+          # Verify
+          python3 << 'EOF'
           import json, os
           from dotenv import load_dotenv
           load_dotenv('.env')
           raw = os.environ.get('REPEATERMOCK_COOKIES_JSON', '')
           if not raw:
-              print('  ERROR: No REPEATERMOCK_COOKIES_JSON in .env')
-              exit(1)
-          try:
-              cookies = json.loads(raw)
-              print(f'  ✓ Parsed {len(cookies)} cookies')
-              has_refresh = any(c['name'] == 'refreshToken' for c in cookies)
-              has_access = any(c['name'] == 'accessToken' for c in cookies)
-              print(f'  Has accessToken: {has_access}')
-              print(f'  Has refreshToken: {has_refresh}')
-              if not has_refresh:
-                  print('  WARNING: No refreshToken — auth will fail!')
-          except json.JSONDecodeError as e:
-              print(f'  ERROR: Invalid JSON: {e}')
-              exit(1)
-          "
+              print('ERROR: No cookies'); exit(1)
+          cookies = json.loads(raw)
+          print(f'✓ {len(cookies)} cookies loaded')
+          EOF
 
-      - name: Check if should run (15-min gap)
+      - name: Check 15-min gap + all-done check
         id: should-run
         run: |
           python3 << 'EOF'
           import json, time, os
           from pathlib import Path
 
-          progress_file = Path("data/progress.json")
-          if progress_file.exists():
-              progress = json.loads(progress_file.read_text())
-              last_end = progress.get("last_run_end", 0)
-              gap = time.time() - last_end
-              gap_minutes = gap / 60
-
-              if gap_minutes < 15:
-                  print(f"SKIP: Only {gap_minutes:.1f} min since last run (need 15 min gap)")
-                  print(f"  Last run ended: {time.strftime('%H:%M:%S UTC', time.gmtime(last_end))}")
-                  print(f"  Next eligible at: {time.strftime('%H:%M:%S UTC', time.gmtime(last_end + 900))}")
-                  with open(os.environ['GITHUB_ENV'], 'a') as f:
-                      f.write("SHOULD_RUN=false\n")
-              else:
-                  print(f"OK: {gap_minutes:.1f} min since last run — proceeding")
-                  with open(os.environ['GITHUB_ENV'], 'a') as f:
-                      f.write("SHOULD_RUN=true\n")
+          pf = Path("data/progress.json")
+          if not pf.exists():
+              print("OK: First run")
+              os.environ["SHOULD_RUN"] = "true"
+              with open(os.environ['GITHUB_ENV'], 'a') as f: f.write("SHOULD_RUN=true\n")
           else:
-              print("OK: No previous progress — first run")
-              with open(os.environ['GITHUB_ENV'], 'a') as f:
-                  f.write("SHOULD_RUN=true\n")
+              p = json.loads(pf.read_text())
+              last_end = p.get("last_run_end", 0)
+              gap = (time.time() - last_end) / 60
+
+              # Check if all tests are done
+              scraped = set(p.get("scraped_test_ids", []))
+              failed = set(p.get("failed_test_ids", []))
+              series_cache = p.get("series_cache", {})
+              
+              total_tests = 0
+              done_tests = 0
+              for url, sc in series_cache.items():
+                  tests = sc.get("tests", [])
+                  total_tests += len(tests)
+                  done_tests += sum(1 for t in tests if t["id"] in scraped or t["id"] in failed)
+
+              if total_tests > 0 and done_tests >= total_tests:
+                  print(f"DONE: All {total_tests} tests scraped. Skipping.")
+                  with open(os.environ['GITHUB_ENV'], 'a') as f: f.write("SHOULD_RUN=false\n")
+              elif gap < 15:
+                  print(f"SKIP: Only {gap:.1f} min since last run (need 15 min)")
+                  with open(os.environ['GITHUB_ENV'], 'a') as f: f.write("SHOULD_RUN=false\n")
+              else:
+                  print(f"OK: {gap:.1f} min gap, {done_tests}/{total_tests} tests done")
+                  with open(os.environ['GITHUB_ENV'], 'a') as f: f.write("SHOULD_RUN=true\n")
           EOF
 
-      - name: Run incremental scraper
+      - name: Run scraper (questions + submit + answers + solutions + analysis + images)
         if: env.SHOULD_RUN == 'true'
         run: |
-          echo "=== Starting scraper ==="
           TIME_LIMIT="${{ github.event.inputs.time_limit_minutes }}"
           [ -z "$TIME_LIMIT" ] && TIME_LIMIT="45"
           MAX_TESTS="${{ github.event.inputs.max_tests }}"
           [ -z "$MAX_TESTS" ] && MAX_TESTS="0"
 
-          echo "  Time limit: $TIME_LIMIT minutes"
-          echo "  Max tests: $MAX_TESTS"
-          echo "  Python: $(python3 --version)"
-          echo "  Playwright: $(python3 -c 'import playwright; print(playwright.__version__)')"
-          echo ""
+          echo "=== Scraper starting ==="
+          echo "  Time limit: $TIME_LIMIT min, Max tests: $MAX_TESTS"
 
           python -m src.incremental_scrape \
             --time-limit-minutes "$TIME_LIMIT" \
             --max-tests "$MAX_TESTS" \
             2>&1 || {
-              echo ""
-              echo "=== SCRAPER FAILED ==="
-              echo "Checking if it's an auth issue..."
+              echo "=== Scraper error ==="
               python3 -c "
           import json, os
           from dotenv import load_dotenv
@@ -204,61 +158,73 @@ jobs:
           raw = os.environ.get('REPEATERMOCK_COOKIES_JSON', '')
           if raw:
               cookies = json.loads(raw)
-              print(f'Cookies available: {len(cookies)}')
+              print(f'Cookies: {len(cookies)}')
               for c in cookies:
                   if c['name'] in ('accessToken', 'refreshToken'):
                       print(f'  {c[\"name\"]}: {c[\"value\"][:40]}...')
-              print()
-              print('If auth failed, the refresh token has been consumed.')
-              print('Log into repepermock.com, export fresh cookies,')
-              print('update the REPEATERMOCK_COOKIES_JSON secret.')
+              print('If auth failed: update REPEATERMOCK_COOKIES_JSON secret with fresh cookies')
               "
               exit 1
             }
 
-      - name: Show progress summary
+      - name: Copy scraped data to frontend
         if: always()
         run: |
-          echo "## Scrape Progress Summary" >> $GITHUB_STEP_SUMMARY
-          echo "" >> $GITHUB_STEP_SUMMARY
+          mkdir -p frontend/tests
+          cp data/tests/*.json frontend/tests/ 2>/dev/null || true
+          echo "Copied $(ls frontend/tests/*.json 2>/dev/null | wc -l) test files to frontend"
+
+      - name: Deploy frontend to Cloudflare Pages
+        if: success() && env.SHOULD_RUN == 'true'
+        env:
+          CLOUDFLARE_API_TOKEN: ${{ secrets.CLOUDFLARE_API_TOKEN }}
+          CLOUDFLARE_ACCOUNT_ID: ${{ secrets.CLOUDFLARE_ACCOUNT_ID }}
+        run: |
+          echo "=== Deploying to Cloudflare Pages ==="
+          npx wrangler pages deploy frontend/ \
+            --project-name=pwthor-mock-tests \
+            --branch=main \
+            --commit-dirty=true \
+            2>&1 | tail -5
+          echo "✓ Frontend deployed"
+
+      - name: Summary
+        if: always()
+        run: |
+          echo "## Scrape Summary" >> $GITHUB_STEP_SUMMARY
           if [ -f data/progress.json ]; then
             python3 << 'EOF' >> $GITHUB_STEP_SUMMARY
-          import json, time
-          with open('data/progress.json') as f:
-              p = json.load(f)
-          print(f"### Overall Progress")
-          print(f"- Total scraped: {len(p.get('scraped_test_ids', []))} tests")
-          print(f"- Total failed: {len(p.get('failed_test_ids', []))} tests")
-          print(f"")
-          print(f"### Series Progress")
+          import json
+          with open('data/progress.json') as f: p = json.load(f)
+          scraped = len(p.get('scraped_test_ids', []))
+          failed = len(p.get('failed_test_ids', []))
+          print(f"- Scraped: {scraped} tests")
+          print(f"- Failed: {failed} tests")
+          print(f"\n### Series Progress")
           for url, sp in p.get('series_progress', {}).items():
               pct = (sp['scraped'] / sp['total'] * 100) if sp['total'] > 0 else 0
-              print(f"- **{sp['name'][:50]}**: {sp['scraped']}/{sp['total']} ({pct:.0f}%) — {sp['pending']} pending")
-          print(f"")
+              print(f"- **{sp['name'][:50]}**: {sp['scraped']}/{sp['total']} ({pct:.0f}%)")
           last = p.get('run_history', [{}])[-1] if p.get('run_history') else {}
           if last:
-              print(f"### Last Run")
-              print(f"- Tests scraped: {last.get('tests_scraped', 0)}")
-              print(f"- Questions scraped: {last.get('questions_scraped', 0)}")
+              print(f"\n### Last Run")
+              print(f"- Tests: {last.get('tests_scraped', 0)}")
+              print(f"- Questions: {last.get('questions_scraped', 0)}")
               print(f"- Duration: {last.get('time_minutes', 0):.1f} min")
           EOF
-          else
-            echo "No progress file found" >> $GITHUB_STEP_SUMMARY
           fi
-
-          echo "" >> $GITHUB_STEP_SUMMARY
-          echo "### Scraped Files" >> $GITHUB_STEP_SUMMARY
-          TEST_COUNT=$(find data/tests -name "*.json" 2>/dev/null | wc -l)
-          echo "- Test files in data/tests/: $TEST_COUNT" >> $GITHUB_STEP_SUMMARY
+          TEST_COUNT=$(ls frontend/tests/*.json 2>/dev/null | wc -l)
+          echo "- Frontend test files: $TEST_COUNT" >> $GITHUB_STEP_SUMMARY
 
       - name: Upload artifacts
         if: always()
         uses: actions/upload-artifact@v4
         with:
-          name: scraped-data-${{ github.run_id }}
+          name: scrape-${{ github.run_id }}
           path: |
             data/tests/
-            data/series/
             data/progress.json
             data/cookies.json
+            data/submit_format.json
+            frontend/tests/
+            frontend/img/
           retention-days: 30

@@ -19,6 +19,8 @@ from typing import Any
 
 sys.path.insert(0, str(Path(__file__).parent.parent))
 from src.cookie_manager import load_cookies, save_cookies
+from src.full_scraper import scrape_test_full
+from src.image_downloader import download_images_for_test
 from src.scraper import (
     create_browser_session,
     refresh_cookies_if_needed,
@@ -198,8 +200,13 @@ async def run_incremental_scrape(
                 print(f"  [{tests_scraped_this_run+1}] ({mins_left}m left) {test_title}")
 
                 try:
-                    result = await scrape_test(context, test, variant, slug)
+                    result = await scrape_test_full(context, test, variant, slug)
                     if result:
+                        # Download images and replace CDN URLs with local paths
+                        result = await download_images_for_test(context, result, slug)
+                        # Re-save with local image paths
+                        out_file = TESTS_DIR / f"{test_id}.json"
+                        out_file.write_text(json.dumps(result, indent=2, ensure_ascii=False), encoding="utf-8")
                         tests_scraped_this_run += 1
                         questions_scraped_this_run += len(result.get("questions", []))
                         scraped_ids.add(test_id)

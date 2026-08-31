@@ -26,6 +26,7 @@ from src.scraper import (
     TESTS_DIR, parse_series_url, fetch_series_details, fetch_all_tests_for_series,
 )
 from src.question_parser import extract_flight_payload, parse_question_objects, clean_question, thorough_unescape
+from src.submit_attempt import submit_attempt
 
 
 def extract_json_object(payload: str, key: str) -> dict | None:
@@ -108,6 +109,16 @@ async def scrape_test_full(context, test: dict, variant: str, slug: str) -> dict
     except Exception as e:
         print(f"    ✗ /attempt error: {e}", flush=True)
         return None
+
+    # 1b. Submit dummy attempt (so /solution and /analysis return data)
+    if result["questions"]:
+        print(f"    Submitting dummy attempt...", flush=True)
+        submitted = await submit_attempt(context, test_id, result["questions"], variant)
+        if submitted:
+            print(f"    ✓ Attempt submitted — solutions/analysis will have data", flush=True)
+            await asyncio.sleep(2)  # Wait for server to process
+        else:
+            print(f"    ⚠ Submit failed — will try /solution anyway", flush=True)
 
     # 2. Fetch /solution page → answer keys + solutions
     try:
