@@ -15,6 +15,12 @@ venv/
 # Environment
 .env
 .env.local
+worker/.env
+worker/.wrangler/
+
+# Node
+node_modules/
+
 
 # IDE
 .vscode/

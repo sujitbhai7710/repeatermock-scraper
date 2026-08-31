@@ -66,8 +66,14 @@ def extract_json_object(payload: str, key: str) -> dict | None:
     return None
 
 
-async def scrape_test_full(context, page, test: dict, variant: str, slug: str, original_cookies: list[dict] = None) -> dict | None:
-    """Scrape a single test: questions + answers + solutions + analysis."""
+async def scrape_test_full(context, page, test: dict, variant: str, slug: str, original_cookies: list[dict] = None, on_submit_401=None) -> dict | None:
+    """Scrape a single test: questions + answers + solutions + analysis.
+
+    Args:
+        on_submit_401: async callable that refreshes cookies and returns the new
+                       cookies list. Called when submit returns 401 session_expired.
+                       The new cookies are then used for subsequent requests.
+    """
     test_id = test["id"]
     title = test.get("title", "Unknown")
     base_url = f"https://repeatermock.com/{variant}/test-series/{slug}/test/{test_id}"
@@ -113,7 +119,29 @@ async def scrape_test_full(context, page, test: dict, variant: str, slug: str, o
     # 1b. Submit dummy attempt (so /solution and /analysis return data)
     if result["questions"]:
         print(f"    Submitting dummy attempt...", flush=True)
-        submitted = await submit_attempt(context, page, test_id, result["questions"], variant, slug, original_cookies=original_cookies)
+        # Try submit. If 401, refresh cookies via callback and retry once.
+        submitted = await submit_attempt(
+            context, page, test_id, result["questions"], variant, slug,
+            original_cookies=original_cookies,
+        )
+        if not submitted and on_submit_401 is not None and original_cookies is not None:
+            print(f"    ⚠ Submit failed — refreshing cookies and retrying once...", flush=True)
+            try:
+                new_cookies = await on_submit_401()
+                if new_cookies:
+                    # Update the original_cookies list IN PLACE so submit_attempt sees new tokens
+                    for i, c in enumerate(original_cookies):
+                        for nc in new_cookies:
+                            if c.get("name") == nc.get("name") and c.get("domain") == nc.get("domain"):
+                                original_cookies[i] = nc
+                                break
+                    submitted = await submit_attempt(
+                        context, page, test_id, result["questions"], variant, slug,
+                        original_cookies=original_cookies,
+                    )
+            except Exception as e:
+                print(f"    ⚠ Refresh callback error: {e}", flush=True)
+
         if submitted:
             print(f"    ✓ Attempt submitted — solutions/analysis will have data", flush=True)
             await asyncio.sleep(2)  # Wait for server to process

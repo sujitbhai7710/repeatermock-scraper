@@ -192,6 +192,10 @@ async def submit_attempt(context, page, test_id: str, questions: list[dict], var
         if s == 200:
             print(f"  ✓ Submit succeeded with saved format", flush=True)
             return True
+        elif s == 401 or "session_expired" in b:
+            # Access token dead — bail out so caller refreshes + retries
+            print(f"  ✗ 401 session_expired from saved format — aborting (caller will refresh)", flush=True)
+            return False
         else:
             print(f"  ⚠ Saved format failed ({s}), trying others...", flush=True)
 
@@ -206,6 +210,11 @@ async def submit_attempt(context, page, test_id: str, questions: list[dict], var
             print(f"  ✓✓✓ SUCCESS with format: {fmt['name']}!", flush=True)
             save_working_format(fmt)
             return True
+        elif s == 401 or "session_expired" in b:
+            # Access token expired — bail out IMMEDIATELY so caller can refresh + retry
+            # (don't waste time trying all 6 formats with a dead token)
+            print(f"  ✗ 401 session_expired — access token dead, aborting (caller will refresh)", flush=True)
+            return False
         elif s == 429:
             print(f"  ⚠ Rate limited, waiting 10s...", flush=True)
             await asyncio.sleep(10)

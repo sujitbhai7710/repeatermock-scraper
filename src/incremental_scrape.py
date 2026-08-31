@@ -1,13 +1,13 @@
 """
-Incremental scraper — scrapes tests across multiple series with:
-- Progress tracking (data/progress.json)
-- Time limit (stops at 50 minutes, saves state)
-- Cookie auto-refresh + persistence
-- Caches test lists so Phase 1 is instant on subsequent runs
-- Interleaves listing + scraping (scrapes as soon as first series is fetched)
+Incremental scraper — scrapes tests across the 52 target series with:
+- Granular per-test progress (scraped / partial / failed)
+- Proactive access-token refresh (every 5 tests, not 20)
+- Immediate refresh + retry on 401 from submit
+- Cookie rotation persisted to cookies/account*.json
+- Per-test status tracking with failure reason
 
 Usage:
-    python -m src.incremental_scrape [--time-limit-minutes 50] [--max-tests 0]
+    python -m src.incremental_scrape [--time-limit-minutes 45] [--max-tests 0]
 """
 import asyncio
 import json
@@ -20,7 +20,7 @@ from typing import Any
 
 # Configure logging to stdout (critical for CI debugging)
 logging.basicConfig(
-    level=logging.DEBUG,
+    level=logging.INFO,
     format='%(asctime)s [%(levelname)s] %(message)s',
     datefmt='%H:%M:%S',
     stream=sys.stdout,
@@ -35,99 +35,39 @@ from src.scraper import (
     refresh_cookies_if_needed,
     fetch_series_details,
     fetch_all_tests_for_series,
-    scrape_test,
     parse_series_url,
     COOKIES_FILE,
     TESTS_DIR,
     SERIES_DIR,
 )
+from src.series_config import TARGET_SERIES, get_all_series_urls, get_series_metadata
 
 # ─── Config ────────────────────────────────────────────────────────────────
 
 PROGRESS_FILE = Path(__file__).parent.parent / "data" / "progress.json"
-DEFAULT_TIME_LIMIT_MINUTES = 50
+DEFAULT_TIME_LIMIT_MINUTES = 45
 DEFAULT_RATE_LIMIT_SECONDS = 3
-
-ALL_SERIES_URLS = [
-    "https://repeatermock.com/tb/test-series/bank-of-baroda-lbo",
-    "https://repeatermock.com/tb/test-series/bssc-cgl",
-    "https://repeatermock.com/tb/test-series/bssc-inter-level",
-    "https://repeatermock.com/tb/test-series/cbi-zbo",
-    "https://repeatermock.com/tb/test-series/cds-previous",
-    "https://repeatermock.com/tb/test-series/cisf-head-constable",
-    "https://repeatermock.com/tb/test-series/general-knowledge-ssc-railways-competitive-exams",
-    "https://repeatermock.com/tb/test-series/general-science",
-    "https://repeatermock.com/tb/test-series/ibps-clerk",
-    "https://repeatermock.com/tb/test-series/ibps-clerk-previous",
-    "https://repeatermock.com/tb/test-series/ibps-po",
-    "https://repeatermock.com/tb/test-series/ibps-rrb-clerk",
-    "https://repeatermock.com/tb/test-series/ibps-rrb-hindi",
-    "https://repeatermock.com/tb/test-series/ibps-rrb-office-assistant",
-    "https://repeatermock.com/tb/test-series/ibps-rrb-po",
-    "https://repeatermock.com/tb/test-series/ibps-rrb-po-previous",
-    "https://repeatermock.com/tb/test-series/ibps-so",
-    "https://repeatermock.com/tb/test-series/indian-army-gd",
-    "https://repeatermock.com/tb/test-series/iob-lbo",
-    "https://repeatermock.com/tb/test-series/jammu-and-kashmir-panchayat-secretary",
-    "https://repeatermock.com/tb/test-series/jammu-and-kashmir-patwari",
-    "https://repeatermock.com/tb/test-series/jammu-and-kashmir-si",
-    "https://repeatermock.com/tb/test-series/jk-bank",
-    "https://repeatermock.com/tb/test-series/karnataka-bank",
-    "https://repeatermock.com/tb/test-series/lic-hfl",
-    "https://repeatermock.com/tb/test-series/mp-police-si",
-    "https://repeatermock.com/tb/test-series/nabard-develop-assistant",
-    "https://repeatermock.com/tb/test-series/nabard-grade-a",
-    "https://repeatermock.com/tb/test-series/oicl-ao",
-    "https://repeatermock.com/tb/test-series/psb-lbo",
-    "https://repeatermock.com/tb/test-series/rajasthan-police-si",
-    "https://repeatermock.com/tb/test-series/rpf-constable",
-    "https://repeatermock.com/tb/test-series/rrb-alp",
-    "https://repeatermock.com/tb/test-series/rrb-alp-previous",
-    "https://repeatermock.com/tb/test-series/rrb-general-science-previous-year-questions",
-    "https://repeatermock.com/tb/test-series/rrb-gk-previous-year-questions",
-    "https://repeatermock.com/tb/test-series/rrb-group-d",
-    "https://repeatermock.com/tb/test-series/rrb-je-previous",
-    "https://repeatermock.com/tb/test-series/rrb-junior-translator",
-    "https://repeatermock.com/tb/test-series/rrb-maths-previous-year-questions",
-    "https://repeatermock.com/tb/test-series/rrb-ntpc",
-    "https://repeatermock.com/tb/test-series/rrb-ntpc-memory-based",
-    "https://repeatermock.com/tb/test-series/rrb-ntpc-ug",
-    "https://repeatermock.com/tb/test-series/rrb-reasoning-previous-year-questions",
-    "https://repeatermock.com/tb/test-series/rrb-section-controller",
-    "https://repeatermock.com/tb/test-series/rrb-technician-previous",
-    "https://repeatermock.com/tb/test-series/sbi-apprentice",
-    "https://repeatermock.com/tb/test-series/sbi-clerk",
-    "https://repeatermock.com/tb/test-series/sbi-po",
-    "https://repeatermock.com/tb/test-series/ssc-cgl",
-    "https://repeatermock.com/tb/test-series/ssc-cgl-exam",
-    "https://repeatermock.com/tb/test-series/ssc-cgl-previous-year-paper",
-    "https://repeatermock.com/tb/test-series/ssc-cpo",
-    "https://repeatermock.com/tb/test-series/ssc-english-previous-year-questions",
-    "https://repeatermock.com/tb/test-series/ssc-maths-previous-year-questions",
-    "https://repeatermock.com/tb/test-series/ssc-mts",
-    "https://repeatermock.com/tb/test-series/ssc-railways-current-affairs",
-    "https://repeatermock.com/tb/test-series/ssc-railways-polity",
-    "https://repeatermock.com/tb/test-series/ssc-railways-reasoning",
-    "https://repeatermock.com/tb/test-series/ssc-reasoning-previous-year-questions",
-    "https://repeatermock.com/tb/test-series/ssc-selection-post",
-    "https://repeatermock.com/tb/test-series/static-gk",
-    "https://repeatermock.com/tb/test-series/ugc-net-set-jrf-previous-year-papers",
-    "https://repeatermock.com/tb/test-series/union-bank-of-india-apprentice",
-    "https://repeatermock.com/tb/test-series/up-lekhpal",
-    "https://repeatermock.com/tb/test-series/up-police-constable",
-]
+REFRESH_EVERY_N_TESTS = 5  # Check token validity every 5 tests
 
 
-# ─── Progress tracking ─────────────────────────────────────────────────────
+# ─── Progress tracking (granular) ──────────────────────────────────────────
 
 def load_progress() -> dict[str, Any]:
     if PROGRESS_FILE.exists():
-        return json.loads(PROGRESS_FILE.read_text())
+        p = json.loads(PROGRESS_FILE.read_text())
+        # Migrate old format if needed
+        if "tests_status" not in p:
+            p["tests_status"] = {}
+        if "partial_test_ids" not in p:
+            p["partial_test_ids"] = []
+        return p
     return {
-        "scraped_test_ids": [],
-        "failed_test_ids": [],
-        "series_cache": {},      # Cached test lists: {series_url: {tests: [...], fetched_at: ts}}
-        "series_progress": {},
+        "scraped_test_ids": [],         # fully scraped (questions + answers + solutions + analysis)
+        "partial_test_ids": [],         # questions only (no answers/solutions)
+        "failed_test_ids": [],          # couldn't fetch even questions
+        "tests_status": {},             # test_id → {status, has_questions, has_answers, has_solutions, has_analysis, has_images, error, last_attempted_at}
+        "series_cache": {},             # {series_url: {name, tests, fetched_at}}
+        "series_progress": {},          # {series_url: {name, total, scraped, partial, failed, pending}}
         "last_run_start": None,
         "last_run_end": None,
         "total_scraped": 0,
@@ -140,6 +80,49 @@ def save_progress(progress: dict[str, Any]):
     PROGRESS_FILE.write_text(json.dumps(progress, indent=2, ensure_ascii=False))
 
 
+def update_series_progress(progress: dict, series_url: str, series_name: str, all_tests: list[dict]):
+    """Recompute series_progress for a single series based on current state."""
+    scraped_set = set(progress["scraped_test_ids"])
+    partial_set = set(progress["partial_test_ids"])
+    failed_set = set(progress["failed_test_ids"])
+
+    total = len(all_tests)
+    scraped = sum(1 for t in all_tests if t["id"] in scraped_set)
+    partial = sum(1 for t in all_tests if t["id"] in partial_set)
+    failed = sum(1 for t in all_tests if t["id"] in failed_set)
+    pending = total - scraped - partial - failed
+
+    progress["series_progress"][series_url] = {
+        "name": series_name,
+        "total": total,
+        "scraped": scraped,
+        "partial": partial,
+        "failed": failed,
+        "pending": pending,
+        "updated_at": time.time(),
+    }
+
+
+def record_test_status(progress: dict, test_id: str, status: str, **kwargs):
+    """Record granular status for a test."""
+    progress["tests_status"][test_id] = {
+        "status": status,  # "scraped" | "partial" | "failed"
+        "last_attempted_at": time.time(),
+        **kwargs,
+    }
+
+
+# ─── Cookie file persistence (for multi-account rotation) ──────────────────
+
+def save_account_cookies(account_idx: int, cookies: list[dict]):
+    """Save updated cookies back to cookies/account{N}.json (for git commit)."""
+    cookies_dir = Path(__file__).parent.parent / "cookies"
+    cookies_dir.mkdir(exist_ok=True)
+    account_file = cookies_dir / f"account{account_idx+1}.json"
+    account_file.write_text(json.dumps(cookies, indent=2, ensure_ascii=False))
+    print(f"  ✓ Updated {account_file.name}")
+
+
 # ─── Main ──────────────────────────────────────────────────────────────────
 
 async def run_incremental_scrape(
@@ -150,23 +133,27 @@ async def run_incremental_scrape(
     time_limit_seconds = time_limit_minutes * 60
     progress = load_progress()
     scraped_ids = set(progress["scraped_test_ids"])
+    partial_ids = set(progress["partial_test_ids"])
     failed_ids = set(progress["failed_test_ids"])
     series_cache = progress.get("series_cache", {})
+
+    # The "active cookie set" we're using this run — gets updated when refresh rotates tokens
+    active_account_idx = -1
+    active_cookies = None
 
     print(f"\n{'='*60}")
     print(f"INCREMENTAL SCRAPE RUN")
     print(f"{'='*60}")
     print(f"  Time limit: {time_limit_minutes} minutes")
     print(f"  Max tests this run: {max_tests if max_tests > 0 else 'unlimited'}")
-    print(f"  Previously scraped: {len(scraped_ids)} tests")
+    print(f"  Previously scraped: {len(scraped_ids)} (full), {len(partial_ids)} (partial), {len(failed_ids)} (failed)")
+    print(f"  Target series: {len(TARGET_SERIES)}")
     print(f"  Start time: {time.strftime('%Y-%m-%d %H:%M:%S UTC', time.gmtime())}")
 
     # Load cookies from cookies/ directory (JSON files committed to repo)
-    import os
     cookie_sets = []
     cookies_dir = Path(__file__).parent.parent / "cookies"
-    
-    # Read all account*.json files from cookies/ directory
+
     if cookies_dir.exists():
         for cookie_file in sorted(cookies_dir.glob("account*.json")):
             try:
@@ -177,21 +164,9 @@ async def run_incremental_scrape(
                     print(f"  Found {cookie_file.name} ({len(account_cookies)} cookies, has refreshToken: {has_refresh})")
             except Exception as e:
                 print(f"  Error reading {cookie_file.name}: {e}")
-    
-    # Also try cached cookies from previous run (data/cookies.json)
-    if COOKIES_FILE.exists():
-        try:
-            cached = json.loads(COOKIES_FILE.read_text())
-            if cached.get("cookies"):
-                # Only add if not already in cookie_sets
-                if not any(cs[0].get("value") == cached["cookies"][0].get("value") for cs in cookie_sets if cs):
-                    cookie_sets.append(cached["cookies"])
-                    print(f"  Found cached cookies ({len(cached['cookies'])} cookies)")
-        except:
-            pass
 
     if not cookie_sets:
-        print("✗ No cookies found anywhere. Exiting.")
+        print("✗ No cookies found. Exiting.")
         return
 
     print(f"  Total cookie sets to try: {len(cookie_sets)}")
@@ -199,7 +174,7 @@ async def run_incremental_scrape(
     # Try each cookie set until one works
     p = browser = context = page = None
     authed = False
-    
+
     for i, cookies in enumerate(cookie_sets):
         print(f"\n  Trying cookie set {i+1}/{len(cookie_sets)}...")
         try:
@@ -208,10 +183,14 @@ async def run_incremental_scrape(
                 await p.stop()
             p, browser, context = await create_browser_session(cookies)
             page = await context.new_page()
-            
+
             result = await refresh_cookies_if_needed(context, page, original_cookies=cookies)
             if result is not None:
                 print(f"  ✓ Cookie set {i+1} authenticated!")
+                active_account_idx = i
+                active_cookies = result  # May have rotated tokens
+                # Persist rotated tokens immediately
+                save_account_cookies(i, result)
                 authed = True
                 break
             else:
@@ -228,15 +207,33 @@ async def run_incremental_scrape(
 
     if not authed:
         print("\n✗ All cookie sets failed. Exiting gracefully.")
-        print("  Update GitHub secrets with fresh cookies.")
+        print("  Update cookies/account*.json with fresh cookies.")
         return
 
     tests_scraped_this_run = 0
+    tests_partial_this_run = 0
+    tests_failed_this_run = 0
     questions_scraped_this_run = 0
+    consecutive_auth_failures = 0
+
+    async def refresh_active_cookies_callback():
+        """Called by scrape_test_full when submit returns 401.
+        Refreshes cookies, persists them, and returns the new list."""
+        nonlocal active_cookies, consecutive_auth_failures
+        print("    ↻ Refreshing cookies due to 401 from submit...")
+        refreshed = await refresh_cookies_if_needed(context, page, original_cookies=active_cookies)
+        if refreshed is not None:
+            active_cookies = refreshed
+            save_account_cookies(active_account_idx, refreshed)
+            consecutive_auth_failures = 0
+            return refreshed
+        else:
+            consecutive_auth_failures += 1
+            print(f"    ✗ Refresh failed (consecutive: {consecutive_auth_failures})")
+            return None
 
     try:
-        # Process each series — interleave listing + scraping
-        for series_url in ALL_SERIES_URLS:
+        for series_url in get_all_series_urls():
             # Check time limit
             elapsed = time.time() - start_time
             if elapsed >= time_limit_seconds:
@@ -247,20 +244,21 @@ async def run_incremental_scrape(
             variant = config["variant"]
             slug = config["slug"]
             api_version = config["api_version"]
+            meta = get_series_metadata(series_url) or {}
 
             # Get cached test list or fetch fresh
             cached = series_cache.get(series_url)
             cache_age = time.time() - cached.get("fetched_at", 0) if cached else float('inf')
 
-            if cached and cache_age < 3600:  # Cache for 1 hour
+            if cached and cache_age < 86400:  # Cache for 24 hours
                 all_tests = cached["tests"]
-                series_name = cached.get("name", "")
+                series_name = cached.get("name", meta.get("name", ""))
                 print(f"\n  [{series_name[:50]}] Using cached test list ({len(all_tests)} tests, {cache_age/60:.0f} min old)")
             else:
                 print(f"\n  Fetching test list: {series_url}")
                 try:
                     details = await fetch_series_details(context, slug, variant, api_version)
-                    series_name = details.get("name", "")
+                    series_name = details.get("name", "") or meta.get("name", "")
                     all_tests = await fetch_all_tests_for_series(context, details, variant, api_version)
 
                     # Cache it
@@ -268,6 +266,8 @@ async def run_incremental_scrape(
                         "name": series_name,
                         "tests": all_tests,
                         "fetched_at": time.time(),
+                        "platform": variant,
+                        "slug": slug,
                     }
                     progress["series_cache"] = series_cache
                     save_progress(progress)
@@ -277,73 +277,128 @@ async def run_incremental_scrape(
                     print(f"  ✗ Error fetching {series_url}: {e}")
                     continue
 
-            # Filter to pending
-            pending = [t for t in all_tests if t["id"] not in scraped_ids and t["id"] not in failed_ids]
+            # Filter to pending (not fully scraped)
+            pending = [t for t in all_tests
+                       if t["id"] not in scraped_ids
+                       or t["id"] in partial_ids   # retry partials
+                       or t["id"] in failed_ids]   # retry failures
             total = len(all_tests)
             already_scraped = len([t for t in all_tests if t["id"] in scraped_ids])
 
-            progress["series_progress"][series_url] = {
-                "name": series_name,
-                "total": total,
-                "scraped": already_scraped,
-                "pending": len(pending),
-            }
+            update_series_progress(progress, series_url, series_name, all_tests)
+            save_progress(progress)
 
             if not pending:
-                print(f"  ✓ All {total} tests already scraped — skipping")
+                print(f"  ✓ All {total} tests fully scraped — skipping")
                 continue
 
             print(f"  Scraping {len(pending)} pending tests ({already_scraped}/{total} done)...")
 
-            # Scrape pending tests in this series
             for i, test in enumerate(pending):
-                # Check time limit
                 elapsed = time.time() - start_time
                 if elapsed >= time_limit_seconds:
                     print(f"\n  ⏰ Time limit reached ({elapsed/60:.1f} min)")
                     break
 
-                if max_tests > 0 and tests_scraped_this_run >= max_tests:
+                if max_tests > 0 and (tests_scraped_this_run + tests_partial_this_run + tests_failed_this_run) >= max_tests:
                     print(f"\n  Max tests limit reached ({max_tests})")
                     break
 
-                # Refresh cookies every 20 tests
-                if tests_scraped_this_run > 0 and tests_scraped_this_run % 20 == 0:
-                    print(f"\n  Refreshing cookies ({tests_scraped_this_run} tests done)...")
-                    cookies = await refresh_cookies_if_needed(context, page)
-                    if cookies:
-                        save_cookies(cookies, COOKIES_FILE)
+                # Proactive refresh every N tests (check /auth/me, rotate if needed)
+                if (tests_scraped_this_run + tests_partial_this_run + tests_failed_this_run) > 0 and \
+                   (tests_scraped_this_run + tests_partial_this_run + tests_failed_this_run) % REFRESH_EVERY_N_TESTS == 0:
+                    print(f"\n  Proactive cookie check ({tests_scraped_this_run + tests_partial_this_run + tests_failed_this_run} tests done)...")
+                    refreshed = await refresh_cookies_if_needed(context, page, original_cookies=active_cookies)
+                    if refreshed is not None:
+                        active_cookies = refreshed
+                        save_account_cookies(active_account_idx, refreshed)
+                        consecutive_auth_failures = 0
                     else:
-                        print("\n  ⚠ Cookie refresh failed — continuing with existing cookies")
+                        consecutive_auth_failures += 1
+                        print(f"  ⚠ Cookie refresh failed (attempt {consecutive_auth_failures})")
+                        if consecutive_auth_failures >= 3:
+                            print("  ✗ 3 consecutive auth failures — aborting run")
+                            break
 
                 time_remaining = time_limit_seconds - elapsed
                 mins_left = int(time_remaining / 60)
 
                 test_id = test["id"]
                 test_title = test.get("title", "Unknown")[:60]
-                print(f"  [{tests_scraped_this_run+1}] ({mins_left}m left) {test_title}")
+                test_num = tests_scraped_this_run + tests_partial_this_run + tests_failed_this_run + 1
+                print(f"  [{test_num}] ({mins_left}m left) {test_title}")
 
                 try:
-                    result = await scrape_test_full(context, page, test, variant, slug, original_cookies=cookies)
-                    if result:
-                        # Download images and replace CDN URLs with local paths
-                        result = await download_images_for_test(context, result, slug)
-                        # Re-save with local image paths
-                        out_file = TESTS_DIR / f"{test_id}.json"
-                        out_file.write_text(json.dumps(result, indent=2, ensure_ascii=False), encoding="utf-8")
-                        tests_scraped_this_run += 1
-                        questions_scraped_this_run += len(result.get("questions", []))
-                        scraped_ids.add(test_id)
-                        progress["scraped_test_ids"] = list(scraped_ids)
-                    else:
+                    result = await scrape_test_full(
+                        context, page, test, variant, slug,
+                        original_cookies=active_cookies,
+                        on_submit_401=refresh_active_cookies_callback,
+                    )
+
+                    if result is None:
+                        # Couldn't even fetch questions
                         failed_ids.add(test_id)
                         progress["failed_test_ids"] = list(failed_ids)
+                        record_test_status(progress, test_id, "failed",
+                                          has_questions=False, error="Could not fetch /attempt page")
+                        tests_failed_this_run += 1
+                        print(f"    ✗ FAILED: no questions fetched")
+                    else:
+                        # Check what we got
+                        has_q = bool(result.get("questions"))
+                        has_a = result.get("has_answers", False)
+                        has_ana = result.get("has_analysis", False)
+
+                        if has_q and has_a and has_ana:
+                            # Fully scraped
+                            scraped_ids.add(test_id)
+                            partial_ids.discard(test_id)
+                            failed_ids.discard(test_id)
+                            progress["scraped_test_ids"] = list(scraped_ids)
+                            progress["partial_test_ids"] = list(partial_ids)
+                            progress["failed_test_ids"] = list(failed_ids)
+                            record_test_status(progress, test_id, "scraped",
+                                              has_questions=True, has_answers=True,
+                                              has_solutions=True, has_analysis=True,
+                                              has_images=True, question_count=len(result["questions"]))
+                            tests_scraped_this_run += 1
+                            questions_scraped_this_run += len(result["questions"])
+                            print(f"    ✓ FULLY SCRAPED ({len(result['questions'])} questions)")
+                        elif has_q:
+                            # Partial — got questions but no answers/analysis
+                            partial_ids.add(test_id)
+                            failed_ids.discard(test_id)
+                            progress["partial_test_ids"] = list(partial_ids)
+                            progress["failed_test_ids"] = list(failed_ids)
+                            missing = []
+                            if not has_a:
+                                missing.append("answers")
+                            if not has_ana:
+                                missing.append("analysis")
+                            record_test_status(progress, test_id, "partial",
+                                              has_questions=True, has_answers=has_a,
+                                              has_analysis=has_ana,
+                                              error=f"Missing: {','.join(missing)}")
+                            tests_partial_this_run += 1
+                            questions_scraped_this_run += len(result["questions"])
+                            print(f"    ⚠ PARTIAL (missing: {','.join(missing)})")
+                        else:
+                            failed_ids.add(test_id)
+                            progress["failed_test_ids"] = list(failed_ids)
+                            record_test_status(progress, test_id, "failed",
+                                              has_questions=False, error="No questions in /attempt response")
+                            tests_failed_this_run += 1
+                            print(f"    ✗ FAILED: no questions in response")
+
                 except Exception as e:
                     print(f"    ✗ Error: {e}")
                     failed_ids.add(test_id)
                     progress["failed_test_ids"] = list(failed_ids)
+                    record_test_status(progress, test_id, "failed", error=str(e))
+                    tests_failed_this_run += 1
 
-                # Save progress after each test
+                # Update series progress after each test
+                update_series_progress(progress, series_url, series_name, all_tests)
                 progress["total_scraped"] = len(scraped_ids)
                 save_progress(progress)
 
@@ -354,19 +409,26 @@ async def run_incremental_scrape(
             if elapsed >= time_limit_seconds:
                 break
 
+            # Check if we hit auth failure limit
+            if consecutive_auth_failures >= 3:
+                break
+
         # Summary
         elapsed = time.time() - start_time
         print(f"\n{'='*60}")
         print(f"RUN SUMMARY")
         print(f"{'='*60}")
-        print(f"  Tests scraped this run: {tests_scraped_this_run}")
+        print(f"  Tests fully scraped this run: {tests_scraped_this_run}")
+        print(f"  Tests partial this run: {tests_partial_this_run}")
+        print(f"  Tests failed this run: {tests_failed_this_run}")
         print(f"  Questions scraped this run: {questions_scraped_this_run}")
         print(f"  Time elapsed: {elapsed/60:.1f} minutes")
-        print(f"  Total scraped (all runs): {len(scraped_ids)}")
-        print(f"  Total failed: {len(failed_ids)}")
+        print(f"  Total fully scraped (all runs): {len(scraped_ids)}")
+        print(f"  Total partial (all runs): {len(partial_ids)}")
+        print(f"  Total failed (all runs): {len(failed_ids)}")
         print(f"\n  Series progress:")
         for url, sp in progress["series_progress"].items():
-            print(f"    {sp['name'][:40]}: {sp['scraped']}/{sp['total']} scraped, {sp['pending']} pending")
+            print(f"    {sp['name'][:50]}: {sp['scraped']}/{sp['total']} scraped, {sp.get('partial', 0)} partial, {sp.get('pending', 0)} pending")
 
     finally:
         progress["last_run_end"] = time.time()
@@ -374,17 +436,24 @@ async def run_incremental_scrape(
             "start": start_time,
             "end": progress["last_run_end"],
             "tests_scraped": tests_scraped_this_run,
+            "tests_partial": tests_partial_this_run,
+            "tests_failed": tests_failed_this_run,
             "questions_scraped": questions_scraped_this_run,
             "time_minutes": (progress["last_run_end"] - start_time) / 60,
+            "account_used": active_account_idx + 1,
         })
         progress["run_history"] = progress["run_history"][-20:]
         save_progress(progress)
 
-        final_cookies = await context.cookies()
-        save_cookies(final_cookies, COOKIES_FILE)
+        # Persist final cookies
+        if active_cookies:
+            save_account_cookies(active_account_idx, active_cookies)
+            save_cookies(active_cookies, COOKIES_FILE)
 
-        await browser.close()
-        await p.stop()
+        if browser:
+            await browser.close()
+        if p:
+            await p.stop()
 
     print(f"\n✓ Run complete. Progress saved.")
 

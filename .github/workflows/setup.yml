@@ -1,0 +1,76 @@
+name: One-time Setup (Cloudflare D1 + Worker)
+
+on:
+  workflow_dispatch:
+    inputs:
+      confirm:
+        description: 'Type "yes" to confirm setup'
+        required: true
+        default: 'no'
+
+env:
+  PYTHON_VERSION: '3.12'
+
+jobs:
+  setup:
+    runs-on: ubuntu-latest
+    timeout-minutes: 10
+    permissions:
+      contents: write
+
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+
+      - name: Confirm
+        run: |
+          if [ "${{ github.event.inputs.confirm }}" != "yes" ]; then
+            echo "✗ Confirm input must be 'yes' to run setup"
+            exit 1
+          fi
+          echo "✓ Confirmed"
+
+      - name: Setup Node
+        uses: actions/setup-node@v4
+        with:
+          node-version: '20'
+
+      - name: Setup Python
+        uses: actions/setup-python@v5
+        with:
+          python-version: ${{ env.PYTHON_VERSION }}
+
+      - name: Install wrangler
+        run: npm install -g wrangler@latest
+
+      - name: Run Cloudflare setup
+        env:
+          CLOUDFLARE_API_TOKEN: ${{ secrets.CLOUDFLARE_API_TOKEN }}
+          CLOUDFLARE_ACCOUNT_ID: ${{ secrets.CLOUDFLARE_ACCOUNT_ID }}
+          GH_TOKEN: ${{ secrets.GH_PAT }}
+        run: |
+          if [ -z "$GH_TOKEN" ]; then
+            echo "⚠ GH_PAT secret not set — cron triggers will not work"
+            echo "  Create a PAT with repo:workflow scope and add as secret GH_PAT"
+            # Use the default GITHUB_TOKEN as fallback (limited scope)
+            export GH_TOKEN="${{ secrets.GITHUB_TOKEN }}"
+          fi
+          bash scripts/setup_cloudflare.sh
+
+      - name: Extract D1 database ID
+        id: db-id
+        run: |
+          DB_ID=$(grep DATABASE_ID worker/.env | cut -d= -f2)
+          echo "db_id=$DB_ID" >> $GITHUB_OUTPUT
+          echo "D1 database ID: $DB_ID"
+
+      - name: Create PR with updated wrangler.toml
+        run: |
+          git config user.name "Setup Bot"
+          git config user.email "setup@bot.local"
+          git add worker/wrangler.toml worker/.env 2>/dev/null || true
+          git diff --staged --quiet || git commit -m "Setup: configure D1 database + worker deployment"
+          git push 2>&1 || true
+
+    outputs:
+      db_id: ${{ steps.db-id.outputs.db_id }}

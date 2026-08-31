@@ -1,0 +1,19 @@
+name = "repeatermock-dashboard"
+main = "src/index.js"
+compatibility_date = "2024-09-01"
+account_id = ""  # filled from env at deploy time
+
+# D1 database binding
+[[d1_databases]]
+binding = "DB"
+database_name = "repeatermock-scraper"
+database_id = ""  # filled from env at deploy time
+
+# Cron triggers — every hour at :05
+[triggers]
+crons = ["5 * * * *"]
+
+# Environment variables set via `wrangler secret put`:
+#   ADMIN_PASSWORD = "BloggingTest@7"
+#   GH_TOKEN       = <GitHub PAT with repo:workflow scope>
+#   GH_REPO        = "sujitbhai7710/repeatermock-scraper"
