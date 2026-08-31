@@ -141,13 +141,17 @@ async def create_browser_session(cookies: list[dict[str, Any]]):
             cc["httpOnly"] = True
         clean_cookies.append(cc)
 
+    # Create context WITHOUT storage_state, then add cookies via add_cookies
+    # (storage_state sometimes drops httpOnly cookies; add_cookies is more reliable)
     context = await browser.new_context(
         viewport={"width": 1366, "height": 768},
         user_agent="Mozilla/5.0 (X11; Linux x86_64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/127.0.0.0 Safari/537.36",
         locale="en-IN",
         timezone_id="Asia/Kolkata",
-        storage_state={"cookies": clean_cookies},
     )
+
+    # Add cookies via add_cookies (more reliable for httpOnly cookies)
+    await context.add_cookies(clean_cookies)
 
     # Anti-detection + anti-anti-debug
     await context.add_init_script("""
