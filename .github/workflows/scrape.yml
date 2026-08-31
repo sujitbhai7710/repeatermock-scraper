@@ -92,7 +92,6 @@ jobs:
           fi
 
           # Also set as env var for the scraper (it reads from env first, then file)
-          echo "REPEATERMOCK_COOKIES_JSON=$COOKIES_SECRET" >> $GITHUB_ENV
 
       - name: Check 15-min gap + all-done check
         id: should-run
