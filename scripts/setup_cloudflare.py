@@ -60,6 +60,18 @@ def find_or_create_db(account_id, token):
     while True:
         url = f"https://api.cloudflare.com/client/v4/accounts/{account_id}/d1/database?per_page=100&page={page}"
         status, body = cf_request("GET", url, token)
+        if status == 401:
+            print("✗ Authentication error — your CLOUDFLARE_API_TOKEN doesn't have D1 permission.")
+            print()
+            print("  To fix: create a new API token at https://dash.cloudflare.com/profile/api-tokens")
+            print("  with these permissions:")
+            print("    • Account > D1 > Edit")
+            print("    • Account > Workers Scripts > Edit")
+            print("    • Account > Cloudflare Pages > Edit")
+            print("    • Account > Account Settings > Read")
+            print()
+            print("  Then update the CLOUDFLARE_API_TOKEN GitHub secret and re-run this workflow.")
+            sys.exit(1)
         if status != 200:
             print(f"✗ Failed to list D1 databases: HTTP {status}")
             print(f"  Response: {json.dumps(body, indent=2)[:500]}")
@@ -82,6 +94,9 @@ def find_or_create_db(account_id, token):
     print(f"  Creating database '{DB_NAME}'...")
     url = f"https://api.cloudflare.com/client/v4/accounts/{account_id}/d1/database"
     status, body = cf_request("POST", url, token, body={"name": DB_NAME})
+    if status == 401:
+        print("✗ Authentication error — your CLOUDFLARE_API_TOKEN doesn't have D1 permission.")
+        sys.exit(1)
     if status != 200 or not body.get("success"):
         print(f"✗ Failed to create D1 database: HTTP {status}")
         print(f"  Response: {json.dumps(body, indent=2)[:500]}")
