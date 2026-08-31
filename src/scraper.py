@@ -281,15 +281,33 @@ async def refresh_cookies_if_needed(context, page, original_cookies: list[dict] 
         logger.info(f"  /auth/refresh → {resp.status}: {body[:80]}")
         
         if resp.status == 200:
-            # Refresh succeeded — the server has rotated the token
-            # Re-check auth
+            # Capture new tokens from Set-Cookie header
+            set_cookie = resp.headers.get("set-cookie", "")
+            if set_cookie:
+                import re as _re
+                # Extract new accessToken and refreshToken from Set-Cookie
+                for cookie_name in ["accessToken", "refreshToken", "totpVerified"]:
+                    match = _re.search(rf'{cookie_name}=([^;]+)', set_cookie)
+                    if match:
+                        new_value = match.group(1)
+                        if new_value:  # Non-empty value
+                            for c in cookies_for_header:
+                                if c["name"] == cookie_name:
+                                    c["value"] = new_value
+                                    logger.info(f"  ✓ Captured new {cookie_name} from Set-Cookie")
+                                    break
+            
+            # Re-check auth with updated cookies
+            updated_cookie_str = "; ".join(f'{c["name"]}={c["value"]}' for c in cookies_for_header if "repeatermock" in c.get("domain", ""))
             resp2 = await context.request.get(f"{API_BASE}/auth/me", headers={
                 "Accept": "application/json",
-                "Cookie": cookie_str,
+                "Cookie": updated_cookie_str,
             })
             body2 = await resp2.text()
             if resp2.status == 200 and '"success":true' in body2:
                 logger.info("  ✓ Authenticated via refresh!")
+                # Save updated cookies (with new refresh token) to file
+                save_cookies(cookies_for_header, COOKIES_FILE)
                 return cookies_for_header
     except Exception as e:
         logger.warning(f"  /auth/refresh error: {e}")
