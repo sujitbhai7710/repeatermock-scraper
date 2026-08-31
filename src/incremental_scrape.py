@@ -207,13 +207,29 @@ async def run_incremental_scrape(
             p, browser, context = await create_browser_session(cookies)
             page = await context.new_page()
 
+            # Step 1: Check if access token is valid via /auth/me
             result = await refresh_cookies_if_needed(context, page, original_cookies=cookies)
             if result is not None:
                 print(f"  ✓ Cookie set {i+1} authenticated!")
                 active_account_idx = i
-                active_cookies = result  # May have rotated tokens
-                # Persist rotated tokens immediately
-                save_account_cookies(i, result)
+                active_cookies = result
+
+                # Step 2: ALWAYS force-refresh to get a FRESH access token (full 15-min window).
+                # The provided access token may be close to expiry (user exported cookies minutes ago).
+                # This also rotates the refresh token — capture + save it immediately.
+                print(f"  → Force-refreshing to get fresh access token (full 15-min window)...")
+                refreshed = await force_refresh_cookies(context, page, original_cookies=active_cookies)
+                if refreshed is not None:
+                    active_cookies = refreshed
+                    save_account_cookies(i, refreshed)
+                    print(f"  ✓ Fresh access token obtained — ready to scrape for ~15 minutes")
+                else:
+                    # Refresh failed — but access token might still be valid for a few minutes.
+                    # Continue with existing tokens; proactive refresh will retry later.
+                    print(f"  ⚠ Force-refresh failed — continuing with existing access token")
+                    print(f"    (may expire soon — proactive refresh will retry at test {REFRESH_EVERY_N_TESTS})")
+                    save_account_cookies(i, result)
+
                 authed = True
                 break
             else:

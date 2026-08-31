@@ -105,12 +105,19 @@ on the next run.
 RepeaterMock's access token expires every 15 minutes. The refresh token rotates
 on every `/auth/refresh` call. The scraper handles this:
 
-1. **Proactive refresh every 8 tests** (~3 min) — keeps access token fresh
-2. **Captures rotated refresh token** from `Set-Cookie` response header
-3. **Saves rotated token** to `cookies/account1.json` immediately
-4. **Next run uses the rotated token** — self-sustaining loop
+1. **At startup**: always force-refreshes to get a fresh 15-min access token
+   (the provided access token may be close to expiry if you exported cookies
+   a few minutes ago)
+2. **Proactive refresh every 8 tests** (~3 min) — keeps access token fresh
+3. **Captures rotated refresh token** from `Set-Cookie` response header
+4. **Saves rotated token** to `cookies/account1.json` immediately
+5. **Next run uses the rotated token** — self-sustaining loop
 
 After the first successful run, you never need to manually update cookies again.
+
+**IMPORTANT**: Only run ONE instance of the scraper at a time. If two instances
+try to use the same refresh token, one will fail (the token rotates on every use).
+The GitHub Actions workflow uses `cancel-in-progress: true` to prevent this.
 
 ## Cloudflare D1 + Worker Dashboard
 
