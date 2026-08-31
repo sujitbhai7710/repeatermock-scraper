@@ -56,8 +56,24 @@ jobs:
             echo "Value: JSON cookie array from browser"
             exit 1
           fi
-          echo "REPEATERMOCK_COOKIES_JSON=${{ secrets.REPEATERMOCK_COOKIES_JSON }}" > .env
+          # Use printf to avoid shell quoting issues with JSON
+          printf 'REPEATERMOCK_COOKIES_JSON=%s\n' '${{ secrets.REPEATERMOCK_COOKIES_JSON }}' > .env
           echo "✓ .env created from secret"
+          # Verify it's valid JSON
+          python3 -c "
+          import json, os
+          from dotenv import load_dotenv
+          load_dotenv('.env')
+          raw = os.environ.get('REPEATERMOCK_COOKIES_JSON', '')
+          if raw:
+              cookies = json.loads(raw)
+              print(f'  ✓ Parsed {len(cookies)} cookies from secret')
+              for c in cookies:
+                  print(f'    - {c[\"name\"]}: {c[\"value\"][:30]}...')
+          else:
+              print('  ✗ No REPEATERMOCK_COOKIES_JSON in .env')
+              exit(1)
+          "
 
       - name: Test scrapability of all series
         id: test
@@ -65,8 +81,8 @@ jobs:
           mkdir -p data
           echo "## Scrapability Test Results" > data/scrape_report.md
           echo "" >> data/scrape_report.md
-          echo "| Series URL | Status | Tests Found |" >> data/scrape_report.md
-          echo "|------------|--------|-------------|" >> data/scrape_report.md
+          echo "| Series URL | Status |" >> data/scrape_report.md
+          echo "|------------|--------|" >> data/scrape_report.md
 
           # Default series list
           SERIES_URLS="${{ github.event.inputs.series_urls }}"
@@ -89,22 +105,24 @@ jobs:
             TOTAL_COUNT=$((TOTAL_COUNT + 1))
             echo ""
             echo "=== Testing: $url ==="
-            if python -m src.scraper test-series "$url" 2>&1 | tee /tmp/test_output.txt; then
+            # Run scraper and capture exit code (don't use tee pipe which masks exit code)
+            python -m src.scraper test-series "$url" > /tmp/test_output.txt 2>&1
+            EXIT_CODE=$?
+            cat /tmp/test_output.txt
+            if [ $EXIT_CODE -eq 0 ]; then
               echo "✓ SCRAPABLE: $url"
-              echo "| \`$url\` | ✓ Scrapable | - |" >> data/scrape_report.md
+              echo "| \`$url\` | ✓ Scrapable |" >> data/scrape_report.md
               SCRAPABLE_COUNT=$((SCRAPABLE_COUNT + 1))
             else
-              echo "✗ NOT SCRAPABLE: $url"
-              echo "| \`$url\` | ✗ Not scrapable | - |" >> data/scrape_report.md
+              echo "✗ NOT SCRAPABLE: $url (exit code $EXIT_CODE)"
+              echo "| \`$url\` | ✗ Not scrapable |" >> data/scrape_report.md
             fi
           done <<< "$SERIES_URLS"
 
           echo ""
-          echo "## Summary: $SCRAPABLE_COUNT / $TOTAL_COUNT series scrapable" >> data/scrape_report.md
-          echo ""
           echo "### Scrapable series: $SCRAPABLE_COUNT / $TOTAL_COUNT" >> data/scrape_report.md
+          cat data/scrape_report.md
 
-          # Save scrapable URLs for the scrape step
           echo "SCRAPABLE_COUNT=$SCRAPABLE_COUNT" >> $GITHUB_ENV
           echo "TOTAL_COUNT=$TOTAL_COUNT" >> $GITHUB_ENV
 
