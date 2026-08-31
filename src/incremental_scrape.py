@@ -185,7 +185,7 @@ async def run_incremental_scrape(
             p, browser, context = await create_browser_session(cookies)
             page = await context.new_page()
             
-            result = await refresh_cookies_if_needed(context, page)
+            result = await refresh_cookies_if_needed(context, page, original_cookies=cookies)
             if result is not None:
                 print(f"  ✓ Cookie set {i+1} authenticated!")
                 authed = True
