@@ -706,15 +706,83 @@
         if (analysis.ts || analysis.analysis) {
           const ts = analysis.ts || {};
           const an = analysis.analysis || {};
-          app.appendChild(h("div", { class: "rm-series-hero", style: "margin-top:18px;" }, [
+          const rmd = an.rankMarksData || [];
+          const totalStudents = an.totalStudents || 0;
+          const avgMarks = an.avgMarks || 0;
+
+          // Find topper score (highest marks in rankMarksData)
+          const topperScore = rmd.length > 0 ? rmd[0].marks : 0;
+
+          // Build rank predictor section
+          const analysisDiv = h("div", { class: "rm-series-hero", style: "margin-top:18px;" }, [
             h("h2", { style: "margin:0 0 10px;font-size:17px;" }, "RepeaterMock Analysis Data"),
             h("div", { class: "rm-result-stats" }, [
               ts.rank ? h("div", { class: "rm-result-stat" }, [h("div", { class: "v" }, "#" + ts.rank), h("div", { class: "l" }, "Rank (RepeaterMock)")]) : null,
               ts.percentile != null ? h("div", { class: "rm-result-stat" }, [h("div", { class: "v" }, ts.percentile.toFixed(1) + "%"), h("div", { class: "l" }, "Percentile")]) : null,
-              an.avgMarks ? h("div", { class: "rm-result-stat" }, [h("div", { class: "v" }, an.avgMarks.toFixed(1)), h("div", { class: "l" }, "Average Marks")]) : null,
-              an.totalStudents ? h("div", { class: "rm-result-stat" }, [h("div", { class: "v" }, String(an.totalStudents)), h("div", { class: "l" }, "Total Students")]) : null,
+              h("div", { class: "rm-result-stat" }, [h("div", { class: "v" }, String(topperScore)), h("div", { class: "l" }, "Topper Score")]),
+              h("div", { class: "rm-result-stat" }, [h("div", { class: "v" }, avgMarks.toFixed(1)), h("div", { class: "l" }, "Average Marks")]),
+              h("div", { class: "rm-result-stat" }, [h("div", { class: "v" }, String(totalStudents)), h("div", { class: "l" }, "Total Students")]),
             ]),
-          ]));
+          ]);
+          app.appendChild(analysisDiv);
+
+          // Rank Predictor — calculate rank for any score using rankMarksData
+          if (rmd.length > 0) {
+            const predictorDiv = h("div", { class: "rm-series-hero", style: "margin-top:18px;" }, [
+              h("h2", { style: "margin:0 0 10px;font-size:17px;" }, "Rank Predictor"),
+              h("p", { class: "rm-muted", style: "font-size:13px;margin:0 0 12px;" }, "Enter your expected score to see what rank you would get:"),
+            ]);
+
+            const inputRow = h("div", { style: "display:flex;gap:10px;align-items:center;margin-bottom:12px;" });
+            const scoreInput = h("input", {
+              type: "number", min: "0", max: String(an.maxMarks || 200), value: String(Math.round(marks)),
+              style: "padding:8px 12px;border:1px solid #cbd5e1;border-radius:8px;font-size:15px;width:120px;",
+              id: "rank-score-input"
+            });
+            const predictBtn = h("button", { class: "rm-btn rm-btn-sm" }, "Predict Rank");
+            const resultSpan = h("span", { style: "font-size:14px;font-weight:600;color:#15803d;", id: "rank-prediction" });
+            inputRow.appendChild(h("span", { style: "font-size:14px;" }, "Your Score:"));
+            inputRow.appendChild(scoreInput);
+            inputRow.appendChild(predictBtn);
+            inputRow.appendChild(resultSpan);
+            predictorDiv.appendChild(inputRow);
+
+            // Rank prediction function
+            function predictRank() {
+              const score = parseFloat(scoreInput.value) || 0;
+              let predictedRank = totalStudents; // default: last
+              let percentile = 0;
+
+              // Find the rank for this score
+              // rankMarksData is sorted by marks descending (highest first)
+              for (let i = 0; i < rmd.length; i++) {
+                if (rmd[i].marks <= score) {
+                  // This is the first entry with marks <= score
+                  // The rank for this score is the rank at this marks level
+                  predictedRank = rmd[i].rank;
+                  percentile = rmd[i].per || 0;
+                  break;
+                }
+              }
+
+              // If score is higher than topper, rank = 1
+              if (score >= rmd[0].marks) {
+                predictedRank = 1;
+                percentile = 100;
+              }
+
+              const percentileStr = percentile > 0 ? percentile.toFixed(1) + "%" : "N/A";
+              resultSpan.innerHTML = "Rank: <strong>#" + predictedRank + "</strong> / " + totalStudents +
+                " · Percentile: <strong>" + percentileStr + "</strong>" +
+                " · " + (predictedRank === 1 ? "🏆 Topper!" : predictedRank <= 10 ? "🌟 Top 10!" : predictedRank <= 100 ? "⭐ Top 100!" : "");
+            }
+
+            predictBtn.addEventListener("click", predictRank);
+            scoreInput.addEventListener("keypress", function(e) { if (e.key === "Enter") predictRank(); });
+            predictRank(); // Initial prediction
+
+            app.appendChild(predictorDiv);
+          }
         }
 
         // Detailed solutions with answer keys

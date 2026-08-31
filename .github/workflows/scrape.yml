@@ -1,24 +1,20 @@
 name: Scrape RepeaterMock Tests
 
 on:
-  # Manual trigger from Actions tab
   workflow_dispatch:
     inputs:
       time_limit_minutes:
         description: 'Time limit per run (minutes)'
         required: false
-        default: '50'
+        default: '45'
       max_tests:
-        description: 'Max tests per run (0 = unlimited, use time limit)'
+        description: 'Max tests per run (0 = unlimited)'
         required: false
         default: '0'
 
-  # Check every 20 minutes whether we should run
-  # The script itself decides whether to run based on last_run_end + 20 min gap
   schedule:
-    - cron: '*/20 * * * *'
+    - cron: '*/15 * * * *'
 
-  # On push to main (for testing workflow changes only)
   push:
     branches: [main]
     paths:
@@ -27,17 +23,16 @@ on:
 
 env:
   PYTHON_VERSION: '3.12'
+  PYTHONUNBUFFERED: '1'
 
-# Concurrency: only one scrape run at a time
-# If a new run is triggered while one is running, the new one waits
 concurrency:
   group: scrape-repeatermock
-  cancel-in-progress: false
+  cancel-in_progress: false
 
 jobs:
   scrape:
     runs-on: ubuntu-latest
-    timeout-minutes: 60  # Hard limit: 60 minutes (50 min work + buffer)
+    timeout-minutes: 60
 
     steps:
       - name: Checkout code
@@ -50,16 +45,14 @@ jobs:
 
       - name: Install dependencies
         run: |
-          pip install -r requirements.txt
-          playwright install chromium --with-deps
+          echo "=== Installing dependencies ==="
+          pip install -r requirements.txt 2>&1 | tail -5
+          echo "=== Installing Playwright Chromium ==="
+          playwright install chromium --with-deps 2>&1 | tail -5
+          echo "=== Dependencies installed ==="
 
-      # ─── Restore cookies from cache (persisted across runs) ──────────────
-      # This is the KEY: cookies are saved to cache after each run,
-      # so the next run uses the rotated refresh token automatically.
-      # The user only needs to set the REPEATERMOCK_COOKIES_JSON secret ONCE.
-
-      - name: Restore cached cookies
-        id: cookie-cache
+      - name: Restore cached state (cookies + progress + scraped tests)
+        id: cache-restore
         uses: actions/cache@v4
         with:
           path: |
@@ -67,67 +60,95 @@ jobs:
             data/progress.json
             data/tests/
             data/series/
-          key: repeatermock-scrape-state-v1
+          key: repeatermock-scrape-state-v2
           restore-keys: |
-            repeatermock-scrape-state-v1
+            repeatermock-scrape-state-v2
 
-      - name: Create .env from secret (initial cookies — only used if no cache)
+      - name: Set up cookies and logging
         run: |
           mkdir -p data/tests data/series
 
-          # If cached cookies exist, use them (they have the latest refresh token)
+          # Set up Python logging
+          cat > src/logging_config.py << 'PYEOF'
+          import logging
+          import sys
+
+          def setup_logging():
+              handler = logging.StreamHandler(sys.stdout)
+              handler.setLevel(logging.DEBUG)
+              formatter = logging.Formatter(
+                  '%(asctime)s [%(levelname)s] %(name)s: %(message)s',
+                  datefmt='%H:%M:%S'
+              )
+              handler.setFormatter(formatter)
+              root = logging.getLogger()
+              root.setLevel(logging.INFO)
+              root.addHandler(handler)
+              logging.getLogger("repeatermock_scraper").setLevel(logging.DEBUG)
+          PYEOF
+
+          # Check for cached cookies
           if [ -f data/cookies.json ]; then
-            echo "✓ Found cached cookies from previous run"
+            echo "=== Found cached cookies from previous run ==="
             python3 -c "
-            import json
-            with open('data/cookies.json') as f:
-                data = json.load(f)
-            print(f'  Cookies: {len(data[\"cookies\"])}')
-            for c in data['cookies']:
-                print(f'    - {c[\"name\"]}: {c[\"value\"][:30]}...')
-            "
-            # Also write to .env for the scraper to pick up via env vars
+          import json
+          with open('data/cookies.json') as f:
+              data = json.load(f)
+          print(f'  Cookies: {len(data[\"cookies\"])}')
+          for c in data['cookies']:
+              print(f'    - {c[\"name\"]}: {c[\"value\"][:30]}...')
+          "
+            # Write cached cookies to .env
             python3 -c "
-            import json
-            with open('data/cookies.json') as f:
-                data = json.load(f)
-            with open('.env', 'w') as f:
-                f.write(f'REPEATERMOCK_COOKIES_JSON={json.dumps(data[\"cookies\"])}\n')
-            "
+          import json
+          with open('data/cookies.json') as f:
+              data = json.load(f)
+          with open('.env', 'w') as f:
+              f.write(f'REPEATERMOCK_COOKIES_JSON={json.dumps(data[\"cookies\"])}\n')
+          "
+            echo "  ✓ Using cached cookies"
           else
-            # No cache — use the secret (first run ever, or cache expired)
-            echo "No cached cookies. Using REPEATERMOCK_COOKIES_JSON secret..."
+            echo "=== No cached cookies — using REPEATERMOCK_COOKIES_JSON secret ==="
             if [ -z "${{ secrets.REPEATERMOCK_COOKIES_JSON }}" ]; then
-              echo "ERROR: REPEATERMOCK_COOKIES_JSON secret is not set"
-              echo "Go to Settings → Secrets and variables → Actions → New repository secret"
+              echo "ERROR: REPEATERMOCK_COOKIES_JSON secret is not set!"
+              echo "Go to: Settings → Secrets and variables → Actions → New repository secret"
               echo "Name: REPEATERMOCK_COOKIES_JSON"
-              echo "Value: JSON cookie array from browser"
+              echo "Value: JSON cookie array from browser DevTools"
               exit 1
             fi
+            # Use printf to avoid shell quoting issues
             printf 'REPEATERMOCK_COOKIES_JSON=%s\n' '${{ secrets.REPEATERMOCK_COOKIES_JSON }}' > .env
-            echo "✓ .env created from secret"
+            echo "  ✓ .env created from secret"
           fi
 
           # Verify cookies are valid JSON
+          echo "=== Verifying cookies ==="
           python3 -c "
           import json, os
           from dotenv import load_dotenv
           load_dotenv('.env')
           raw = os.environ.get('REPEATERMOCK_COOKIES_JSON', '')
-          if raw:
+          if not raw:
+              print('  ERROR: No REPEATERMOCK_COOKIES_JSON in .env')
+              exit(1)
+          try:
               cookies = json.loads(raw)
-              print(f'  ✓ {len(cookies)} cookies loaded')
+              print(f'  ✓ Parsed {len(cookies)} cookies')
               has_refresh = any(c['name'] == 'refreshToken' for c in cookies)
+              has_access = any(c['name'] == 'accessToken' for c in cookies)
+              print(f'  Has accessToken: {has_access}')
               print(f'  Has refreshToken: {has_refresh}')
-          else:
-              print('  ✗ No cookies found')
+              if not has_refresh:
+                  print('  WARNING: No refreshToken — auth will fail!')
+          except json.JSONDecodeError as e:
+              print(f'  ERROR: Invalid JSON: {e}')
               exit(1)
           "
 
-      - name: Check if should run (respect 20-min gap between runs)
+      - name: Check if should run (15-min gap)
         id: should-run
         run: |
-          python3 << 'PYEOF'
+          python3 << 'EOF'
           import json, time, os
           from pathlib import Path
 
@@ -138,92 +159,103 @@ jobs:
               gap = time.time() - last_end
               gap_minutes = gap / 60
 
-              if gap_minutes < 20:
-                  print(f"⏭ Skipping: only {gap_minutes:.1f} minutes since last run (need 20 min gap)")
+              if gap_minutes < 15:
+                  print(f"SKIP: Only {gap_minutes:.1f} min since last run (need 15 min gap)")
                   print(f"  Last run ended: {time.strftime('%H:%M:%S UTC', time.gmtime(last_end))}")
-                  print(f"  Next eligible: {time.strftime('%H:%M:%S UTC', time.gmtime(last_end + 1200))}")
+                  print(f"  Next eligible at: {time.strftime('%H:%M:%S UTC', time.gmtime(last_end + 900))}")
                   with open(os.environ['GITHUB_ENV'], 'a') as f:
                       f.write("SHOULD_RUN=false\n")
               else:
-                  print(f"✓ {gap_minutes:.1f} minutes since last run — proceeding")
+                  print(f"OK: {gap_minutes:.1f} min since last run — proceeding")
                   with open(os.environ['GITHUB_ENV'], 'a') as f:
                       f.write("SHOULD_RUN=true\n")
           else:
-              print("✓ No previous progress — first run, proceeding")
+              print("OK: No previous progress — first run")
               with open(os.environ['GITHUB_ENV'], 'a') as f:
                   f.write("SHOULD_RUN=true\n")
-          PYEOF
+          EOF
 
       - name: Run incremental scraper
         if: env.SHOULD_RUN == 'true'
         run: |
+          echo "=== Starting scraper ==="
           TIME_LIMIT="${{ github.event.inputs.time_limit_minutes }}"
-          [ -z "$TIME_LIMIT" ] && TIME_LIMIT="50"
+          [ -z "$TIME_LIMIT" ] && TIME_LIMIT="45"
           MAX_TESTS="${{ github.event.inputs.max_tests }}"
           [ -z "$MAX_TESTS" ] && MAX_TESTS="0"
 
-          echo "Starting incremental scraper..."
           echo "  Time limit: $TIME_LIMIT minutes"
           echo "  Max tests: $MAX_TESTS"
+          echo "  Python: $(python3 --version)"
+          echo "  Playwright: $(python3 -c 'import playwright; print(playwright.__version__)')"
+          echo ""
 
           python -m src.incremental_scrape \
             --time-limit-minutes "$TIME_LIMIT" \
-            --max-tests "$MAX_TESTS"
+            --max-tests "$MAX_TESTS" \
+            2>&1 || {
+              echo ""
+              echo "=== SCRAPER FAILED ==="
+              echo "Checking if it's an auth issue..."
+              python3 -c "
+          import json, os
+          from dotenv import load_dotenv
+          load_dotenv('.env')
+          raw = os.environ.get('REPEATERMOCK_COOKIES_JSON', '')
+          if raw:
+              cookies = json.loads(raw)
+              print(f'Cookies available: {len(cookies)}')
+              for c in cookies:
+                  if c['name'] in ('accessToken', 'refreshToken'):
+                      print(f'  {c[\"name\"]}: {c[\"value\"][:40]}...')
+              print()
+              print('If auth failed, the refresh token has been consumed.')
+              print('Log into repepermock.com, export fresh cookies,')
+              print('update the REPEATERMOCK_COOKIES_JSON secret.')
+              "
+              exit 1
+            }
 
       - name: Show progress summary
         if: always()
         run: |
-          echo "## Scrape Progress" >> $GITHUB_STEP_SUMMARY
+          echo "## Scrape Progress Summary" >> $GITHUB_STEP_SUMMARY
           echo "" >> $GITHUB_STEP_SUMMARY
           if [ -f data/progress.json ]; then
-            python3 -c "
-            import json, time
-            with open('data/progress.json') as f:
-                p = json.load(f)
-            print(f'### Summary')
-            print(f'- Total scraped: {len(p.get(\"scraped_test_ids\", []))} tests')
-            print(f'- Total failed: {len(p.get(\"failed_test_ids\", []))} tests')
-            print(f'- Total questions: {p.get(\"total_scraped\", 0)}')
-            print()
-            print(f'### Series Progress')
-            for url, sp in p.get('series_progress', {}).items():
-                print(f'- **{sp[\"name\"][:50]}**: {sp[\"scraped\"]}/{sp[\"total\"]} scraped, {sp[\"pending\"]} pending')
-            print()
-            last = p.get('run_history', [{}])[-1] if p.get('run_history') else {}
-            if last:
-                print(f'### Last Run')
-                print(f'- Tests scraped: {last.get(\"tests_scraped\", 0)}')
-                print(f'- Questions scraped: {last.get(\"questions_scraped\", 0)}')
-                print(f'- Duration: {last.get(\"time_minutes\", 0):.1f} min')
-            " >> $GITHUB_STEP_SUMMARY
+            python3 << 'EOF' >> $GITHUB_STEP_SUMMARY
+          import json, time
+          with open('data/progress.json') as f:
+              p = json.load(f)
+          print(f"### Overall Progress")
+          print(f"- Total scraped: {len(p.get('scraped_test_ids', []))} tests")
+          print(f"- Total failed: {len(p.get('failed_test_ids', []))} tests")
+          print(f"")
+          print(f"### Series Progress")
+          for url, sp in p.get('series_progress', {}).items():
+              pct = (sp['scraped'] / sp['total'] * 100) if sp['total'] > 0 else 0
+              print(f"- **{sp['name'][:50]}**: {sp['scraped']}/{sp['total']} ({pct:.0f}%) — {sp['pending']} pending")
+          print(f"")
+          last = p.get('run_history', [{}])[-1] if p.get('run_history') else {}
+          if last:
+              print(f"### Last Run")
+              print(f"- Tests scraped: {last.get('tests_scraped', 0)}")
+              print(f"- Questions scraped: {last.get('questions_scraped', 0)}")
+              print(f"- Duration: {last.get('time_minutes', 0):.1f} min")
+          EOF
           else
             echo "No progress file found" >> $GITHUB_STEP_SUMMARY
           fi
 
-      - name: Count scraped test files
-        if: always()
-        run: |
+          echo "" >> $GITHUB_STEP_SUMMARY
+          echo "### Scraped Files" >> $GITHUB_STEP_SUMMARY
           TEST_COUNT=$(find data/tests -name "*.json" 2>/dev/null | wc -l)
-          echo "Total test files in data/tests/: $TEST_COUNT"
-          if [ -f data/progress.json ]; then
-            python3 -c "
-            import json
-            with open('data/progress.json') as f:
-                p = json.load(f)
-            print(f'Scraped test IDs in progress: {len(p.get(\"scraped_test_ids\", []))}')
-            print(f'Failed test IDs: {len(p.get(\"failed_test_ids\", []))}')
-            "
-          fi
+          echo "- Test files in data/tests/: $TEST_COUNT" >> $GITHUB_STEP_SUMMARY
 
-      # Note: cookies.json + progress.json + tests/ are automatically saved
-      # to the cache by actions/cache (defined in the restore step above)
-      # The cache persists for 7 days and is updated after each run.
-
-      - name: Upload scraped data as artifact (backup)
+      - name: Upload artifacts
         if: always()
         uses: actions/upload-artifact@v4
         with:
-          name: scraped-tests-${{ github.run_id }}
+          name: scraped-data-${{ github.run_id }}
           path: |
             data/tests/
             data/series/

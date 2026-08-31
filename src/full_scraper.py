@@ -194,6 +194,9 @@ async def scrape_series_full(series_url: str, max_tests: int = 0, time_limit_min
 
     try:
         cookies = await refresh_cookies_if_needed(context, page)
+        if cookies is None:
+            print("✗ Authentication failed. Update cookies and retry.", flush=True)
+            return
         print(f"✓ Authenticated\n", flush=True)
 
         # Fetch series details + all tests
@@ -222,7 +225,8 @@ async def scrape_series_full(series_url: str, max_tests: int = 0, time_limit_min
             # Refresh cookies every 10 tests
             if tests_scraped > 0 and tests_scraped % 10 == 0:
                 cookies = await refresh_cookies_if_needed(context, page)
-                save_cookies(cookies, COOKIES_FILE)
+                if cookies:
+                    save_cookies(cookies, COOKIES_FILE)
 
             await asyncio.sleep(1.5)
 

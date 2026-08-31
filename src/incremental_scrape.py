@@ -103,6 +103,10 @@ async def run_incremental_scrape(
         # Refresh cookies
         print(f"\n  Refreshing cookies...")
         cookies = await refresh_cookies_if_needed(context, page)
+        if cookies is None:
+            print("✗ Authentication failed — cookies may be expired. Exiting gracefully.")
+            print("  Update the REPEATERMOCK_COOKIES_JSON GitHub secret with fresh cookies.")
+            return
         print(f"  ✓ Authenticated")
 
         # Process each series — interleave listing + scraping
@@ -181,7 +185,10 @@ async def run_incremental_scrape(
                 if tests_scraped_this_run > 0 and tests_scraped_this_run % 20 == 0:
                     print(f"\n  Refreshing cookies ({tests_scraped_this_run} tests done)...")
                     cookies = await refresh_cookies_if_needed(context, page)
-                    save_cookies(cookies, COOKIES_FILE)
+                    if cookies:
+                        save_cookies(cookies, COOKIES_FILE)
+                    else:
+                        print("\n  ⚠ Cookie refresh failed — continuing with existing cookies")
 
                 time_remaining = time_limit_seconds - elapsed
                 mins_left = int(time_remaining / 60)

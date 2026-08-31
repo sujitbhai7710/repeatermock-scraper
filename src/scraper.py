@@ -163,30 +163,71 @@ async def fetch_via_context(context, url: str, method: str = "GET", body: str | 
         return 0, f"ERROR: {e}"
 
 
-async def refresh_cookies_if_needed(context, page) -> list[dict[str, Any]]:
-    """Check if auth is working; if not, refresh. Save rotated cookies."""
-    # Visit home to trigger /auth/refresh if needed
-    try:
-        await page.goto("https://repeatermock.com/", timeout=30000, wait_until="domcontentloaded")
-    except Exception:
-        pass
-    await asyncio.sleep(3)
+async def refresh_cookies_if_needed(context, page, max_retries: int = 3) -> list[dict[str, Any]]:
+    """
+    Check if auth is working; if not, refresh. Save rotated cookies.
+    
+    Includes retry logic and detailed logging for debugging CI failures.
+    Does NOT raise on failure — returns None so caller can handle gracefully.
+    """
+    import logging
+    logger = logging.getLogger("repeatermock_scraper")
+    
+    for attempt in range(max_retries):
+        logger.info(f"Auth attempt {attempt+1}/{max_retries}")
+        
+        # Visit home page to trigger any client-side token refresh
+        try:
+            logger.info("  Visiting home page...")
+            await page.goto("https://repeatermock.com/", timeout=30000, wait_until="domcontentloaded")
+        except Exception as e:
+            logger.warning(f"  Home page visit failed: {e}")
+        await asyncio.sleep(3)
 
-    # Check auth
-    status, body = await fetch_via_context(context, f"{API_BASE}/auth/me")
-    if status == 200 and '"success":true' in body:
-        cookies = await context.cookies()
-        save_cookies(cookies, COOKIES_FILE)
-        return cookies
+        # Check current auth status
+        logger.info("  Checking /auth/me...")
+        status, body = await fetch_via_context(context, f"{API_BASE}/auth/me")
+        logger.info(f"  /auth/me → status={status}, body={body[:100]}")
+        
+        if status == 200 and '"success":true' in body:
+            cookies = await context.cookies()
+            save_cookies(cookies, COOKIES_FILE)
+            logger.info(f"  ✓ Authenticated successfully")
+            return cookies
 
-    # Try refresh
-    status, body = await fetch_via_context(context, f"{API_BASE}/auth/refresh", method="POST")
-    if status == 200:
-        cookies = await context.cookies()
-        save_cookies(cookies, COOKIES_FILE)
-        return cookies
-
-    raise RuntimeError(f"Authentication failed. /auth/me returned {status}: {body[:200]}")
+        # Try refresh
+        logger.info("  Trying /auth/refresh...")
+        status, body = await fetch_via_context(context, f"{API_BASE}/auth/refresh", method="POST")
+        logger.info(f"  /auth/refresh → status={status}, body={body[:100]}")
+        
+        if status == 200:
+            # Wait a moment for cookies to settle
+            await asyncio.sleep(1)
+            cookies = await context.cookies()
+            save_cookies(cookies, COOKIES_FILE)
+            
+            # Verify the refresh actually worked
+            status2, body2 = await fetch_via_context(context, f"{API_BASE}/auth/me")
+            if status2 == 200 and '"success":true' in body2:
+                logger.info(f"  ✓ Refresh succeeded, authenticated")
+                return cookies
+            logger.warning(f"  Refresh returned 200 but /auth/me still fails: {body2[:100]}")
+        
+        # Wait before retry
+        if attempt < max_retries - 1:
+            logger.info(f"  Waiting 5s before retry...")
+            await asyncio.sleep(5)
+    
+    # All retries failed — log detailed error and return None (don't crash)
+    logger.error(f"✗ Authentication failed after {max_retries} attempts")
+    logger.error(f"  This usually means the refresh token has been consumed/expired.")
+    logger.error(f"  Solution: Log into repeatermock.com, export fresh cookies,")
+    logger.error(f"  update the REPEATERMOCK_COOKIES_JSON GitHub secret.")
+    
+    # Save whatever cookies we have (may still have cf_clearance)
+    cookies = await context.cookies()
+    save_cookies(cookies, COOKIES_FILE)
+    return None
 
 
 # ─── Series scraping ───────────────────────────────────────────────────────
