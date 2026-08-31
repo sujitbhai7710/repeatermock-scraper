@@ -396,7 +396,13 @@ function parseCookies(cookieHeader) {
   if (!cookieHeader) return cookies;
   for (const pair of cookieHeader.split(';')) {
     const [k, ...v] = pair.trim().split('=');
-    if (k) cookies[k] = v.join('=');
+    if (k) {
+      try {
+        cookies[k] = decodeURIComponent(v.join('='));
+      } catch (e) {
+        cookies[k] = v.join('=');
+      }
+    }
   }
   return cookies;
 }
@@ -417,8 +423,8 @@ function makeResponse(body, status = 200, headers = {}) {
 // ─── Combined dashboard endpoint (1 request instead of 4) ──────────────────
 
 async function handleDashboard(DB) {
-  // Run all 4 queries in parallel using a single batch call to minimize round trips
-  const [overviewRes, seriesRes, runsRes, failuresRes] = await DB.batch([
+  // Run 5 queries in a single batch call to minimize round trips
+  const results = await DB.batch([
     DB.prepare(`
       SELECT
         COUNT(*) as total_series,
@@ -448,8 +454,14 @@ async function handleDashboard(DB) {
     `),
   ]);
 
-  const o1 = overviewRes.results[0];
-  const o2 = seriesRes.results[0];
+  const overviewRes = results[0];
+  const qCountRes = results[1];
+  const seriesRes = results[2];
+  const runsRes = results[3];
+  const failuresRes = results[4];
+
+  const o1 = overviewRes.results[0] || {};
+  const o2 = qCountRes.results[0] || {};
   const total = o1.total_tests || 0;
   const scraped = o1.scraped || 0;
 
@@ -464,9 +476,9 @@ async function handleDashboard(DB) {
       questions: o2.q || 0,
       progress_pct: total ? Math.round(scraped / total * 100) : 0,
     },
-    series: seriesRes.results,
-    runs: runsRes.results,
-    failures: failuresRes.results,
+    series: seriesRes.results || [],
+    runs: runsRes.results || [],
+    failures: failuresRes.results || [],
   };
 }
 
@@ -560,24 +572,42 @@ async function handleTrigger(request, env) {
     return makeResponse(JSON.stringify({ success: false, error: 'Unauthorized' }), 401);
   }
   if (!env.GH_TOKEN || !env.GH_REPO) {
-    return makeResponse(JSON.stringify({ success: false, error: 'GH_TOKEN or GH_REPO not set' }), 500);
+    return makeResponse(JSON.stringify({
+      success: false,
+      error: 'GH_TOKEN or GH_REPO not set',
+      has_gh_token: !!env.GH_TOKEN,
+      has_gh_repo: !!env.GH_REPO,
+      gh_token_len: env.GH_TOKEN ? env.GH_TOKEN.length : 0,
+    }), 500);
   }
-  const r = await fetch(
-    `https://api.github.com/repos/${env.GH_REPO}/actions/workflows/scrape.yml/dispatches`,
-    {
-      method: 'POST',
-      headers: {
-        'Authorization': `Bearer ${env.GH_TOKEN}`,
-        'Accept': 'application/vnd.github+json',
-        'Content-Type': 'application/json',
-      },
-      body: JSON.stringify({ ref: 'main' }),
+  try {
+    const r = await fetch(
+      `https://api.github.com/repos/${env.GH_REPO}/actions/workflows/scrape.yml/dispatches`,
+      {
+        method: 'POST',
+        headers: {
+          'Authorization': `Bearer ${env.GH_TOKEN}`,
+          'Accept': 'application/vnd.github+json',
+          'Content-Type': 'application/json',
+          'User-Agent': 'repeatermock-dashboard-worker',
+        },
+        body: JSON.stringify({ ref: 'main' }),
+      }
+    );
+    if (r.status === 204) {
+      return makeResponse(JSON.stringify({ success: true, message: 'Triggered' }));
     }
-  );
-  if (r.status === 204) {
-    return makeResponse(JSON.stringify({ success: true, message: 'Triggered' }));
+    const errBody = await r.text().catch(() => '');
+    return makeResponse(JSON.stringify({
+      success: false,
+      error: `GitHub API ${r.status}`,
+      details: errBody.slice(0, 300),
+      gh_token_len: env.GH_TOKEN.length,
+      gh_repo: env.GH_REPO,
+    }), 500);
+  } catch (e) {
+    return makeResponse(JSON.stringify({ success: false, error: 'Fetch error: ' + e.message }), 500);
   }
-  return makeResponse(JSON.stringify({ success: false, error: `GitHub API ${r.status}` }), 500);
 }
 
 // ─── Cron handler (every hour at :05) ───────────────────────────────────────
