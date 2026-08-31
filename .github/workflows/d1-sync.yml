@@ -1,0 +1,76 @@
+name: Sync D1 (Every 15 min)
+
+on:
+  workflow_dispatch:
+  schedule:
+    - cron: '0,15,30,45 * * * *'  # Every 15 minutes
+
+env:
+  PYTHON_VERSION: '3.12'
+
+concurrency:
+  group: d1-sync
+  cancel-in-progress: true
+
+jobs:
+  sync:
+    runs-on: ubuntu-latest
+    timeout-minutes: 5
+    permissions:
+      contents: write
+
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+
+      - name: Setup Python
+        uses: actions/setup-python@v5
+        with:
+          python-version: ${{ env.PYTHON_VERSION }}
+
+      - name: Restore cached scraped data
+        uses: actions/cache@v4
+        with:
+          path: |
+            data/tests/
+            data/series/
+            data/progress.json
+          key: scrape-data-v2
+          restore-keys: scrape-data-v2
+
+      - name: Sync progress to D1
+        env:
+          CLOUDFLARE_API_TOKEN: ${{ secrets.CLOUDFLARE_API_TOKEN }}
+          CLOUDFLARE_ACCOUNT_ID: ${{ secrets.CLOUDFLARE_ACCOUNT_ID }}
+        run: |
+          if [ -z "$CLOUDFLARE_API_TOKEN" ]; then
+            echo "⚠ CLOUDFLARE_API_TOKEN secret not set — skipping D1 sync"
+            exit 0
+          fi
+          if [ ! -f worker/wrangler.toml ] || ! grep -q 'database_id = "[a-f0-9-]' worker/wrangler.toml; then
+            echo "⚠ D1 database not configured in worker/wrangler.toml — skipping"
+            exit 0
+          fi
+          if [ ! -f data/progress.json ]; then
+            echo "⚠ No data/progress.json yet — skipping (scraper hasn't run)"
+            exit 0
+          fi
+          echo "=== Syncing progress to D1 (15-min update) ==="
+          python -m src.update_d1 2>&1 || echo "⚠ D1 sync failed (non-fatal)"
+
+      - name: Summary
+        if: always()
+        run: |
+          echo "## D1 Sync (15-min)" >> $GITHUB_STEP_SUMMARY
+          if [ -f data/progress.json ]; then
+            python3 -c "
+          import json
+          with open('data/progress.json') as f: p = json.load(f)
+          scraped = len(p.get('scraped_test_ids', []))
+          partial = len(p.get('partial_test_ids', []))
+          failed = len(p.get('failed_test_ids', []))
+          print(f'- **Scraped**: {scraped}')
+          print(f'- **Partial**: {partial}')
+          print(f'- **Failed**: {failed}')
+          " >> $GITHUB_STEP_SUMMARY
+          fi

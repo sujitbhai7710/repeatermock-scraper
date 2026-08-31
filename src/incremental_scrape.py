@@ -116,7 +116,12 @@ def record_test_status(progress: dict, test_id: str, status: str, **kwargs):
 # ─── Cookie file persistence (for multi-account rotation) ──────────────────
 
 def save_account_cookies(account_idx: int, cookies: list[dict]):
-    """Save updated cookies back to cookies/account{N}.json (for git commit)."""
+    """Save updated cookies back to cookies/account{N}.json (for git commit).
+    If account_idx is -1 (env-var cookies), don't write to file."""
+    if account_idx < 0:
+        # Env-var mode — don't write to file, just print
+        print(f"  ✓ Cookies rotated in-memory (env-var mode — not persisted to file)")
+        return
     cookies_dir = Path(__file__).parent.parent / "cookies"
     cookies_dir.mkdir(exist_ok=True)
     account_file = cookies_dir / f"account{account_idx+1}.json"
@@ -151,23 +156,40 @@ async def run_incremental_scrape(
     print(f"  Target series: {len(TARGET_SERIES)}")
     print(f"  Start time: {time.strftime('%Y-%m-%d %H:%M:%S UTC', time.gmtime())}")
 
-    # Load cookies from cookies/ directory (JSON files committed to repo)
+    # Load cookies — priority: REPEATERMOCK_COOKIES env var > cookies/account*.json files
     cookie_sets = []
     cookies_dir = Path(__file__).parent.parent / "cookies"
 
+    # 1. Try env var first (for local runs — set REPEATERMOCK_COOKIES='[{"name":"accessToken",...}]')
+    env_cookies = os.environ.get("REPEATERMOCK_COOKIES")
+    if env_cookies:
+        try:
+            parsed = json.loads(env_cookies)
+            if isinstance(parsed, list) and len(parsed) > 0:
+                cookie_sets.append(parsed)
+                has_refresh = any(c.get("name") == "refreshToken" for c in parsed)
+                print(f"  Found REPEATERMOCK_COOKIES env var ({len(parsed)} cookies, has refreshToken: {has_refresh})")
+        except Exception as e:
+            print(f"  Error parsing REPEATERMOCK_COOKIES env var: {e}")
+
+    # 2. Also try cookies/account*.json files
     if cookies_dir.exists():
         for cookie_file in sorted(cookies_dir.glob("account*.json")):
             try:
                 account_cookies = json.loads(cookie_file.read_text())
                 if account_cookies and len(account_cookies) > 0:
-                    cookie_sets.append(account_cookies)
-                    has_refresh = any(c["name"] == "refreshToken" for c in account_cookies)
-                    print(f"  Found {cookie_file.name} ({len(account_cookies)} cookies, has refreshToken: {has_refresh})")
+                    # Skip if already in cookie_sets (avoid dupes)
+                    if not any(cs[0].get("value") == account_cookies[0].get("value") for cs in cookie_sets if cs):
+                        cookie_sets.append(account_cookies)
+                        has_refresh = any(c["name"] == "refreshToken" for c in account_cookies)
+                        print(f"  Found {cookie_file.name} ({len(account_cookies)} cookies, has refreshToken: {has_refresh})")
             except Exception as e:
                 print(f"  Error reading {cookie_file.name}: {e}")
 
     if not cookie_sets:
         print("✗ No cookies found. Exiting.")
+        print("  Option 1: set REPEATERMOCK_COOKIES env var to a JSON array of cookies")
+        print("  Option 2: create cookies/account1.json with a JSON array of cookies")
         return
 
     print(f"  Total cookie sets to try: {len(cookie_sets)}")
@@ -207,29 +229,10 @@ async def run_incremental_scrape(
                 p = None
 
     if not authed:
-        print("\n⚠ All cookie sets failed — switching to GUEST MODE (questions only, no answers/solutions/analysis)")
-        print("  Questions are accessible without login (confirmed by guest-mode test).")
-        print("  Tests scraped in guest mode will be saved as 'partial' and retried with auth next run.")
-        # Create a guest browser session (no cookies needed)
-        try:
-            if p:
-                await browser.close()
-                await p.stop()
-        except:
-            pass
-        guest_cookies = []  # Empty cookies = guest mode
-        p, browser, context = await create_browser_session(guest_cookies)
-        page = await context.new_page()
-        active_cookies = []  # No cookies in guest mode
-        active_account_idx = -1  # No account in guest mode
-        # Visit homepage to generate cf_clearance + guestId (like a real human)
-        try:
-            await page.goto("https://repeatermock.com/", timeout=30000, wait_until="domcontentloaded")
-            await asyncio.sleep(3)
-            active_cookies = await context.cookies()
-            print(f"  ✓ Guest session created ({len(active_cookies)} guest cookies)")
-        except Exception as e:
-            print(f"  ⚠ Guest homepage visit failed: {e}")
+        print("\n✗ All cookie sets failed. Exiting — NO partial/guest scraping.")
+        print("  Only fully-scraped tests (Q + A + Sol + Ana) are saved.")
+        print("  Update cookies/account*.json or set REPEATERMOCK_COOKIES env var with fresh cookies.")
+        return
 
     tests_scraped_this_run = 0
     tests_partial_this_run = 0
@@ -327,9 +330,8 @@ async def run_incremental_scrape(
                     break
 
                 # Proactive refresh every N tests — FORCE refresh (not just check)
-                # Skip in guest mode (no refresh token available)
-                if authed and \
-                   (tests_scraped_this_run + tests_partial_this_run + tests_failed_this_run) > 0 and \
+                # because access tokens expire and we need fresh ones for submit
+                if (tests_scraped_this_run + tests_partial_this_run + tests_failed_this_run) > 0 and \
                    (tests_scraped_this_run + tests_partial_this_run + tests_failed_this_run) % REFRESH_EVERY_N_TESTS == 0:
                     print(f"\n  Proactive token refresh ({tests_scraped_this_run + tests_partial_this_run + tests_failed_this_run} tests done)...")
                     refreshed = await force_refresh_cookies(context, page, original_cookies=active_cookies)
