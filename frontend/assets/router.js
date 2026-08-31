@@ -785,16 +785,27 @@
       });
       qBlock.appendChild(optsDiv);
 
-      // Solution explanation
+      // Solution explanation — render as HTML (may contain images, MathJax, formatted text)
       if (solText && solText.length > 2 && solText !== "$" && !solText.match(/^\$\d+$/)) {
         const exDiv = h("div", { class: "ex" });
-        exDiv.innerHTML = "<strong>Solution:</strong> " + solText;
+        // Create a label span + render solution HTML
+        const label = document.createElement("strong");
+        label.textContent = "Solution: ";
+        exDiv.appendChild(label);
+        const solContent = document.createElement("div");
+        solContent.style.display = "inline";
+        solContent.innerHTML = solText;
+        exDiv.appendChild(solContent);
         qBlock.appendChild(exDiv);
       }
 
       sol.appendChild(qBlock);
     });
     app.appendChild(sol);
+
+    // Clear the loading indicator if still visible
+    const loading = app.querySelector(".rm-loading");
+    if (loading) loading.remove();
 
     // Trigger MathJax
     if (window.MathJax && window.MathJax.typesetPromise) {

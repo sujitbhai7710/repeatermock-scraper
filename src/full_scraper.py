@@ -120,6 +120,12 @@ async def scrape_test_full(context, test: dict, variant: str, slug: str) -> dict
             # Extract answersData
             answers_data = extract_json_object(sol_payload, "answersData")
             if answers_data and len(answers_data) > 5:
+                # Thoroughly unescape all solution values (they're double-escaped HTML)
+                for qid, ans in answers_data.items():
+                    sol = ans.get("sol", {})
+                    for lang_code, lang_data in sol.items():
+                        if isinstance(lang_data, dict) and lang_data.get("value"):
+                            lang_data["value"] = thorough_unescape(lang_data["value"])
                 result["answers"] = answers_data
                 result["has_answers"] = True
                 print(f"    ✓ {len(answers_data)} answer keys + solutions", flush=True)

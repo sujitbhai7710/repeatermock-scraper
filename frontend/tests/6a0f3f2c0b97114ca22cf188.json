@@ -9,9 +9,7 @@
     "Hindi"
   ],
   "is_free": true,
-  "section": "",
-  "subsection": "",
-  "scraped_at": "2026-08-31 15:05:19 UTC",
+  "scraped_at": "2025-08-31 15:30:00 UTC",
   "questions": [
     {
       "id": "690b3449eb5683f477ac5445",
@@ -6663,12 +6661,12 @@
       "isPartialMarking": false,
       "sol": {
         "en": {
-          "value": "&lt;p style=&quot;color: rgb(33, 37, 41);&quot;&gt;&lt;img alt=&quot;&quot; src=&quot;https://cdn.repeatermock.com/tb/7ca63fa0a9b1d8d94e9032be998e74b7faff301d8847e785439c04e89b02dfd4.png&quot; /&gt;&lt;/p&gt;\n\n&lt;p style=&quot;color: rgb(33, 37, 41);&quot;&gt;The logic followed here is:&lt;/p&gt;\n\n&lt;p style=&quot;color: rgb(33, 37, 41);&quot;&gt;&lt;img alt=&quot;&quot; src=&quot;https://cdn.repeatermock.com/tb/c8c435af5c13a48ee385927ea3f808a35aed70760cf1eda657bc3dc67db1d797.png&quot; /&gt;&lt;/p&gt;\n\n&lt;p style=&quot;color: rgb(33, 37, 41);&quot;&gt;So, &amp;#39;&lt;span style=&quot;font-weight: bolder;&quot;&gt;O&lt;/span&gt;&amp;#39; will replace the question mark in&amp;nbsp;the given series.&lt;/p&gt;\n\n&lt;p style=&quot;color: rgb(33, 37, 41);&quot;&gt;Hence, the correct answer is&amp;nbsp;&lt;span style=&quot;font-weight: 700;&quot;&gt;&amp;quot;Option 1&lt;/span&gt;&lt;span style=&quot;font-weight: 700;&quot;&gt;&amp;quot;&lt;/span&gt;.&lt;/p&gt;\n",
+          "value": "<p style=\"color: rgb(33, 37, 41);\"><img alt=\"\" src=\"https://cdn.repeatermock.com/tb/7ca63fa0a9b1d8d94e9032be998e74b7faff301d8847e785439c04e89b02dfd4.png\" /></p>\n\n<p style=\"color: rgb(33, 37, 41);\">The logic followed here is:</p>\n\n<p style=\"color: rgb(33, 37, 41);\"><img alt=\"\" src=\"https://cdn.repeatermock.com/tb/c8c435af5c13a48ee385927ea3f808a35aed70760cf1eda657bc3dc67db1d797.png\" /></p>\n\n<p style=\"color: rgb(33, 37, 41);\">So, '<span style=\"font-weight: bolder;\">O</span>' will replace the question mark in the given series.</p>\n\n<p style=\"color: rgb(33, 37, 41);\">Hence, the correct answer is <span style=\"font-weight: 700;\">\"Option 1</span><span style=\"font-weight: 700;\">\"</span>.</p>\n",
           "type": "tb",
           "videoSol": ""
         },
         "hn": {
-          "value": "&lt;p style=&quot;color: rgb(33, 37, 41);&quot;&gt;&lt;img alt=&quot;&quot; src=&quot;https://cdn.repeatermock.com/tb/7ca63fa0a9b1d8d94e9032be998e74b7faff301d8847e785439c04e89b02dfd4.png&quot; /&gt;&lt;/p&gt;\n\n&lt;p style=&quot;color: rgb(33, 37, 41);&quot;&gt;यहाँ अनुसरण किया गया तर्क इस प्रकार है:&lt;/p&gt;\n\n&lt;p style=&quot;color: rgb(33, 37, 41);&quot;&gt;&lt;img alt=&quot;&quot; src=&quot;https://cdn.repeatermock.com/tb/c8c435af5c13a48ee385927ea3f808a35aed70760cf1eda657bc3dc67db1d797.png&quot; /&gt;&lt;/p&gt;\n\n&lt;p style=&quot;color: rgb(33, 37, 41);&quot;&gt;इसलिए, &amp;#39;&lt;span style=&quot;font-weight: bolder;&quot;&gt;O&lt;/span&gt;&amp;#39; दी गई शृंखला में प्रश्न-चिह्न को प्रतिस्थापित करेगा।&lt;/p&gt;\n\n&lt;p style=&quot;color: rgb(33, 37, 41);&quot;&gt;अतः, सही उत्तर &lt;span style=&quot;font-weight: 700;&quot;&gt;&amp;quot;विकल्प 1&lt;/span&gt;&lt;span style=&quot;font-weight: 700;&quot;&gt;&amp;quot;&lt;/span&gt; है।&lt;/p&gt;\n",
+          "value": "<p style=\"color: rgb(33, 37, 41);\"><img alt=\"\" src=\"https://cdn.repeatermock.com/tb/7ca63fa0a9b1d8d94e9032be998e74b7faff301d8847e785439c04e89b02dfd4.png\" /></p>\n\n<p style=\"color: rgb(33, 37, 41);\">यहाँ अनुसरण किया गया तर्क इस प्रकार है:</p>\n\n<p style=\"color: rgb(33, 37, 41);\"><img alt=\"\" src=\"https://cdn.repeatermock.com/tb/c8c435af5c13a48ee385927ea3f808a35aed70760cf1eda657bc3dc67db1d797.png\" /></p>\n\n<p style=\"color: rgb(33, 37, 41);\">इसलिए, '<span style=\"font-weight: bolder;\">O</span>' दी गई शृंखला में प्रश्न-चिह्न को प्रतिस्थापित करेगा।</p>\n\n<p style=\"color: rgb(33, 37, 41);\">अतः, सही उत्तर <span style=\"font-weight: 700;\">\"विकल्प 1</span><span style=\"font-weight: 700;\">\"</span> है।</p>\n",
           "type": "tb",
           "videoSol": ""
         },
@@ -7516,12 +7514,12 @@
       "isPartialMarking": false,
       "sol": {
         "en": {
-          "value": "&lt;p style=&quot;color: rgb(33, 37, 41);&quot;&gt;&lt;img alt=&quot;&quot; src=&quot;https://cdn.repeatermock.com/tb/7ca63fa0a9b1d8d94e9032be998e74b7faff301d8847e785439c04e89b02dfd4.png&quot; /&gt;&lt;/p&gt;\n\n&lt;p style=&quot;color: rgb(33, 37, 41);&quot;&gt;The logic followed here is:&lt;/p&gt;\n\n&lt;p style=&quot;color: rgb(33, 37, 41);&quot;&gt;&lt;img alt=&quot;&quot; src=&quot;https://cdn.repeatermock.com/tb/af9ac7ec65a4f71371e9813843e9bb8cc32df69d7ce039b5ba3268d108a1e19a.png&quot; style=&quot;color: rgb(33, 37, 41);&quot; /&gt;&lt;/p&gt;\n\n&lt;p style=&quot;color: rgb(33, 37, 41);&quot;&gt;So, &amp;#39;&lt;span style=&quot;font-weight: bolder;&quot;&gt;AWW&lt;/span&gt;&amp;#39; will replace the question mark in&amp;nbsp;the given series.&lt;/p&gt;\n\n&lt;p style=&quot;color: rgb(33, 37, 41);&quot;&gt;Hence, the correct answer is&amp;nbsp;&lt;span style=&quot;font-weight: 700;&quot;&gt;&amp;quot;Option 3&lt;/span&gt;&lt;span style=&quot;font-weight: 700;&quot;&gt;&amp;quot;&lt;/span&gt;.&lt;/p&gt;\n",
+          "value": "<p style=\"color: rgb(33, 37, 41);\"><img alt=\"\" src=\"https://cdn.repeatermock.com/tb/7ca63fa0a9b1d8d94e9032be998e74b7faff301d8847e785439c04e89b02dfd4.png\" /></p>\n\n<p style=\"color: rgb(33, 37, 41);\">The logic followed here is:</p>\n\n<p style=\"color: rgb(33, 37, 41);\"><img alt=\"\" src=\"https://cdn.repeatermock.com/tb/af9ac7ec65a4f71371e9813843e9bb8cc32df69d7ce039b5ba3268d108a1e19a.png\" style=\"color: rgb(33, 37, 41);\" /></p>\n\n<p style=\"color: rgb(33, 37, 41);\">So, '<span style=\"font-weight: bolder;\">AWW</span>' will replace the question mark in the given series.</p>\n\n<p style=\"color: rgb(33, 37, 41);\">Hence, the correct answer is <span style=\"font-weight: 700;\">\"Option 3</span><span style=\"font-weight: 700;\">\"</span>.</p>\n",
           "type": "tb",
           "videoSol": ""
         },
         "hn": {
-          "value": "&lt;p style=&quot;color: rgb(33, 37, 41);&quot;&gt;&lt;img alt=&quot;&quot; src=&quot;https://cdn.repeatermock.com/tb/7ca63fa0a9b1d8d94e9032be998e74b7faff301d8847e785439c04e89b02dfd4.png&quot; /&gt;&lt;/p&gt;\n\n&lt;p style=&quot;color: rgb(33, 37, 41);&quot;&gt;यहाँ अनुसरण किया गया तर्क इस प्रकार है:&lt;/p&gt;\n\n&lt;p style=&quot;color: rgb(33, 37, 41);&quot;&gt;&lt;img alt=&quot;&quot; src=&quot;https://cdn.repeatermock.com/tb/af9ac7ec65a4f71371e9813843e9bb8cc32df69d7ce039b5ba3268d108a1e19a.png&quot; style=&quot;color: rgb(33, 37, 41);&quot; /&gt;&lt;/p&gt;\n\n&lt;p style=&quot;color: rgb(33, 37, 41);&quot;&gt;इसलिए, &amp;#39;&lt;span style=&quot;font-weight: bolder;&quot;&gt;AWW&lt;/span&gt;&amp;#39; दी गई शृंखला में प्रश्न-चिह्न को प्रतिस्थापित करेगा।&lt;/p&gt;\n\n&lt;p style=&quot;color: rgb(33, 37, 41);&quot;&gt;इसलिए, सही उत्तर &lt;span style=&quot;font-weight: 700;&quot;&gt;&amp;quot;विकल्प 3&lt;/span&gt;&lt;span style=&quot;font-weight: 700;&quot;&gt;&amp;quot;&lt;/span&gt; है।&lt;/p&gt;\n",
+          "value": "<p style=\"color: rgb(33, 37, 41);\"><img alt=\"\" src=\"https://cdn.repeatermock.com/tb/7ca63fa0a9b1d8d94e9032be998e74b7faff301d8847e785439c04e89b02dfd4.png\" /></p>\n\n<p style=\"color: rgb(33, 37, 41);\">यहाँ अनुसरण किया गया तर्क इस प्रकार है:</p>\n\n<p style=\"color: rgb(33, 37, 41);\"><img alt=\"\" src=\"https://cdn.repeatermock.com/tb/af9ac7ec65a4f71371e9813843e9bb8cc32df69d7ce039b5ba3268d108a1e19a.png\" style=\"color: rgb(33, 37, 41);\" /></p>\n\n<p style=\"color: rgb(33, 37, 41);\">इसलिए, '<span style=\"font-weight: bolder;\">AWW</span>' दी गई शृंखला में प्रश्न-चिह्न को प्रतिस्थापित करेगा।</p>\n\n<p style=\"color: rgb(33, 37, 41);\">इसलिए, सही उत्तर <span style=\"font-weight: 700;\">\"विकल्प 3</span><span style=\"font-weight: 700;\">\"</span> है।</p>\n",
           "type": "tb",
           "videoSol": ""
         },
@@ -7943,12 +7941,12 @@
       "isPartialMarking": false,
       "sol": {
         "en": {
-          "value": "&lt;p style=&quot;color: rgb(33, 37, 41);&quot;&gt;The logic followed here is:&lt;/p&gt;\n\n&lt;p style=&quot;color: rgb(33, 37, 41);&quot;&gt;&lt;img alt=&quot;&quot; src=&quot;https://cdn.repeatermock.com/tb/713ffdb77327b26cc35766932685fa5619b159fd48e08c1d53eafd4911076c40.png&quot; /&gt;&lt;/p&gt;\n\n&lt;p style=&quot;color: rgb(33, 37, 41);&quot;&gt;thus, &amp;quot;&lt;span style=&quot;font-weight: bolder;&quot;&gt;4&lt;/span&gt;&amp;quot; is the wrong number in the given series.&lt;/p&gt;\n\n&lt;p style=&quot;color: rgb(33, 37, 41);&quot;&gt;Hence, the correct option is&amp;nbsp;&lt;span style=&quot;font-weight: bolder;&quot;&gt;&amp;quot;Option 3&amp;quot;.&lt;/span&gt;&lt;/p&gt;\n",
+          "value": "<p style=\"color: rgb(33, 37, 41);\">The logic followed here is:</p>\n\n<p style=\"color: rgb(33, 37, 41);\"><img alt=\"\" src=\"https://cdn.repeatermock.com/tb/713ffdb77327b26cc35766932685fa5619b159fd48e08c1d53eafd4911076c40.png\" /></p>\n\n<p style=\"color: rgb(33, 37, 41);\">thus, \"<span style=\"font-weight: bolder;\">4</span>\" is the wrong number in the given series.</p>\n\n<p style=\"color: rgb(33, 37, 41);\">Hence, the correct option is <span style=\"font-weight: bolder;\">\"Option 3\".</span></p>\n",
           "type": "tb",
           "videoSol": ""
         },
         "hn": {
-          "value": "&lt;p style=&quot;color: rgb(33, 37, 41);&quot;&gt;यहाँ अनुसरण किया गया तर्क इस प्रकार है:&lt;/p&gt;\n\n&lt;p style=&quot;color: rgb(33, 37, 41);&quot;&gt;&lt;img alt=&quot;&quot; src=&quot;https://cdn.repeatermock.com/tb/713ffdb77327b26cc35766932685fa5619b159fd48e08c1d53eafd4911076c40.png&quot; /&gt;&lt;/p&gt;\n\n&lt;p style=&quot;color: rgb(33, 37, 41);&quot;&gt;इस प्रकार, दी गई शृंखला में &amp;quot;&lt;span style=&quot;font-weight: bolder;&quot;&gt;4&lt;/span&gt;&amp;quot; गलत संख्या है।&lt;/p&gt;\n\n&lt;p style=&quot;color: rgb(33, 37, 41);&quot;&gt;अतः, सही विकल्प &lt;span style=&quot;font-weight: bolder;&quot;&gt;&amp;quot;विकल्प 3&amp;quot;&lt;/span&gt; है।&lt;/p&gt;\n",
+          "value": "<p style=\"color: rgb(33, 37, 41);\">यहाँ अनुसरण किया गया तर्क इस प्रकार है:</p>\n\n<p style=\"color: rgb(33, 37, 41);\"><img alt=\"\" src=\"https://cdn.repeatermock.com/tb/713ffdb77327b26cc35766932685fa5619b159fd48e08c1d53eafd4911076c40.png\" /></p>\n\n<p style=\"color: rgb(33, 37, 41);\">इस प्रकार, दी गई शृंखला में \"<span style=\"font-weight: bolder;\">4</span>\" गलत संख्या है।</p>\n\n<p style=\"color: rgb(33, 37, 41);\">अतः, सही विकल्प <span style=\"font-weight: bolder;\">\"विकल्प 3\"</span> है।</p>\n",
           "type": "tb",
           "videoSol": ""
         },
@@ -9012,12 +9010,12 @@
       "isPartialMarking": false,
       "sol": {
         "en": {
-          "value": "&lt;p&gt;Given Statement: C &amp;lt; A &amp;le; T = D &amp;le; O; G &amp;le; D &amp;lt; S; T &amp;ge; A&lt;/p&gt;\n\n&lt;p&gt;Now,&lt;/p&gt;\n\n&lt;p&gt;From C &amp;lt; A &amp;le; T = D &amp;le; O&lt;/p&gt;\n\n&lt;p&gt;We get:&lt;br /&gt;\nA &amp;le; T&lt;br /&gt;\nT = D&lt;br /&gt;\nD &amp;le; O&lt;/p&gt;\n\n&lt;p&gt;So, T = D and D &amp;le; O &amp;rArr; T &amp;le; O&amp;nbsp;&lt;/p&gt;\n\n&lt;p&gt;Also, since T = D,&lt;br /&gt;\nD &amp;lt; T is not possible&amp;nbsp;&lt;/p&gt;\n\n&lt;p&gt;Conclusions:&lt;/p&gt;\n\n&lt;p&gt;(i) T &amp;le; O &amp;rarr; &lt;strong&gt;True&lt;/strong&gt;&lt;/p&gt;\n\n&lt;p&gt;(ii) D &amp;lt; T &amp;rarr; False&lt;/p&gt;\n\n&lt;p&gt;Here, Only conclusion I is true.&lt;/p&gt;\n\n&lt;p&gt;Hence, the correct answer is &lt;strong&gt;&amp;quot;Option 3&amp;quot;.&lt;/strong&gt;&lt;/p&gt;\n",
+          "value": "<p>Given Statement: C < A ≤ T = D ≤ O; G ≤ D < S; T ≥ A</p>\n\n<p>Now,</p>\n\n<p>From C < A ≤ T = D ≤ O</p>\n\n<p>We get:<br />\nA ≤ T<br />\nT = D<br />\nD ≤ O</p>\n\n<p>So, T = D and D ≤ O ⇒ T ≤ O </p>\n\n<p>Also, since T = D,<br />\nD < T is not possible </p>\n\n<p>Conclusions:</p>\n\n<p>(i) T ≤ O → <strong>True</strong></p>\n\n<p>(ii) D < T → False</p>\n\n<p>Here, Only conclusion I is true.</p>\n\n<p>Hence, the correct answer is <strong>\"Option 3\".</strong></p>\n",
           "type": "tb",
           "videoSol": ""
         },
         "hn": {
-          "value": "&lt;p&gt;दिया गया कथन: C &amp;lt; A &amp;le; T = D &amp;le; O; G &amp;le; D &amp;lt; S; T &amp;ge; A&lt;/p&gt;\n\n&lt;p&gt;अब,&lt;/p&gt;\n\n&lt;p&gt;C &amp;lt; A &amp;le; T = D &amp;le; O से&lt;/p&gt;\n\n&lt;p&gt;हमें मिलता है:&lt;br /&gt;\nA &amp;le; T&lt;br /&gt;\nT = D&lt;br /&gt;\nD &amp;le; O&lt;/p&gt;\n\n&lt;p&gt;इसलिए, T = D और D &amp;le; O &amp;rArr; T &amp;le; O&lt;/p&gt;\n\n&lt;p&gt;साथ ही, चूँकि T = D,&lt;br /&gt;\nD &amp;lt; T संभव नहीं है&lt;/p&gt;\n\n&lt;p&gt;निष्कर्ष:&lt;/p&gt;\n\n&lt;p&gt;(i) T &amp;le; O &amp;rarr; &lt;strong&gt;सत्य&lt;/strong&gt;&lt;/p&gt;\n\n&lt;p&gt;(ii) D &amp;lt; T &amp;rarr; असत्य&lt;/p&gt;\n\n&lt;p&gt;यहाँ, केवल निष्कर्ष I सत्य है।&lt;/p&gt;\n\n&lt;p&gt;इसलिए, सही उत्तर है &lt;strong&gt;&amp;quot;विकल्प 3&amp;quot;।&lt;/strong&gt;&lt;/p&gt;\n",
+          "value": "<p>दिया गया कथन: C < A ≤ T = D ≤ O; G ≤ D < S; T ≥ A</p>\n\n<p>अब,</p>\n\n<p>C < A ≤ T = D ≤ O से</p>\n\n<p>हमें मिलता है:<br />\nA ≤ T<br />\nT = D<br />\nD ≤ O</p>\n\n<p>इसलिए, T = D और D ≤ O ⇒ T ≤ O</p>\n\n<p>साथ ही, चूँकि T = D,<br />\nD < T संभव नहीं है</p>\n\n<p>निष्कर्ष:</p>\n\n<p>(i) T ≤ O → <strong>सत्य</strong></p>\n\n<p>(ii) D < T → असत्य</p>\n\n<p>यहाँ, केवल निष्कर्ष I सत्य है।</p>\n\n<p>इसलिए, सही उत्तर है <strong>\"विकल्प 3\"।</strong></p>\n",
           "type": "tb",
           "videoSol": ""
         },
@@ -9652,12 +9650,12 @@
       "isPartialMarking": false,
       "sol": {
         "en": {
-          "value": "&lt;p&gt;The logic followed here is:&lt;/p&gt;\n\n&lt;p&gt;Option 1) (Lily) &amp;rarr; It is a flower.&lt;/p&gt;\n\n&lt;p&gt;Option 2) (Lotus) &amp;rarr; It is a flower.&lt;/p&gt;\n\n&lt;p&gt;Option 3) (Grapes) &amp;rarr; It is a &lt;strong&gt;fruit.&lt;/strong&gt;&lt;/p&gt;\n\n&lt;p&gt;Option 4) (Jasmine) &amp;rarr; It is a flower.&lt;/p&gt;\n\n&lt;p&gt;Here, Lily, Lotus and Jasmine are flowers, whereas Grapes is a fruit.&lt;/p&gt;\n\n&lt;p&gt;Hence, the correct answer is &lt;strong&gt;&amp;quot;Option 3&amp;quot;.&lt;/strong&gt;&lt;/p&gt;\n",
+          "value": "<p>The logic followed here is:</p>\n\n<p>Option 1) (Lily) → It is a flower.</p>\n\n<p>Option 2) (Lotus) → It is a flower.</p>\n\n<p>Option 3) (Grapes) → It is a <strong>fruit.</strong></p>\n\n<p>Option 4) (Jasmine) → It is a flower.</p>\n\n<p>Here, Lily, Lotus and Jasmine are flowers, whereas Grapes is a fruit.</p>\n\n<p>Hence, the correct answer is <strong>\"Option 3\".</strong></p>\n",
           "type": "tb",
           "videoSol": ""
         },
         "hn": {
-          "value": "&lt;p&gt;यहाँ अनुसरण किया गया तर्क इस प्रकार है:&lt;/p&gt;\n\n&lt;p&gt;विकल्प 1) (लिली) &amp;rarr; यह एक फूल है।&lt;/p&gt;\n\n&lt;p&gt;विकल्प 2) (कमल) &amp;rarr; यह एक फूल है।&lt;/p&gt;\n\n&lt;p&gt;विकल्प 3) (अंगूर) &amp;rarr; यह एक &lt;strong&gt;फल&lt;/strong&gt; है।&lt;/p&gt;\n\n&lt;p&gt;विकल्प 4) (चमेली) &amp;rarr; यह एक फूल है।&lt;/p&gt;\n\n&lt;p&gt;यहाँ, लिली, कमल और चमेली फूल हैं, जबकि अंगूर एक फल है।&lt;/p&gt;\n\n&lt;p&gt;इसलिए, सही उत्तर &lt;strong&gt;&amp;quot;विकल्प 3&amp;quot;&lt;/strong&gt; है।&lt;/p&gt;\n",
+          "value": "<p>यहाँ अनुसरण किया गया तर्क इस प्रकार है:</p>\n\n<p>विकल्प 1) (लिली) → यह एक फूल है।</p>\n\n<p>विकल्प 2) (कमल) → यह एक फूल है।</p>\n\n<p>विकल्प 3) (अंगूर) → यह एक <strong>फल</strong> है।</p>\n\n<p>विकल्प 4) (चमेली) → यह एक फूल है।</p>\n\n<p>यहाँ, लिली, कमल और चमेली फूल हैं, जबकि अंगूर एक फल है।</p>\n\n<p>इसलिए, सही उत्तर <strong>\"विकल्प 3\"</strong> है।</p>\n",
           "type": "tb",
           "videoSol": ""
         },
@@ -9864,12 +9862,12 @@
       "isPartialMarking": false,
       "sol": {
         "en": {
-          "value": "&lt;p&gt;The logic followed here is:&lt;/p&gt;\n\n&lt;p&gt;Logic: Last 3 digits = First 3 digits + 100&lt;/p&gt;\n\n&lt;p&gt;Option 1) 200K300&lt;/p&gt;\n\n&lt;p&gt;200 + 100 = 300&amp;nbsp;&lt;/p&gt;\n\n&lt;p&gt;Option 2) 150K250&lt;/p&gt;\n\n&lt;p&gt;150 + 100 = 250&amp;nbsp;&lt;/p&gt;\n\n&lt;p&gt;Option 3) 250K350&lt;/p&gt;\n\n&lt;p&gt;250 + 100 = 350&amp;nbsp;&lt;/p&gt;\n\n&lt;p&gt;&lt;strong&gt;Option 4) 100K250&lt;/strong&gt;&lt;/p&gt;\n\n&lt;p&gt;&lt;strong&gt;100 + 100 = 200 &amp;ne; 250&amp;nbsp;&lt;/strong&gt;&lt;/p&gt;\n\n&lt;p&gt;Hence, the roll number that does not fit the rule is &lt;strong&gt;Option 4&lt;/strong&gt;.&lt;/p&gt;\n",
+          "value": "<p>The logic followed here is:</p>\n\n<p>Logic: Last 3 digits = First 3 digits + 100</p>\n\n<p>Option 1) 200K300</p>\n\n<p>200 + 100 = 300 </p>\n\n<p>Option 2) 150K250</p>\n\n<p>150 + 100 = 250 </p>\n\n<p>Option 3) 250K350</p>\n\n<p>250 + 100 = 350 </p>\n\n<p><strong>Option 4) 100K250</strong></p>\n\n<p><strong>100 + 100 = 200 ≠ 250 </strong></p>\n\n<p>Hence, the roll number that does not fit the rule is <strong>Option 4</strong>.</p>\n",
           "type": "tb",
           "videoSol": ""
         },
         "hn": {
-          "value": "&lt;p&gt;यहाँ जो तर्क दिया गया है, वह इस प्रकार है:&lt;/p&gt;\n\n&lt;p&gt;तर्क: अंतिम 3 अंक = पहले 3 अंक + 100&lt;/p&gt;\n\n&lt;p&gt;विकल्प 1) 200K300&lt;/p&gt;\n\n&lt;p&gt;200 + 100 = 300&lt;/p&gt;\n\n&lt;p&gt;विकल्प 2) 150K250&lt;/p&gt;\n\n&lt;p&gt;150 + 100 = 250&lt;/p&gt;\n\n&lt;p&gt;विकल्प 3) 250K350&lt;/p&gt;\n\n&lt;p&gt;250 + 100 = 350&lt;/p&gt;\n\n&lt;p&gt;&lt;strong&gt;विकल्प 4) 100K250&lt;/strong&gt;&lt;/p&gt;\n\n&lt;p&gt;&lt;strong&gt;100 + 100 = 200 &amp;ne; 250 &lt;/strong&gt;&lt;/p&gt;\n\n&lt;p&gt;इसलिए, वह रोल नंबर जो नियम के अनुसार नहीं है, वह है &lt;strong&gt;विकल्प 4&lt;/strong&gt;&lt;/p&gt;\n",
+          "value": "<p>यहाँ जो तर्क दिया गया है, वह इस प्रकार है:</p>\n\n<p>तर्क: अंतिम 3 अंक = पहले 3 अंक + 100</p>\n\n<p>विकल्प 1) 200K300</p>\n\n<p>200 + 100 = 300</p>\n\n<p>विकल्प 2) 150K250</p>\n\n<p>150 + 100 = 250</p>\n\n<p>विकल्प 3) 250K350</p>\n\n<p>250 + 100 = 350</p>\n\n<p><strong>विकल्प 4) 100K250</strong></p>\n\n<p><strong>100 + 100 = 200 ≠ 250 </strong></p>\n\n<p>इसलिए, वह रोल नंबर जो नियम के अनुसार नहीं है, वह है <strong>विकल्प 4</strong></p>\n",
           "type": "tb",
           "videoSol": ""
         },
@@ -10716,12 +10714,12 @@
       "isPartialMarking": false,
       "sol": {
         "en": {
-          "value": "&lt;p&gt;The logic followed here is:&lt;/p&gt;\n\n&lt;p&gt;Option 1) (Maize) &amp;rarr; It is a food grain crop.&lt;/p&gt;\n\n&lt;p&gt;Option 2) (Sugarcane) &amp;rarr; It is a cash crop.&lt;/p&gt;\n\n&lt;p&gt;Option 3) (Cotton) &amp;rarr; It is a fibre (cash) crop.&lt;/p&gt;\n\n&lt;p&gt;Option 4) (Barley) &amp;rarr; It is a food grain crop.&lt;/p&gt;\n\n&lt;p&gt;Here, Maize and Barley are food grains, and Sugarcane is also cultivated mainly for consumption purposes, whereas Cotton is grown for fibre, not for food.&lt;/p&gt;\n\n&lt;p&gt;Hence, the correct answer is &lt;strong&gt;&amp;quot;Option 3&amp;quot;.&lt;/strong&gt;&lt;/p&gt;\n",
+          "value": "<p>The logic followed here is:</p>\n\n<p>Option 1) (Maize) → It is a food grain crop.</p>\n\n<p>Option 2) (Sugarcane) → It is a cash crop.</p>\n\n<p>Option 3) (Cotton) → It is a fibre (cash) crop.</p>\n\n<p>Option 4) (Barley) → It is a food grain crop.</p>\n\n<p>Here, Maize and Barley are food grains, and Sugarcane is also cultivated mainly for consumption purposes, whereas Cotton is grown for fibre, not for food.</p>\n\n<p>Hence, the correct answer is <strong>\"Option 3\".</strong></p>\n",
           "type": "tb",
           "videoSol": ""
         },
         "hn": {
-          "value": "&lt;p&gt;यहाँ अनुसरण किया गया तर्क इस प्रकार है:&lt;/p&gt;\n\n&lt;p&gt;विकल्प 1) (मक्का) &amp;rarr; यह एक खाद्य अनाज फसल है।&lt;/p&gt;\n\n&lt;p&gt;विकल्प 2) (गन्ना) &amp;rarr; यह एक नकदी फसल है।&lt;/p&gt;\n\n&lt;p&gt;विकल्प 3) (कपास) &amp;rarr; यह एक फाइबर (नकदी) फसल है।&lt;/p&gt;\n\n&lt;p&gt;विकल्प 4) (जौ) &amp;rarr; यह एक खाद्य अनाज फसल है।&lt;/p&gt;\n\n&lt;p&gt;यहाँ, मक्का और जौ खाद्य अनाज हैं, और गन्ने की खेती भी मुख्य रूप से खपत के उद्देश्यों के लिए की जाती है, जबकि कपास फाइबर के लिए उगाया जाता है, भोजन के लिए नहीं।&lt;/p&gt;\n\n&lt;p&gt;इसलिए, सही उत्तर &lt;strong&gt;&amp;quot;विकल्प 3&amp;quot;&lt;/strong&gt; है।&lt;/p&gt;\n",
+          "value": "<p>यहाँ अनुसरण किया गया तर्क इस प्रकार है:</p>\n\n<p>विकल्प 1) (मक्का) → यह एक खाद्य अनाज फसल है।</p>\n\n<p>विकल्प 2) (गन्ना) → यह एक नकदी फसल है।</p>\n\n<p>विकल्प 3) (कपास) → यह एक फाइबर (नकदी) फसल है।</p>\n\n<p>विकल्प 4) (जौ) → यह एक खाद्य अनाज फसल है।</p>\n\n<p>यहाँ, मक्का और जौ खाद्य अनाज हैं, और गन्ने की खेती भी मुख्य रूप से खपत के उद्देश्यों के लिए की जाती है, जबकि कपास फाइबर के लिए उगाया जाता है, भोजन के लिए नहीं।</p>\n\n<p>इसलिए, सही उत्तर <strong>\"विकल्प 3\"</strong> है।</p>\n",
           "type": "tb",
           "videoSol": ""
         },
@@ -11782,12 +11780,12 @@
       "isPartialMarking": false,
       "sol": {
         "en": {
-          "value": "&lt;p&gt;The logic followed here is:&lt;/p&gt;\n\n&lt;p&gt;Option 1) (Make excuses)&lt;/p&gt;\n\n&lt;p&gt;&amp;rarr; This avoids responsibility and does not solve the problem.&lt;/p&gt;\n\n&lt;p&gt;Option 2) (Do it wrongly)&lt;/p&gt;\n\n&lt;p&gt;&amp;rarr; Completing the task incorrectly can create bigger issues.&lt;/p&gt;\n\n&lt;p&gt;Option 3) (Seek help or guidance)&lt;/p&gt;\n\n&lt;p&gt;&amp;rarr; This shows responsibility, willingness to learn, and ensures the task is done correctly.&lt;/p&gt;\n\n&lt;p&gt;Option 4) (Delay it)&lt;/p&gt;\n\n&lt;p&gt;&amp;rarr; Postponing the task may cause inefficiency and affect deadlines.&lt;/p&gt;\n\n&lt;p&gt;Here, the most appropriate and professional action is to seek help or guidance.&lt;/p&gt;\n\n&lt;p&gt;Hence, the correct answer is &lt;strong&gt;&amp;quot;Option 3&amp;quot;.&lt;/strong&gt;&lt;/p&gt;\n",
+          "value": "<p>The logic followed here is:</p>\n\n<p>Option 1) (Make excuses)</p>\n\n<p>→ This avoids responsibility and does not solve the problem.</p>\n\n<p>Option 2) (Do it wrongly)</p>\n\n<p>→ Completing the task incorrectly can create bigger issues.</p>\n\n<p>Option 3) (Seek help or guidance)</p>\n\n<p>→ This shows responsibility, willingness to learn, and ensures the task is done correctly.</p>\n\n<p>Option 4) (Delay it)</p>\n\n<p>→ Postponing the task may cause inefficiency and affect deadlines.</p>\n\n<p>Here, the most appropriate and professional action is to seek help or guidance.</p>\n\n<p>Hence, the correct answer is <strong>\"Option 3\".</strong></p>\n",
           "type": "tb",
           "videoSol": ""
         },
         "hn": {
-          "value": "&lt;p&gt;यहाँ अनुसरण किया गया तर्क इस प्रकार है:&lt;/p&gt;\n\n&lt;p&gt;विकल्प 1) (बहाने बनाना)&lt;/p&gt;\n\n&lt;p&gt;&amp;rarr; यह जिम्मेदारी से बचता है और समस्या का समाधान नहीं करता।&lt;/p&gt;\n\n&lt;p&gt;विकल्प 2) (इसे गलत तरीके से करना)&lt;/p&gt;\n\n&lt;p&gt;&amp;rarr; कार्य को गलत तरीके से पूरा करने से बड़ी समस्याएँ पैदा हो सकती हैं।&lt;/p&gt;\n\n&lt;p&gt;विकल्प 3) (मदद या मार्गदर्शन लेना)&lt;/p&gt;\n\n&lt;p&gt;&amp;rarr; यह जिम्मेदारी, सीखने की इच्छा दिखाता है, और सुनिश्चित करता है कि कार्य सही ढंग से किया गया है।&lt;/p&gt;\n\n&lt;p&gt;विकल्प 4) (इसे विलंबित करना)&lt;/p&gt;\n\n&lt;p&gt;&amp;rarr; कार्य को स्थगित करने से अक्षमता हो सकती है और समय सीमा प्रभावित हो सकती है।&lt;/p&gt;\n\n&lt;p&gt;यहाँ, सबसे उपयुक्त और पेशेवर कार्रवाई मदद या मार्गदर्शन लेना है।&lt;/p&gt;\n\n&lt;p&gt;इसलिए, सही उत्तर &lt;strong&gt;&quot;विकल्प 3&quot;&lt;/strong&gt; है।&lt;/p&gt;\n",
+          "value": "<p>यहाँ अनुसरण किया गया तर्क इस प्रकार है:</p>\n\n<p>विकल्प 1) (बहाने बनाना)</p>\n\n<p>→ यह जिम्मेदारी से बचता है और समस्या का समाधान नहीं करता।</p>\n\n<p>विकल्प 2) (इसे गलत तरीके से करना)</p>\n\n<p>→ कार्य को गलत तरीके से पूरा करने से बड़ी समस्याएँ पैदा हो सकती हैं।</p>\n\n<p>विकल्प 3) (मदद या मार्गदर्शन लेना)</p>\n\n<p>→ यह जिम्मेदारी, सीखने की इच्छा दिखाता है, और सुनिश्चित करता है कि कार्य सही ढंग से किया गया है।</p>\n\n<p>विकल्प 4) (इसे विलंबित करना)</p>\n\n<p>→ कार्य को स्थगित करने से अक्षमता हो सकती है और समय सीमा प्रभावित हो सकती है।</p>\n\n<p>यहाँ, सबसे उपयुक्त और पेशेवर कार्रवाई मदद या मार्गदर्शन लेना है।</p>\n\n<p>इसलिए, सही उत्तर <strong>\"विकल्प 3\"</strong> है।</p>\n",
           "type": "tb",
           "videoSol": ""
         },
@@ -11995,12 +11993,12 @@
       "isPartialMarking": false,
       "sol": {
         "en": {
-          "value": "&lt;p style=&quot;color: rgb(33, 37, 41);&quot;&gt;The logic followed here is:&lt;/p&gt;\n\n&lt;p style=&quot;color: rgb(33, 37, 41);&quot;&gt;&lt;img alt=&quot;&quot; src=&quot;https://cdn.repeatermock.com/tb/abe983c30bfee62340490c2e927a08f6b5c97e771105872f5a1198dde8e1000c.png&quot; style=&quot;height: 111px; width: 300px;&quot; /&gt;&lt;/p&gt;\n\n&lt;p style=&quot;color: rgb(33, 37, 41);&quot;&gt;thus, &amp;quot;&lt;span style=&quot;font-weight: bolder;&quot;&gt;65&lt;/span&gt;&amp;quot; will replace the question mark in the given series.&lt;/p&gt;\n\n&lt;p style=&quot;color: rgb(33, 37, 41);&quot;&gt;Hence, the correct option is&amp;nbsp;&lt;span style=&quot;font-weight: bolder;&quot;&gt;&amp;quot;Option 4&amp;quot;.&lt;/span&gt;&lt;/p&gt;\n",
+          "value": "<p style=\"color: rgb(33, 37, 41);\">The logic followed here is:</p>\n\n<p style=\"color: rgb(33, 37, 41);\"><img alt=\"\" src=\"https://cdn.repeatermock.com/tb/abe983c30bfee62340490c2e927a08f6b5c97e771105872f5a1198dde8e1000c.png\" style=\"height: 111px; width: 300px;\" /></p>\n\n<p style=\"color: rgb(33, 37, 41);\">thus, \"<span style=\"font-weight: bolder;\">65</span>\" will replace the question mark in the given series.</p>\n\n<p style=\"color: rgb(33, 37, 41);\">Hence, the correct option is <span style=\"font-weight: bolder;\">\"Option 4\".</span></p>\n",
           "type": "tb",
           "videoSol": ""
         },
         "hn": {
-          "value": "&lt;p style=&quot;color: rgb(33, 37, 41);&quot;&gt;यहाँ अनुसरण किया गया तर्क इस प्रकार है:&lt;/p&gt;\n\n&lt;p style=&quot;color: rgb(33, 37, 41);&quot;&gt;&lt;img alt=&quot;&quot; src=&quot;https://cdn.repeatermock.com/tb/abe983c30bfee62340490c2e927a08f6b5c97e771105872f5a1198dde8e1000c.png&quot; style=&quot;height: 111px; width: 300px;&quot; /&gt;&lt;/p&gt;\n\n&lt;p style=&quot;color: rgb(33, 37, 41);&quot;&gt;इस प्रकार, दी गई शृंखला में प्रश्न-चिह्न को &amp;quot;&lt;span style=&quot;font-weight: bolder;&quot;&gt;65&lt;/span&gt;&amp;quot; से बदला जाएगा।&lt;/p&gt;\n\n&lt;p style=&quot;color: rgb(33, 37, 41);&quot;&gt;अतः, सही विकल्प &lt;span style=&quot;font-weight: bolder;&quot;&gt;&amp;quot;विकल्प 4&amp;quot;&lt;/span&gt; है।&lt;/p&gt;\n",
+          "value": "<p style=\"color: rgb(33, 37, 41);\">यहाँ अनुसरण किया गया तर्क इस प्रकार है:</p>\n\n<p style=\"color: rgb(33, 37, 41);\"><img alt=\"\" src=\"https://cdn.repeatermock.com/tb/abe983c30bfee62340490c2e927a08f6b5c97e771105872f5a1198dde8e1000c.png\" style=\"height: 111px; width: 300px;\" /></p>\n\n<p style=\"color: rgb(33, 37, 41);\">इस प्रकार, दी गई शृंखला में प्रश्न-चिह्न को \"<span style=\"font-weight: bolder;\">65</span>\" से बदला जाएगा।</p>\n\n<p style=\"color: rgb(33, 37, 41);\">अतः, सही विकल्प <span style=\"font-weight: bolder;\">\"विकल्प 4\"</span> है।</p>\n",
           "type": "tb",
           "videoSol": ""
         },
@@ -13061,12 +13059,12 @@
       "isPartialMarking": false,
       "sol": {
         "en": {
-          "value": "&lt;p style=&quot;color: rgb(33, 37, 41);&quot;&gt;The logic followed here is:&lt;/p&gt;\n\n&lt;p style=&quot;color: rgb(33, 37, 41);&quot;&gt;&lt;img alt=&quot;&quot; src=&quot;https://cdn.repeatermock.com/tb/c1abcdedbbde7ed7b181be2b9ec2d0f1e6c8792766063d9a135c0d8d6ff641ca.png&quot; /&gt;&lt;/p&gt;\n\n&lt;p style=&quot;color: rgb(33, 37, 41);&quot;&gt;thus, &amp;quot;&lt;span style=&quot;font-weight: bolder;&quot;&gt;124&lt;/span&gt;&amp;quot; will replace the question mark in the given series.&lt;/p&gt;\n\n&lt;p style=&quot;color: rgb(33, 37, 41);&quot;&gt;Hence, the correct option is&amp;nbsp;&lt;span style=&quot;font-weight: bolder;&quot;&gt;&amp;quot;Option 4&amp;quot;.&lt;/span&gt;&lt;/p&gt;\n",
+          "value": "<p style=\"color: rgb(33, 37, 41);\">The logic followed here is:</p>\n\n<p style=\"color: rgb(33, 37, 41);\"><img alt=\"\" src=\"https://cdn.repeatermock.com/tb/c1abcdedbbde7ed7b181be2b9ec2d0f1e6c8792766063d9a135c0d8d6ff641ca.png\" /></p>\n\n<p style=\"color: rgb(33, 37, 41);\">thus, \"<span style=\"font-weight: bolder;\">124</span>\" will replace the question mark in the given series.</p>\n\n<p style=\"color: rgb(33, 37, 41);\">Hence, the correct option is <span style=\"font-weight: bolder;\">\"Option 4\".</span></p>\n",
           "type": "tb",
           "videoSol": ""
         },
         "hn": {
-          "value": "&lt;p style=&quot;color: rgb(33, 37, 41);&quot;&gt;यहाँ अनुसरण किया गया तर्क इस प्रकार है:&lt;/p&gt;\n\n&lt;p style=&quot;color: rgb(33, 37, 41);&quot;&gt;&lt;img alt=&quot;&quot; src=&quot;https://cdn.repeatermock.com/tb/c1abcdedbbde7ed7b181be2b9ec2d0f1e6c8792766063d9a135c0d8d6ff641ca.png&quot; /&gt;&lt;/p&gt;\n\n&lt;p style=&quot;color: rgb(33, 37, 41);&quot;&gt;इस प्रकार, दी गई शृंखला में प्रश्न-चिह्न को &amp;quot;&lt;span style=&quot;font-weight: bolder;&quot;&gt;124&lt;/span&gt;&amp;quot; से बदला जाएगा।&lt;/p&gt;\n\n&lt;p style=&quot;color: rgb(33, 37, 41);&quot;&gt;अतः, सही विकल्प &lt;span style=&quot;font-weight: bolder;&quot;&gt;&amp;quot;विकल्प 4&amp;quot;&lt;/span&gt; है।&lt;/p&gt;\n",
+          "value": "<p style=\"color: rgb(33, 37, 41);\">यहाँ अनुसरण किया गया तर्क इस प्रकार है:</p>\n\n<p style=\"color: rgb(33, 37, 41);\"><img alt=\"\" src=\"https://cdn.repeatermock.com/tb/c1abcdedbbde7ed7b181be2b9ec2d0f1e6c8792766063d9a135c0d8d6ff641ca.png\" /></p>\n\n<p style=\"color: rgb(33, 37, 41);\">इस प्रकार, दी गई शृंखला में प्रश्न-चिह्न को \"<span style=\"font-weight: bolder;\">124</span>\" से बदला जाएगा।</p>\n\n<p style=\"color: rgb(33, 37, 41);\">अतः, सही विकल्प <span style=\"font-weight: bolder;\">\"विकल्प 4\"</span> है।</p>\n",
           "type": "tb",
           "videoSol": ""
         },
@@ -13915,12 +13913,12 @@
       "isPartialMarking": false,
       "sol": {
         "en": {
-          "value": "&lt;p&gt;Given word: ADMINISTRATION&lt;/p&gt;\n\n&lt;p&gt;Let&amp;rsquo;s check all the options:&lt;/p&gt;\n\n&lt;p&gt;&lt;strong&gt;(1) SITUATION&lt;/strong&gt;&lt;/p&gt;\n\n&lt;p&gt;&amp;rArr; It can be formed as all required letters (S, I, T, U, A, O, N) are present in sufficient quantity.&lt;/p&gt;\n\n&lt;p&gt;(2) TRADITION&lt;/p&gt;\n\n&lt;p&gt;&amp;rArr; It can&amp;rsquo;t be formed as it requires two D&amp;rsquo;s, but ADMINISTRATION has only one D.&lt;/p&gt;\n\n&lt;p&gt;(3) RATION&lt;/p&gt;\n\n&lt;p&gt;&amp;rArr; It can be formed as all required letters are available.&lt;/p&gt;\n\n&lt;p&gt;(4) STRAIN&lt;/p&gt;\n\n&lt;p&gt;&amp;rArr; It can be formed as all required letters are available.&lt;/p&gt;\n\n&lt;p&gt;So, the answer is &lt;strong&gt;&amp;quot;TRADITION&amp;quot;.&lt;/strong&gt;&lt;/p&gt;\n\n&lt;p&gt;Hence, the correct answer is &lt;strong&gt;Option 1.&lt;/strong&gt;&lt;/p&gt;\n",
+          "value": "<p>Given word: ADMINISTRATION</p>\n\n<p>Let’s check all the options:</p>\n\n<p><strong>(1) SITUATION</strong></p>\n\n<p>⇒ It can be formed as all required letters (S, I, T, U, A, O, N) are present in sufficient quantity.</p>\n\n<p>(2) TRADITION</p>\n\n<p>⇒ It can’t be formed as it requires two D’s, but ADMINISTRATION has only one D.</p>\n\n<p>(3) RATION</p>\n\n<p>⇒ It can be formed as all required letters are available.</p>\n\n<p>(4) STRAIN</p>\n\n<p>⇒ It can be formed as all required letters are available.</p>\n\n<p>So, the answer is <strong>\"TRADITION\".</strong></p>\n\n<p>Hence, the correct answer is <strong>Option 1.</strong></p>\n",
           "type": "tb",
           "videoSol": ""
         },
         "hn": {
-          "value": "&lt;p&gt;दिया गया शब्द: ADMINISTRATION&lt;/p&gt;\n\n&lt;p&gt;आइए&amp;nbsp;सभी विकल्पों की जाँच करते हैं:&lt;/p&gt;\n\n&lt;p&gt;&lt;strong&gt;(1) SITUATION&lt;/strong&gt;&lt;/p&gt;\n\n&lt;p&gt;&amp;rArr; यह बनाया जा सकता है क्योंकि सभी आवश्यक अक्षर (S, I, T, U, A, O, N) पर्याप्त मात्रा में &lt;span style=&quot;color: rgb(33, 37, 41);&quot;&gt;उपलब्ध&lt;/span&gt;&amp;nbsp;हैं।&lt;/p&gt;\n\n&lt;p&gt;(2) TRADITION&lt;/p&gt;\n\n&lt;p&gt;&amp;rArr; यह नहीं बनाया जा सकता है क्योंकि इसके लिए दो D की आवश्यकता है, लेकिन ADMINISTRATION में केवल एक D है।&lt;/p&gt;\n\n&lt;p&gt;(3) RATION&lt;/p&gt;\n\n&lt;p&gt;&amp;rArr; यह बनाया जा सकता है क्योंकि सभी आवश्यक अक्षर उपलब्ध हैं।&lt;/p&gt;\n\n&lt;p&gt;(4) STRAIN&lt;/p&gt;\n\n&lt;p&gt;&amp;rArr; यह बनाया जा सकता है क्योंकि सभी आवश्यक अक्षर उपलब्ध हैं।&lt;/p&gt;\n\n&lt;p&gt;तो, उत्तर है &lt;strong&gt;&amp;quot;TRADITION&amp;quot;&lt;/strong&gt;&lt;/p&gt;\n\n&lt;p&gt;इसलिए, सही उत्तर है &lt;strong&gt;विकल्प 1।&lt;/strong&gt;&lt;/p&gt;\n",
+          "value": "<p>दिया गया शब्द: ADMINISTRATION</p>\n\n<p>आइए सभी विकल्पों की जाँच करते हैं:</p>\n\n<p><strong>(1) SITUATION</strong></p>\n\n<p>⇒ यह बनाया जा सकता है क्योंकि सभी आवश्यक अक्षर (S, I, T, U, A, O, N) पर्याप्त मात्रा में <span style=\"color: rgb(33, 37, 41);\">उपलब्ध</span> हैं।</p>\n\n<p>(2) TRADITION</p>\n\n<p>⇒ यह नहीं बनाया जा सकता है क्योंकि इसके लिए दो D की आवश्यकता है, लेकिन ADMINISTRATION में केवल एक D है।</p>\n\n<p>(3) RATION</p>\n\n<p>⇒ यह बनाया जा सकता है क्योंकि सभी आवश्यक अक्षर उपलब्ध हैं।</p>\n\n<p>(4) STRAIN</p>\n\n<p>⇒ यह बनाया जा सकता है क्योंकि सभी आवश्यक अक्षर उपलब्ध हैं।</p>\n\n<p>तो, उत्तर है <strong>\"TRADITION\"</strong></p>\n\n<p>इसलिए, सही उत्तर है <strong>विकल्प 1।</strong></p>\n",
           "type": "tb",
           "videoSol": ""
         },
@@ -15195,12 +15193,12 @@
       "isPartialMarking": false,
       "sol": {
         "en": {
-          "value": "&lt;p&gt;The logic followed here is:&lt;/p&gt;\n\n&lt;p&gt;Logic: (First number&amp;sup2;) + (Second number&amp;sup2;) + (First number &amp;times; Second number)&lt;/p&gt;\n\n&lt;p&gt;Given,&lt;/p&gt;\n\n&lt;p&gt;3 $ 4&lt;/p&gt;\n\n&lt;p&gt;&amp;rArr; (3&amp;sup2;) + (4&amp;sup2;) + (3 &amp;times; 4)&lt;/p&gt;\n\n&lt;p&gt;&amp;rArr; 9 + 16 + 12 = 37&lt;/p&gt;\n\n&lt;p&gt;And, 4 $ 5&lt;/p&gt;\n\n&lt;p&gt;&amp;rArr; (4&amp;sup2;) + (5&amp;sup2;) + (4 &amp;times; 5)&lt;/p&gt;\n\n&lt;p&gt;&amp;rArr; 16 + 25 + 20 = 61&lt;/p&gt;\n\n&lt;p&gt;Now, 5 $ 6:&lt;/p&gt;\n\n&lt;p&gt;&amp;rArr; (5&amp;sup2;) + (6&amp;sup2;) + (5 &amp;times; 6)&lt;/p&gt;\n\n&lt;p&gt;&amp;rArr; 25 + 36 + 30 = 91&lt;/p&gt;\n\n&lt;p&gt;Hence, the correct answer is &lt;strong&gt;&amp;quot;Option 2&amp;quot;.&lt;/strong&gt;&lt;/p&gt;\n",
+          "value": "<p>The logic followed here is:</p>\n\n<p>Logic: (First number²) + (Second number²) + (First number × Second number)</p>\n\n<p>Given,</p>\n\n<p>3 $ 4</p>\n\n<p>⇒ (3²) + (4²) + (3 × 4)</p>\n\n<p>⇒ 9 + 16 + 12 = 37</p>\n\n<p>And, 4 $ 5</p>\n\n<p>⇒ (4²) + (5²) + (4 × 5)</p>\n\n<p>⇒ 16 + 25 + 20 = 61</p>\n\n<p>Now, 5 $ 6:</p>\n\n<p>⇒ (5²) + (6²) + (5 × 6)</p>\n\n<p>⇒ 25 + 36 + 30 = 91</p>\n\n<p>Hence, the correct answer is <strong>\"Option 2\".</strong></p>\n",
           "type": "tb",
           "videoSol": ""
         },
         "hn": {
-          "value": "&lt;p&gt;यहाँ अनुसरण किया गया तर्क इस प्रकार है:&lt;/p&gt;\n\n&lt;p&gt;तर्क: (पहली संख्या&amp;sup2;) + (दूसरी संख्या&amp;sup2;) + (पहली संख्या &amp;times; दूसरी संख्या)&lt;/p&gt;\n\n&lt;p&gt;दिया गया है,&lt;/p&gt;\n\n&lt;p&gt;3 $ 4&lt;/p&gt;\n\n&lt;p&gt;&amp;rArr; (3&amp;sup2;) + (4&amp;sup2;) + (3 &amp;times; 4)&lt;/p&gt;\n\n&lt;p&gt;&amp;rArr; 9 + 16 + 12 = 37&lt;/p&gt;\n\n&lt;p&gt;और, 4 $ 5&lt;/p&gt;\n\n&lt;p&gt;&amp;rArr; (4&amp;sup2;) + (5&amp;sup2;) + (4 &amp;times; 5)&lt;/p&gt;\n\n&lt;p&gt;&amp;rArr; 16 + 25 + 20 = 61&lt;/p&gt;\n\n&lt;p&gt;अब, 5 $ 6:&lt;/p&gt;\n\n&lt;p&gt;&amp;rArr; (5&amp;sup2;) + (6&amp;sup2;) + (5 &amp;times; 6)&lt;/p&gt;\n\n&lt;p&gt;&amp;rArr; 25 + 36 + 30 = 91&lt;/p&gt;\n\n&lt;p&gt;इसलिए, सही उत्तर &lt;strong&gt;&amp;quot;विकल्प 2&amp;quot;&lt;/strong&gt; है।&lt;/p&gt;\n",
+          "value": "<p>यहाँ अनुसरण किया गया तर्क इस प्रकार है:</p>\n\n<p>तर्क: (पहली संख्या²) + (दूसरी संख्या²) + (पहली संख्या × दूसरी संख्या)</p>\n\n<p>दिया गया है,</p>\n\n<p>3 $ 4</p>\n\n<p>⇒ (3²) + (4²) + (3 × 4)</p>\n\n<p>⇒ 9 + 16 + 12 = 37</p>\n\n<p>और, 4 $ 5</p>\n\n<p>⇒ (4²) + (5²) + (4 × 5)</p>\n\n<p>⇒ 16 + 25 + 20 = 61</p>\n\n<p>अब, 5 $ 6:</p>\n\n<p>⇒ (5²) + (6²) + (5 × 6)</p>\n\n<p>⇒ 25 + 36 + 30 = 91</p>\n\n<p>इसलिए, सही उत्तर <strong>\"विकल्प 2\"</strong> है।</p>\n",
           "type": "tb",
           "videoSol": ""
         },
@@ -15407,12 +15405,12 @@
       "isPartialMarking": false,
       "sol": {
         "en": {
-          "value": "&lt;p&gt;Given:&lt;/p&gt;\n\n&lt;p&gt;Length of train = 120 meters&lt;/p&gt;\n\n&lt;p&gt;Time taken to cross a man = 6 seconds&lt;/p&gt;\n\n&lt;p&gt;According to Question:&lt;/p&gt;\n\n&lt;p&gt;When a train crosses a man, distance covered = Length of the train&lt;/p&gt;\n\n&lt;p&gt;So, Speed = Distance / Time&lt;/p&gt;\n\n&lt;p&gt;Speed = 120 / 6&lt;/p&gt;\n\n&lt;p&gt;= 20 m/s&lt;/p&gt;\n\n&lt;p&gt;Now, convert m/s into km/h&lt;/p&gt;\n\n&lt;p&gt;1 m/s = 18/5 km/h&lt;/p&gt;\n\n&lt;p&gt;So, 20 &amp;times; (18/5)&lt;/p&gt;\n\n&lt;p&gt;= 4 &amp;times; 18&lt;/p&gt;\n\n&lt;p&gt;= 72 km/h&lt;/p&gt;\n\n&lt;p&gt;Hence, the correct answer is &lt;strong&gt;Option 2.&lt;/strong&gt;&lt;/p&gt;\n",
+          "value": "<p>Given:</p>\n\n<p>Length of train = 120 meters</p>\n\n<p>Time taken to cross a man = 6 seconds</p>\n\n<p>According to Question:</p>\n\n<p>When a train crosses a man, distance covered = Length of the train</p>\n\n<p>So, Speed = Distance / Time</p>\n\n<p>Speed = 120 / 6</p>\n\n<p>= 20 m/s</p>\n\n<p>Now, convert m/s into km/h</p>\n\n<p>1 m/s = 18/5 km/h</p>\n\n<p>So, 20 × (18/5)</p>\n\n<p>= 4 × 18</p>\n\n<p>= 72 km/h</p>\n\n<p>Hence, the correct answer is <strong>Option 2.</strong></p>\n",
           "type": "tb",
           "videoSol": ""
         },
         "hn": {
-          "value": "&lt;p&gt;दिया गया है:&lt;/p&gt;\n\n&lt;p&gt;ट्रेन की लंबाई = 120 मीटर&lt;/p&gt;\n\n&lt;p&gt;एक व्यक्ति&amp;nbsp;को पार करने में लगा समय = 6 सेकंड&lt;/p&gt;\n\n&lt;p&gt;प्रश्न के अनुसार:&lt;/p&gt;\n\n&lt;p&gt;जब एक ट्रेन एक &lt;span style=&quot;color: rgb(33, 37, 41);&quot;&gt;व्यक्ति&lt;/span&gt; को पार करती है, तो तय की गई दूरी = ट्रेन की लंबाई&lt;/p&gt;\n\n&lt;p&gt;इसलिए, चाल&amp;nbsp;= दूरी / समय&lt;/p&gt;\n\n&lt;p&gt;&lt;span style=&quot;color: rgb(33, 37, 41);&quot;&gt;चाल&lt;/span&gt; = 120 / 6&lt;/p&gt;\n\n&lt;p&gt;= 20 मीटर/सेकंड&lt;/p&gt;\n\n&lt;p&gt;अब, मीटर/सेकंड को किमी/घंटा में बदलें&lt;/p&gt;\n\n&lt;p&gt;1 मीटर/सेकंड = 18/5 किमी/घंटा&lt;/p&gt;\n\n&lt;p&gt;इसलिए, 20 &amp;times; (18/5)&lt;/p&gt;\n\n&lt;p&gt;= 4 &amp;times; 18&lt;/p&gt;\n\n&lt;p&gt;= 72 किमी/घंटा&lt;/p&gt;\n\n&lt;p&gt;इसलिए, सही उत्तर है &lt;strong&gt;विकल्प 2&lt;/strong&gt;&lt;/p&gt;\n",
+          "value": "<p>दिया गया है:</p>\n\n<p>ट्रेन की लंबाई = 120 मीटर</p>\n\n<p>एक व्यक्ति को पार करने में लगा समय = 6 सेकंड</p>\n\n<p>प्रश्न के अनुसार:</p>\n\n<p>जब एक ट्रेन एक <span style=\"color: rgb(33, 37, 41);\">व्यक्ति</span> को पार करती है, तो तय की गई दूरी = ट्रेन की लंबाई</p>\n\n<p>इसलिए, चाल = दूरी / समय</p>\n\n<p><span style=\"color: rgb(33, 37, 41);\">चाल</span> = 120 / 6</p>\n\n<p>= 20 मीटर/सेकंड</p>\n\n<p>अब, मीटर/सेकंड को किमी/घंटा में बदलें</p>\n\n<p>1 मीटर/सेकंड = 18/5 किमी/घंटा</p>\n\n<p>इसलिए, 20 × (18/5)</p>\n\n<p>= 4 × 18</p>\n\n<p>= 72 किमी/घंटा</p>\n\n<p>इसलिए, सही उत्तर है <strong>विकल्प 2</strong></p>\n",
           "type": "tb",
           "videoSol": ""
         },
@@ -15620,12 +15618,12 @@
       "isPartialMarking": false,
       "sol": {
         "en": {
-          "value": "&lt;p style=&quot;color: rgb(33, 37, 41);&quot;&gt;The logic followed here is:&lt;/p&gt;\n\n&lt;p style=&quot;color: rgb(33, 37, 41);&quot;&gt;&lt;img alt=&quot;&quot; src=&quot;https://cdn.repeatermock.com/tb/d78ccba4d012cd7650d42fa91a9e14ec0b120cd0869f296308ffdc48e92a224c.png&quot; style=&quot;width: 350px; height: 85px;&quot; /&gt;&lt;/p&gt;\n\n&lt;p style=&quot;color: rgb(33, 37, 41);&quot;&gt;thus, &amp;quot;&lt;span style=&quot;font-weight: bolder;&quot;&gt;37&lt;/span&gt;&amp;quot; will replace the question mark in the given series.&lt;/p&gt;\n\n&lt;p style=&quot;color: rgb(33, 37, 41);&quot;&gt;Hence, the correct option is&amp;nbsp;&lt;span style=&quot;font-weight: bolder;&quot;&gt;&amp;quot;Option 3&amp;quot;.&lt;/span&gt;&lt;/p&gt;\n",
+          "value": "<p style=\"color: rgb(33, 37, 41);\">The logic followed here is:</p>\n\n<p style=\"color: rgb(33, 37, 41);\"><img alt=\"\" src=\"https://cdn.repeatermock.com/tb/d78ccba4d012cd7650d42fa91a9e14ec0b120cd0869f296308ffdc48e92a224c.png\" style=\"width: 350px; height: 85px;\" /></p>\n\n<p style=\"color: rgb(33, 37, 41);\">thus, \"<span style=\"font-weight: bolder;\">37</span>\" will replace the question mark in the given series.</p>\n\n<p style=\"color: rgb(33, 37, 41);\">Hence, the correct option is <span style=\"font-weight: bolder;\">\"Option 3\".</span></p>\n",
           "type": "tb",
           "videoSol": ""
         },
         "hn": {
-          "value": "&lt;p style=&quot;color: rgb(33, 37, 41);&quot;&gt;यहाँ अनुसरण किया गया तर्क इस प्रकार है:&lt;/p&gt;\n\n&lt;p style=&quot;color: rgb(33, 37, 41);&quot;&gt;&lt;img alt=&quot;&quot; src=&quot;https://cdn.repeatermock.com/tb/d78ccba4d012cd7650d42fa91a9e14ec0b120cd0869f296308ffdc48e92a224c.png&quot; style=&quot;color: rgb(33, 37, 41); width: 350px; height: 85px;&quot; /&gt;&lt;/p&gt;\n\n&lt;p style=&quot;color: rgb(33, 37, 41);&quot;&gt;इस प्रकार, &amp;quot;&lt;span style=&quot;font-weight: bolder;&quot;&gt;37&lt;/span&gt;&amp;quot; दी गई शृंखला में प्रश्न-चिह्न को प्रतिस्थापित करेगा।&lt;/p&gt;\n\n&lt;p style=&quot;color: rgb(33, 37, 41);&quot;&gt;अतः, सही विकल्प &lt;span style=&quot;font-weight: bolder;&quot;&gt;&amp;quot;विकल्प 3&amp;quot;&lt;/span&gt; है।&lt;/p&gt;\n",
+          "value": "<p style=\"color: rgb(33, 37, 41);\">यहाँ अनुसरण किया गया तर्क इस प्रकार है:</p>\n\n<p style=\"color: rgb(33, 37, 41);\"><img alt=\"\" src=\"https://cdn.repeatermock.com/tb/d78ccba4d012cd7650d42fa91a9e14ec0b120cd0869f296308ffdc48e92a224c.png\" style=\"color: rgb(33, 37, 41); width: 350px; height: 85px;\" /></p>\n\n<p style=\"color: rgb(33, 37, 41);\">इस प्रकार, \"<span style=\"font-weight: bolder;\">37</span>\" दी गई शृंखला में प्रश्न-चिह्न को प्रतिस्थापित करेगा।</p>\n\n<p style=\"color: rgb(33, 37, 41);\">अतः, सही विकल्प <span style=\"font-weight: bolder;\">\"विकल्प 3\"</span> है।</p>\n",
           "type": "tb",
           "videoSol": ""
         },
@@ -16047,12 +16045,12 @@
       "isPartialMarking": false,
       "sol": {
         "en": {
-          "value": "&lt;p&gt;The logic followed here is:&lt;/p&gt;\n\n&lt;p&gt;Logic: Each letter is shifted &lt;strong&gt;one position forward&lt;/strong&gt; in the English alphabet.&lt;/p&gt;\n\n&lt;p&gt;Given, &lt;span style=&quot;color: rgb(33, 37, 41);&quot;&gt;CRANE &amp;rarr; D S B O F&lt;/span&gt;&lt;/p&gt;\n\n&lt;p&gt;&lt;img alt=&quot;&quot; src=&quot;https://cdn.repeatermock.com/tb/3af6408ba710e8ae7fae8df509cb3de6b78b161cde9c89f98b90b82eab2b90c2.png&quot; /&gt;&lt;/p&gt;\n\n&lt;p&gt;Now, D S B O F :&lt;/p&gt;\n\n&lt;p&gt;&lt;img alt=&quot;&quot; src=&quot;https://cdn.repeatermock.com/tb/855f7006f2fb9a2444fca208cc7c380093ca307f7095c86c05da2d03b3fe645e.png&quot; /&gt;&lt;/p&gt;\n\n&lt;p&gt;So, DSBOF &amp;rarr; E T C P G&lt;/p&gt;\n\n&lt;p&gt;Hence, the correct answer is &lt;strong&gt;&amp;quot;Option 1&amp;quot;.&lt;/strong&gt;&lt;/p&gt;\n",
+          "value": "<p>The logic followed here is:</p>\n\n<p>Logic: Each letter is shifted <strong>one position forward</strong> in the English alphabet.</p>\n\n<p>Given, <span style=\"color: rgb(33, 37, 41);\">CRANE → D S B O F</span></p>\n\n<p><img alt=\"\" src=\"https://cdn.repeatermock.com/tb/3af6408ba710e8ae7fae8df509cb3de6b78b161cde9c89f98b90b82eab2b90c2.png\" /></p>\n\n<p>Now, D S B O F :</p>\n\n<p><img alt=\"\" src=\"https://cdn.repeatermock.com/tb/855f7006f2fb9a2444fca208cc7c380093ca307f7095c86c05da2d03b3fe645e.png\" /></p>\n\n<p>So, DSBOF → E T C P G</p>\n\n<p>Hence, the correct answer is <strong>\"Option 1\".</strong></p>\n",
           "type": "tb",
           "videoSol": ""
         },
         "hn": {
-          "value": "&lt;p&gt;यहाँ अनुसरण किया गया तर्क इस प्रकार है:&lt;/p&gt;\n\n&lt;p&gt;तर्क: अंग्रेजी वर्णमाला में प्रत्येक अक्षर को &lt;strong&gt;एक स्थान आगे&lt;/strong&gt; खिसकाया गया है।&lt;/p&gt;\n\n&lt;p&gt;दिया गया है, &lt;span style=&quot;color: rgb(33, 37, 41);&quot;&gt;CRANE &amp;rarr; D S B O F&lt;/span&gt;&lt;/p&gt;\n\n&lt;p&gt;&lt;img alt=&quot;&quot; src=&quot;https://cdn.repeatermock.com/tb/3af6408ba710e8ae7fae8df509cb3de6b78b161cde9c89f98b90b82eab2b90c2.png&quot; /&gt;&lt;/p&gt;\n\n&lt;p&gt;अब, D S B O F :&lt;/p&gt;\n\n&lt;p&gt;&lt;img alt=&quot;&quot; src=&quot;https://cdn.repeatermock.com/tb/855f7006f2fb9a2444fca208cc7c380093ca307f7095c86c05da2d03b3fe645e.png&quot; /&gt;&lt;/p&gt;\n\n&lt;p&gt;इसलिए, DSBOF &amp;rarr; E T C P G&lt;/p&gt;\n\n&lt;p&gt;अतः, सही उत्तर &lt;strong&gt;&amp;quot;विकल्प 1&amp;quot;&lt;/strong&gt; है।&lt;/p&gt;\n",
+          "value": "<p>यहाँ अनुसरण किया गया तर्क इस प्रकार है:</p>\n\n<p>तर्क: अंग्रेजी वर्णमाला में प्रत्येक अक्षर को <strong>एक स्थान आगे</strong> खिसकाया गया है।</p>\n\n<p>दिया गया है, <span style=\"color: rgb(33, 37, 41);\">CRANE → D S B O F</span></p>\n\n<p><img alt=\"\" src=\"https://cdn.repeatermock.com/tb/3af6408ba710e8ae7fae8df509cb3de6b78b161cde9c89f98b90b82eab2b90c2.png\" /></p>\n\n<p>अब, D S B O F :</p>\n\n<p><img alt=\"\" src=\"https://cdn.repeatermock.com/tb/855f7006f2fb9a2444fca208cc7c380093ca307f7095c86c05da2d03b3fe645e.png\" /></p>\n\n<p>इसलिए, DSBOF → E T C P G</p>\n\n<p>अतः, सही उत्तर <strong>\"विकल्प 1\"</strong> है।</p>\n",
           "type": "tb",
           "videoSol": ""
         },
