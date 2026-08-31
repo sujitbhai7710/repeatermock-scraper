@@ -107,30 +107,21 @@ def d1_query(env, sql, params=None):
 
 
 def d1_exec_batch(env, statements):
-    """Execute a batch of SQL statements (each is {sql, params})."""
-    api_token = env.get("CLOUDFLARE_API_TOKEN")
-    account_id = env.get("CLOUDFLARE_ACCOUNT_ID")
-    db_id = env.get("D1_DATABASE_ID")
-    url = f"https://api.cloudflare.com/client/v4/accounts/{account_id}/d1/database/{db_id}/batch"
-
-    body = json.dumps({"statements": statements}).encode("utf-8")
-    req = urllib.request.Request(
-        url,
-        data=body,
-        method="POST",
-        headers={
-            "Authorization": f"Bearer {api_token}",
-            "Content-Type": "application/json",
-        },
-    )
-    try:
-        with urllib.request.urlopen(req, timeout=60) as resp:
-            return json.loads(resp.read().decode("utf-8"))
-    except urllib.error.HTTPError as e:
-        err_body = e.read().decode("utf-8", errors="replace")
-        raise RuntimeError(f"D1 batch HTTP {e.code}: {err_body}")
-    except Exception as e:
-        raise RuntimeError(f"D1 batch error: {e}")
+    """Execute a batch of SQL statements using individual /query calls.
+    (D1 REST API doesn't have a /batch endpoint — we loop over /query instead.)"""
+    results = []
+    errors = []
+    for i, stmt in enumerate(statements):
+        try:
+            r = d1_query(env, stmt["sql"], stmt.get("params", []))
+            results.append(r)
+        except Exception as e:
+            errors.append(f"Statement {i+1}: {e}")
+    if errors and not results:
+        raise RuntimeError(f"All batch statements failed:\n" + "\n".join(errors[:5]))
+    if errors:
+        print(f"  ⚠ {len(errors)}/{len(statements)} statements failed (non-fatal)")
+    return results
 
 
 # ─── Sync logic ──────────────────────────────────────────────────────────────
