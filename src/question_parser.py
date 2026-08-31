@@ -112,6 +112,29 @@ def parse_question_objects(payload: str) -> list[dict[str, Any]]:
     return questions
 
 
+def thorough_unescape(text: str) -> str:
+    """
+    Unescape HTML entities, handling double-escaping.
+    
+    RepeaterMock option values are often double-escaped:
+      &lt;span class=&quot;math-tex&quot;&gt;\\(\\frac{1}{4}\\)&lt;/span&gt;
+    After one unescape:
+      <span class="math-tex">\\(\\frac{1}{4}\\)</span>
+    We need to unescape until stable.
+    """
+    if not text:
+        return text
+    prev = None
+    current = text
+    # Unescape up to 3 times to handle double/triple escaping
+    for _ in range(3):
+        if current == prev:
+            break
+        prev = current
+        current = html_module.unescape(current)
+    return current
+
+
 def clean_question(q: dict[str, Any]) -> dict[str, Any]:
     """
     Clean a raw question object into a structured format.
@@ -119,6 +142,8 @@ def clean_question(q: dict[str, Any]) -> dict[str, Any]:
     Extracts only the fields we need:
     - id, type, marks, section, question number
     - Multilingual question text + options (en, hi, te, mr, bn, etc.)
+    
+    Handles double-escaped HTML entities in option values.
     """
     # Language field mapping (RepeaterMock uses ISO 639-1 / custom codes)
     lang_fields = {
@@ -136,9 +161,9 @@ def clean_question(q: dict[str, Any]) -> dict[str, Any]:
         if isinstance(lang_data, dict) and lang_data.get("value"):
             options = lang_data.get("options", [])
             languages[lang_code] = {
-                "question": html_module.unescape(lang_data.get("value", "")),
+                "question": thorough_unescape(lang_data.get("value", "")),
                 "options": [
-                    {"prompt": o.get("prompt", ""), "value": html_module.unescape(o.get("value", ""))}
+                    {"prompt": o.get("prompt", ""), "value": thorough_unescape(o.get("value", ""))}
                     for o in options
                 ] if options else [],
             }

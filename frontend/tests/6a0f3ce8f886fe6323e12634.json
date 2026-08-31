@@ -1,0 +1,1399 @@
+{
+  "test_id": "6a0f3ce8f886fe6323e12634",
+  "title": "CT 46: Congruence and Similarity - 01",
+  "duration_minutes": 6,
+  "total_marks": 20,
+  "question_count": 10,
+  "questions": [
+    {
+      "id": "6798302492072bce431b490c",
+      "type": "mcq",
+      "isNumerical": false,
+      "posMarks": 2,
+      "negMarks": 0.5,
+      "skipMarks": 0,
+      "section": 1,
+      "subsection": 0,
+      "questionNo": 1,
+      "languages": {
+        "en": {
+          "question": "&Delta;ABC &sim; &Delta;QRP and PQ = 6 cm, QR = 8 cm and PR = 10 cm. If ar (&Delta;ABC) : ar (&Delta;PQR) = 1 : 4, then AB is equal to:",
+          "options": [
+            {
+              "prompt": "1",
+              "value": "2 cm"
+            },
+            {
+              "prompt": "2",
+              "value": "5 cm"
+            },
+            {
+              "prompt": "3",
+              "value": "3 cm"
+            },
+            {
+              "prompt": "4",
+              "value": "4 cm"
+            }
+          ]
+        },
+        "hi": {
+          "question": "&Delta;ABC &sim; &Delta;QRP और PQ = 6 cm, QR = 8 cm तथा PR = 10 cm है। यदि ar (&Delta;ABC) : ar (&Delta;PQR) = 1 : 4 है, तो AB किसके बराबर होगा?",
+          "options": [
+            {
+              "prompt": "1",
+              "value": "2 cm"
+            },
+            {
+              "prompt": "2",
+              "value": "5 cm"
+            },
+            {
+              "prompt": "3",
+              "value": "3 cm"
+            },
+            {
+              "prompt": "4",
+              "value": "4 cm"
+            }
+          ]
+        },
+        "te": {
+          "question": "ΔABC ~ ΔQRP మరియు PQ = 6 cm, QR = 8 cm మరియు PR = 10 cm. ar (ΔABC) : ar (ΔPQR) = 1 : 4 అయితే, AB దేనికి సమానం?",
+          "options": [
+            {
+              "prompt": "1",
+              "value": "2 <span style=\"color: rgb(33, 37, 41);\">సెం.మీ</span>"
+            },
+            {
+              "prompt": "2",
+              "value": "5 <span style=\"color: rgb(33, 37, 41);\">సెం.మీ</span>"
+            },
+            {
+              "prompt": "3",
+              "value": "3 <span style=\"color: rgb(33, 37, 41);\">సెం.మీ</span>"
+            },
+            {
+              "prompt": "4",
+              "value": "4 <span style=\"color: rgb(33, 37, 41);\">సెం.మీ</span>"
+            }
+          ]
+        },
+        "mr": {
+          "question": "ΔABC ∼ ΔQRP आणि PQ = 6 सेमी, QR = 8 सेमी आणि PR = 10 सेमी. जर ar (ΔABC) : ar (ΔPQR) = 1 : 4, तर AB हे खालील प्रमाणे असेल:",
+          "options": [
+            {
+              "prompt": "1",
+              "value": "2 सेमी"
+            },
+            {
+              "prompt": "2",
+              "value": "5 सेमी"
+            },
+            {
+              "prompt": "3",
+              "value": "3 सेमी"
+            },
+            {
+              "prompt": "4",
+              "value": "4 सेमी"
+            }
+          ]
+        },
+        "bn": {
+          "question": "ΔABC ∼ ΔQRP এবং PQ = 6 সেমি, QR = 8 সেমি এবং PR = 10 সেমি। যদি ar (ΔABC) : ar (ΔPQR) = 1 : 4 হয়, তাহলে AB এর মান হল:",
+          "options": [
+            {
+              "prompt": "1",
+              "value": "2 সেমি"
+            },
+            {
+              "prompt": "2",
+              "value": "5 সেমি"
+            },
+            {
+              "prompt": "3",
+              "value": "3 সেমি"
+            },
+            {
+              "prompt": "4",
+              "value": "4 সেমি"
+            }
+          ]
+        },
+        "gu": {
+          "question": "△ABC ~ △QRP અને PQ = 6 સેમી, QR = 8 સેમી, અને PR = 10 સેમી,. જો ક્ષેત્રફળ(△ABC) : ક્ષેત્રફળ(△PQR) = 1 : 4, તો AB બરાબર છે:",
+          "options": [
+            {
+              "prompt": "1",
+              "value": "2 સેમી"
+            },
+            {
+              "prompt": "2",
+              "value": "5 સેમી"
+            },
+            {
+              "prompt": "3",
+              "value": "3 સેમી"
+            },
+            {
+              "prompt": "4",
+              "value": "4 સેમી"
+            }
+          ]
+        },
+        "kn": {
+          "question": "△ABC ~ △QRP ಮತ್ತು PQ = 6 cm, QR = 8 cm ಮತ್ತು PR = 10 cm. ar(△ABC) : ar(△PQR) = 1 : 4 ಆದರೆ, AB ಯು ಯಾವುದಕ್ಕೆ ಸಮಾನವಾಗಿರುತ್ತದೆ?",
+          "options": [
+            {
+              "prompt": "1",
+              "value": "2 cm"
+            },
+            {
+              "prompt": "2",
+              "value": "5 cm"
+            },
+            {
+              "prompt": "3",
+              "value": "3 cm"
+            },
+            {
+              "prompt": "4",
+              "value": "4 cm"
+            }
+          ]
+        },
+        "ta": {
+          "question": "ΔABC ∼ ΔQRP மற்றும் PQ = 6 செ.மீ, QR = 8 செ.மீ மற்றும் PR = 10 செ.மீ. ar (ΔABC) : ar (ΔPQR) = 1 : 4 எனில், AB இதற்கு சமம்:",
+          "options": [
+            {
+              "prompt": "1",
+              "value": "2 செ.மீ"
+            },
+            {
+              "prompt": "2",
+              "value": "5 செ.மீ"
+            },
+            {
+              "prompt": "3",
+              "value": "3 செ.மீ"
+            },
+            {
+              "prompt": "4",
+              "value": "4 செ.மீ"
+            }
+          ]
+        }
+      }
+    },
+    {
+      "id": "6376c14cc107fc0e9fb260ac",
+      "type": "mcq",
+      "isNumerical": false,
+      "posMarks": 2,
+      "negMarks": 0.5,
+      "skipMarks": 0,
+      "section": 1,
+      "subsection": 0,
+      "questionNo": 2,
+      "languages": {
+        "en": {
+          "question": "&Delta;ABC and <span style=\"\">&Delta;</span>DEF are two triangles such that <span style=\"\">&Delta;</span>ABC &cong; <span style=\"\">&Delta;</span>FDE. If&nbsp; AB = 5 cm, &ang;B = 40&deg; and &ang;A = 80<span style=\"\">&deg;</span>, then which of the following options is true?",
+          "options": [
+            {
+              "prompt": "1",
+              "value": "DF = 5 cm,&nbsp;<span style=\"\">&ang;E = 60&deg;</span>"
+            },
+            {
+              "prompt": "2",
+              "value": "<span style=\"\">DE = 5 cm,&nbsp;</span><span style=\"\">&ang;F = 60&deg;</span>"
+            },
+            {
+              "prompt": "3",
+              "value": "<span style=\"\">DE = 5 cm,&nbsp;</span><span style=\"\">&ang;D = 60&deg;</span>"
+            },
+            {
+              "prompt": "4",
+              "value": "<span style=\"\">DE = 5 cm,&nbsp;</span><span style=\"\">&ang;E = 60&deg;</span>"
+            }
+          ]
+        },
+        "hi": {
+          "question": "<span style=\"\">&Delta;ABC और&nbsp;</span><span style=\"\">&Delta;</span><span style=\"\">&nbsp;DEF दो त्रिभुज इस प्रकार हैं कि&nbsp;</span><span style=\"\">&Delta;</span><span style=\"\">&nbsp;ABC &cong;&nbsp;</span><span style=\"\">&Delta;</span><span style=\"\">&nbsp;FDE है। यदि AB = 5 सेमी, &ang;B = 40&deg; और &ang;A = 80</span><span style=\"\">&deg; है</span><span style=\"\">&nbsp;, तो निम्नलिखित में से कौन-सा विकल्प सत्य है?</span>",
+          "options": [
+            {
+              "prompt": "1",
+              "value": "DF = 5 <span style=\"\">सेमी</span>,&nbsp;<span style=\"\">&ang;E = 60&deg;</span>"
+            },
+            {
+              "prompt": "2",
+              "value": "<span style=\"\">DE = 5 सेमी,&nbsp;&ang;F = 60&deg;</span>"
+            },
+            {
+              "prompt": "3",
+              "value": "<span style=\"\">DE = 5 सेमी,</span> <span style=\"\">&ang;D = 60&deg;</span>"
+            },
+            {
+              "prompt": "4",
+              "value": "<span style=\"\">DE = 5 सेमी,&nbsp;&ang;E = 60&deg;</span>"
+            }
+          ]
+        },
+        "te": {
+          "question": "ΔABC మరియు <span style=\"\">Δ</span> DEF అనేవి <span style=\"\">Δ</span> ABC ≅ <span style=\"\">Δ</span> FDE అనే రెండు త్రిభుజాలు. AB = 5 సెం.మీ, ∠B = 40° మరియు ∠A = 80<span style=\"\">°</span> అయితే, కింది ఎంపికలలో ఏది సరైనది?",
+          "options": [
+            {
+              "prompt": "1",
+              "value": "DF = 5 సెం.మీ., <span style=\"\">∠E = 60°</span>"
+            },
+            {
+              "prompt": "2",
+              "value": "<span style=\"\">DE = 5 సెం.మీ.,</span> <span style=\"\">∠F = 60°</span>"
+            },
+            {
+              "prompt": "3",
+              "value": "<span style=\"\">DE = 5 సెం.మీ.,</span> <span style=\"\">∠D = 60°</span>"
+            },
+            {
+              "prompt": "4",
+              "value": "<span style=\"\">DE = 5 సెం.మీ.,</span> <span style=\"\">∠E = 60°</span>"
+            }
+          ]
+        },
+        "bn": {
+          "question": "ΔABC এবং ΔDEF দুটি ত্রিভুজ এমন যে ΔABC ≅ ΔFDE। যদি AB = 5 সেমি, ∠B = 40° এবং ∠A = 80° হয়, তবে নিম্নলিখিত বিকল্পগুলির মধ্যে কোনটি সত্য?",
+          "options": [
+            {
+              "prompt": "1",
+              "value": "DF = 5 সেমি, ∠E = 60°"
+            },
+            {
+              "prompt": "2",
+              "value": "DE = 5 সেমি, ∠F = 60°"
+            },
+            {
+              "prompt": "3",
+              "value": "DE = 5 সেমি, ∠D = 60°"
+            },
+            {
+              "prompt": "4",
+              "value": "DE = 5 সেমি, ∠E = 60°"
+            }
+          ]
+        }
+      }
+    },
+    {
+      "id": "67050387e2d9dbc150a1fd76",
+      "type": "mcq",
+      "isNumerical": false,
+      "posMarks": 2,
+      "negMarks": 0.5,
+      "skipMarks": 0,
+      "section": 1,
+      "subsection": 0,
+      "questionNo": 3,
+      "languages": {
+        "en": {
+          "question": "The points P and S are on the same side of the line segment QR, such that <span class=\"math-tex\">\\(\\angle PQR = 90^{\\circ}\\)</span>, <span class=\"math-tex\">\\(\\angle SRQ = 90^{\\circ}\\)</span> and <span class=\"math-tex\">\\(PQ = SR\\)</span>. Select the correct statement.",
+          "options": [
+            {
+              "prompt": "1",
+              "value": "∆PQR &cong; ∆SRQ by RHS"
+            },
+            {
+              "prompt": "2",
+              "value": "&nbsp;∆PQR &cong; ∆SQR by SAS"
+            },
+            {
+              "prompt": "3",
+              "value": "∆PQR &cong; ∆SQR by RHS"
+            },
+            {
+              "prompt": "4",
+              "value": "∆PQR &cong; ∆SRQ by SAS"
+            }
+          ]
+        },
+        "hi": {
+          "question": "बिंदु P और S रेखाखंड QR के एक ही ओर इस प्रकार स्थित हैं कि <span class=\"math-tex\">\\(\\angle PQR = 90^{\\circ}\\)</span>,<span class=\"math-tex\">\\(\\angle SRQ = 90^{\\circ}\\)</span> और <span class=\"math-tex\">\\(PQ = SR\\)</span> है। सही कथन का चयन कीजिए।",
+          "options": [
+            {
+              "prompt": "1",
+              "value": "∆PQR &cong; ∆SRQ, समकोण-कर्ण-भुजा से"
+            },
+            {
+              "prompt": "2",
+              "value": "∆PQR &cong; ∆SQR, भुजा-कोण-भुजा से"
+            },
+            {
+              "prompt": "3",
+              "value": "∆PQR &cong; ∆SQR, समकोण-कर्ण-भुजा से"
+            },
+            {
+              "prompt": "4",
+              "value": "∆PQR &cong; ∆SRQ, भुजा-कोण-भुजा से"
+            }
+          ]
+        },
+        "te": {
+          "question": "P మరియు S బిందువులు QR రేఖాఖండం యొక్క ఒకే వైపున ఉన్నాయి, అలాంటివి <span class=\"math-tex\">\\(\\angle PQR = 90^{\\circ}\\)</span>, <span class=\"math-tex\">\\(\\angle SRQ = 90^{\\circ}\\)</span> మరియు <span class=\"math-tex\">\\(PQ = SR\\)</span>. సరైన ప్రవచనాన్ని ఎంచుకోండి.",
+          "options": [
+            {
+              "prompt": "1",
+              "value": "RHS ద్వారా ∆PQR ≅ ∆SRQ"
+            },
+            {
+              "prompt": "2",
+              "value": "SAS ద్వారా ∆PQR ≅ ∆SQR"
+            },
+            {
+              "prompt": "3",
+              "value": "RHS ద్వారా ∆PQR ≅ ∆SQR"
+            },
+            {
+              "prompt": "4",
+              "value": "SAS ద్వారా ∆PQR ≅ ∆SRQ"
+            }
+          ]
+        },
+        "mr": {
+          "question": "$2e",
+          "options": [
+            {
+              "prompt": "1",
+              "value": "RHS द्वारे ∆PQR ≅ ∆SRQ"
+            },
+            {
+              "prompt": "2",
+              "value": "SAS द्वारे ∆PQR ≅ ∆SQR"
+            },
+            {
+              "prompt": "3",
+              "value": "RHS द्वारे ∆PQR ≅ ∆SQR"
+            },
+            {
+              "prompt": "4",
+              "value": "SAS द्वारे ∆PQR ≅ ∆SRQ"
+            }
+          ]
+        },
+        "bn": {
+          "question": "বিন্দু P এবং S, রেখাংশ QR-এর একই দিকে অবস্থিত, যাতে <span class=\"math-tex\">\\(\\angle PQR = 90^{\\circ}\\)</span>, <span class=\"math-tex\">\\(\\angle SRQ = 90^{\\circ}\\)</span> এবং <span class=\"math-tex\">\\(PQ = SR\\)</span> হয়। সঠিক উক্তিটি নির্বাচন করুন।",
+          "options": [
+            {
+              "prompt": "1",
+              "value": "RHS দ্বারা ∆PQR ≅ ∆SRQ"
+            },
+            {
+              "prompt": "2",
+              "value": "SAS দ্বারা ∆PQR ≅ ∆SQR"
+            },
+            {
+              "prompt": "3",
+              "value": "RHS দ্বারা ∆PQR ≅ ∆SQR"
+            },
+            {
+              "prompt": "4",
+              "value": "SAS দ্বারা ∆PQR ≅ ∆SRQ"
+            }
+          ]
+        },
+        "gu": {
+          "question": "બિંદુઓ P અને S રેખાખંડ QR ના એક જ બાજુ પર આવેલા છે, જેથી <span class=\"math-tex\">\\(\\angle PQR = 90^{\\circ}\\)</span>, <span class=\"math-tex\">\\(\\angle SRQ = 90^{\\circ}\\)</span> અને <span class=\"math-tex\">\\(PQ = SR\\)</span>. સાચું વિધાન પસંદ કરો.",
+          "options": [
+            {
+              "prompt": "1",
+              "value": "∆PQR ≅ ∆SRQ RHS દ્વારા"
+            },
+            {
+              "prompt": "2",
+              "value": "∆PQR ≅ ∆SQR SAS દ્વારા"
+            },
+            {
+              "prompt": "3",
+              "value": "∆PQR ≅ ∆SQR RHS દ્વારા"
+            },
+            {
+              "prompt": "4",
+              "value": "∆PQR ≅ ∆SRQ SAS દ્વારા"
+            }
+          ]
+        },
+        "kn": {
+          "question": "ಬಿಂದುಗಳು P ಮತ್ತು S ಒಂದೇ ರೇಖಾಖಂಡ QR ಯ ಒಂದೇ ಬದಿಯಲ್ಲಿವೆ, ಅಲ್ಲಿ <span class=\"math-tex\">\\(\\angle PQR = 90^{\\circ}\\)</span>, <span class=\"math-tex\">\\(\\angle SRQ = 90^{\\circ}\\)</span> ಮತ್ತು <span class=\"math-tex\">\\(PQ = SR\\)</span>. ಸರಿಯಾದ ಹೇಳಿಕೆಯನ್ನು ಆಯ್ಕೆ ಮಾಡಿ.",
+          "options": [
+            {
+              "prompt": "1",
+              "value": "RHS ಯಿಂದ ∆PQR ≅ ∆SRQ"
+            },
+            {
+              "prompt": "2",
+              "value": "SAS ಯಿಂದ ∆PQR ≅ ∆SQR"
+            },
+            {
+              "prompt": "3",
+              "value": "RHS ಯಿಂದ ∆PQR ≅ ∆SQR"
+            },
+            {
+              "prompt": "4",
+              "value": "SAS ಯಿಂದ ∆PQR ≅ ∆SRQ"
+            }
+          ]
+        },
+        "ta": {
+          "question": "QR என்ற கோட்டுத்துண்டத்தின் அதே பக்கத்தில் P மற்றும் S புள்ளிகள் அமைந்துள்ளன, இதில் <span class=\"math-tex\">\\(\\angle PQR = 90^{\\circ}\\)</span>, <span class=\"math-tex\">\\(\\angle SRQ = 90^{\\circ}\\)</span> மற்றும் <span class=\"math-tex\">\\(PQ = SR\\)</span>. சரியான கூற்றைத் தேர்ந்தெடுக்கவும்.",
+          "options": [
+            {
+              "prompt": "1",
+              "value": "RHS மூலம் ∆PQR ≅ ∆SRQ"
+            },
+            {
+              "prompt": "2",
+              "value": "SAS மூலம் ∆PQR ≅ ∆SQR"
+            },
+            {
+              "prompt": "3",
+              "value": "RHS மூலம் ∆PQR ≅ ∆SQR"
+            },
+            {
+              "prompt": "4",
+              "value": "SAS மூலம் ∆PQR ≅ ∆SRQ"
+            }
+          ]
+        },
+        "or": {
+          "question": "QR ରେଖାଖଣ୍ଡର ସମାନ ପାର୍ଶ୍ୱରେ P ଏବଂ S ବିନ୍ଦୁ ଅବସ୍ଥିତ, ଯେପରିକି <span class=\"math-tex\">\\(\\angle PQR = 90^{\\circ}\\)</span>, <span class=\"math-tex\">\\(\\angle SRQ = 90^{\\circ}\\)</span> ଏବଂ <span class=\"math-tex\">\\(PQ = SR\\)</span> | ସଠିକ୍ ବିବୃତ୍ତି ଚୟନ କରନ୍ତୁ |",
+          "options": [
+            {
+              "prompt": "1",
+              "value": "∆PQR ≅ RHS ଦ୍ୱାରା ∆SRQ"
+            },
+            {
+              "prompt": "2",
+              "value": "∆PQR ≅ SAS ଦ୍ୱାରା ∆SQR"
+            },
+            {
+              "prompt": "3",
+              "value": "∆PQR ≅ RHS ଦ୍ୱାରା ∆SQR"
+            },
+            {
+              "prompt": "4",
+              "value": "∆PQR ≅ SAS ଦ୍ୱାରା ∆SRQ"
+            }
+          ]
+        },
+        "pa": {
+          "question": "ਬਿੰਦੂ P ਅਤੇ S ਰੇਖਾ ਖੰਡ QR ਦੇ ਇੱਕੋ ਪਾਸੇ ਹਨ, ਅਜਿਹੇ ਕਿ <span class=\"math-tex\">\\(\\angle PQR = 90^{\\circ}\\)</span>, <span class=\"math-tex\">\\(\\angle SRQ = 90^{\\circ}\\)</span> ਅਤੇ <span class=\"math-tex\">\\(PQ = SR\\)</span>। ਸਹੀ ਕਥਨ ਚੁਣੋ।",
+          "options": [
+            {
+              "prompt": "1",
+              "value": "∆PQR ≅ ∆SRQ RHS ਦੁਆਰਾ"
+            },
+            {
+              "prompt": "2",
+              "value": "∆PQR ≅ ∆SQR SAS ਦੁਆਰਾ"
+            },
+            {
+              "prompt": "3",
+              "value": "∆PQR ≅ ∆SQR RHS ਦੁਆਰਾ"
+            },
+            {
+              "prompt": "4",
+              "value": "∆PQR ≅ ∆SRQ SAS ਦੁਆਰਾ"
+            }
+          ]
+        }
+      }
+    },
+    {
+      "id": "64ccdd2a6bae8bcec14e560c",
+      "type": "mcq",
+      "isNumerical": false,
+      "posMarks": 2,
+      "negMarks": 0.5,
+      "skipMarks": 0,
+      "section": 1,
+      "subsection": 0,
+      "questionNo": 4,
+      "languages": {
+        "en": {
+          "question": "The three sides of two triangles are 4, 5 and 6 cm. Select the INCORRECT statement.",
+          "options": [
+            {
+              "prompt": "1",
+              "value": "The angle opposite to the greater side in those triangles will be greater."
+            },
+            {
+              "prompt": "2",
+              "value": "The area of the two triangles will be different."
+            },
+            {
+              "prompt": "3",
+              "value": "The two triangles are congruent."
+            },
+            {
+              "prompt": "4",
+              "value": "The two triangles are scalene triangles."
+            }
+          ]
+        },
+        "hi": {
+          "question": "<font style=\"vertical-align: inherit;\"><font style=\"vertical-align: inherit;\">दो त्रिभुजों की तीनों भुजाएँ 4, 5 और 6 सेमी हैं। गलत कथन का चयन कीजिए।</font></font>",
+          "options": [
+            {
+              "prompt": "1",
+              "value": "<font style=\"vertical-align: inherit;\"><font style=\"vertical-align: inherit;\">उन त्रिभुजों में बड़ी भुजा के विपरीत कोण बड़ा होगा।</font></font>"
+            },
+            {
+              "prompt": "2",
+              "value": "<font style=\"vertical-align: inherit;\"><font style=\"vertical-align: inherit;\">दोनों त्रिभुजों का क्षेत्रफल अलग-अलग होगा।</font></font>"
+            },
+            {
+              "prompt": "3",
+              "value": "<font style=\"vertical-align: inherit;\"><font style=\"vertical-align: inherit;\">दोनों त्रिभुज सर्वांगसम हैं।</font></font>"
+            },
+            {
+              "prompt": "4",
+              "value": "<font style=\"vertical-align: inherit;\"><font style=\"vertical-align: inherit;\">दोनों त्रिभुज विषमकोण त्रिभुज हैं।</font></font>"
+            }
+          ]
+        },
+        "te": {
+          "question": "రెండు త్రిభుజాల మూడు భుజాలు 4, 5 మరియు 6 సెం.మీ. అయితే, క్రింది వాటిలో తప్పుగా ఉన్న ప్రకటనను ఎంచుకోండి.",
+          "options": [
+            {
+              "prompt": "1",
+              "value": "ఆ త్రిభుజాలలో పెద్ద భుజానికి ఎదురుగా ఉన్న కోణం పెద్దదిగా ఉంటుంది."
+            },
+            {
+              "prompt": "2",
+              "value": "రెండు త్రిభుజాల వైశాల్యం వేరువేరుగా ఉంటుంది."
+            },
+            {
+              "prompt": "3",
+              "value": "ఆ రెండు త్రిభుజాలు సర్వసమానాలు."
+            },
+            {
+              "prompt": "4",
+              "value": "ఆ రెండు త్రిభుజాలు విషమబాహు త్రిభుజాలు."
+            }
+          ]
+        },
+        "mr": {
+          "question": "दोन त्रिकोणांच्या तीन बाजू 4, 5 आणि 6 सेमी आहेत. अयोग्य विधान निवडा.",
+          "options": [
+            {
+              "prompt": "1",
+              "value": "त्या त्रिकोणांमधील मोठ्या बाजूच्या समोरील कोन मोठा असेल."
+            },
+            {
+              "prompt": "2",
+              "value": "दोन त्रिकोणांचे क्षेत्रफळ भिन्न असेल."
+            },
+            {
+              "prompt": "3",
+              "value": "दोन त्रिकोण एकरूप आहेत."
+            },
+            {
+              "prompt": "4",
+              "value": "दोन त्रिकोण विषमभुज त्रिकोण आहेत."
+            }
+          ]
+        },
+        "bn": {
+          "question": "দুটি ত্রিভুজের তিনটি বাহু 4, 5 এবং 6 সেমি। ভুল বিবৃতিটি নির্বাচন করুন।",
+          "options": [
+            {
+              "prompt": "1",
+              "value": "এই ত্রিভুজগুলিতে বৃহত্তর বাহুর বিপরীত কোণটি বৃহত্তর হবে।"
+            },
+            {
+              "prompt": "2",
+              "value": "দুটি ত্রিভুজের ক্ষেত্রফল ভিন্ন হবে।"
+            },
+            {
+              "prompt": "3",
+              "value": "দুটি ত্রিভুজ সর্বসম।"
+            },
+            {
+              "prompt": "4",
+              "value": "দুটি ত্রিভুজ বিষমবাহু ত্রিভুজ।"
+            }
+          ]
+        },
+        "ta": {
+          "question": "இரண்டு முக்கோணங்களின் மூன்று பக்கங்கள் 4, 5 மற்றும் 6 செ.மீ ஆகும். தவறான கூற்றைத் தேர்ந்தெடுக்கவும்.",
+          "options": [
+            {
+              "prompt": "1",
+              "value": "அந்த முக்கோணங்களில் பெரிய பக்கத்திற்கு எதிரே உள்ள கோணம் பெரியதாக இருக்கும்."
+            },
+            {
+              "prompt": "2",
+              "value": "இரண்டு முக்கோணங்களின் பரப்பளவும் வெவ்வேறாக இருக்கும்."
+            },
+            {
+              "prompt": "3",
+              "value": "இரண்டு முக்கோணங்களும் சர்வசமமானவை."
+            },
+            {
+              "prompt": "4",
+              "value": "இரண்டு முக்கோணங்களும் அசமபக்க முக்கோணங்கள் ஆகும்."
+            }
+          ]
+        },
+        "or": {
+          "question": "ଦୁଇଟି ତ୍ରିଭୁଜର ତିନୋଟି ବାହୁ 4, 5 ଏବଂ 6 ସେମି ଅଟେ | ଭୁଲ ବିବୃତ୍ତି ଚୟନ କରନ୍ତୁ |",
+          "options": [
+            {
+              "prompt": "1",
+              "value": "ସେହି ତ୍ରିଭୁଜରେ ବଡ଼ ବାହୁର ବିପରୀତ କୋଣ ବଡ଼ ହେବ |"
+            },
+            {
+              "prompt": "2",
+              "value": "ଦୁଇଟି ତ୍ରିଭୁଜର କ୍ଷେତ୍ରଫଳ ଭିନ୍ନ ହେବ |"
+            },
+            {
+              "prompt": "3",
+              "value": "ଦୁଇଟି ତ୍ରିଭୁଜ ସର୍ବସମ ଅଟନ୍ତି |"
+            },
+            {
+              "prompt": "4",
+              "value": "ଦୁଇଟି ତ୍ରିଭୁଜ ବିଷମବାହୁ ତ୍ରିଭୁଜ ଅଟନ୍ତି |"
+            }
+          ]
+        },
+        "pa": {
+          "question": "ਦੋ ਤਿਕੋਣਾਂ ਦੀਆਂ ਤਿੰਨ ਭੁਜਾਵਾਂ 4, 5 ਅਤੇ 6 ਸੈ.ਮੀ. ਹਨ। ਗਲਤ ਕਥਨ ਚੁਣੋ।",
+          "options": [
+            {
+              "prompt": "1",
+              "value": "ਉਹਨਾਂ ਤਿਕੋਣਾਂ ਵਿੱਚ ਵੱਡੀ ਭੁਜਾ ਦੇ ਸਾਹਮਣੇ ਵਾਲਾ ਕੋਣ ਵੱਡਾ ਹੋਵੇਗਾ।"
+            },
+            {
+              "prompt": "2",
+              "value": "ਦੋ ਤਿਕੋਣਾਂ ਦਾ ਖੇਤਰਫਲ ਵੱਖਰਾ ਹੋਵੇਗਾ।"
+            },
+            {
+              "prompt": "3",
+              "value": "ਦੋ ਤਿਕੋਣਾਂ ਇੱਕੋ ਜਿਹੀਆਂ ਹਨ।"
+            },
+            {
+              "prompt": "4",
+              "value": "ਦੋ ਤਿਕੋਣਾਂ ਵਿਖਮ-ਭੁਜੀ ਤਿਕੋਣਾਂ ਹਨ।"
+            }
+          ]
+        }
+      }
+    },
+    {
+      "id": "63b28f3637e5973b698ef201",
+      "type": "mcq",
+      "isNumerical": false,
+      "posMarks": 2,
+      "negMarks": 0.5,
+      "skipMarks": 0,
+      "section": 1,
+      "subsection": 0,
+      "questionNo": 5,
+      "languages": {
+        "en": {
+          "question": "What is the ASA congruence rule of triangles, where A and S represents angle and side of triangle respectively?",
+          "options": [
+            {
+              "prompt": "1",
+              "value": "Two triangles are said to be congruent if all three sides of both the triangles are equal."
+            },
+            {
+              "prompt": "2",
+              "value": "Two triangles are said to be congruent if 2 angles and the included side of one triangle are equal to 2 angles and the included side of the other triangle."
+            },
+            {
+              "prompt": "3",
+              "value": "Two triangles are said to be congruent if 2 sides and the included angle of one triangle are equal to 2 sides and the included angle of the other triangle."
+            },
+            {
+              "prompt": "4",
+              "value": "Two triangles are said to be congruent if any pair of 2 angles and any 1 pair of sides of both the triangles are equal."
+            }
+          ]
+        },
+        "hi": {
+          "question": "त्रिभुजों का ASA सर्वांगसमता नियम क्या है, जहाँ A और S क्रमशः त्रिभुज के कोण और भुजा को प्रदर्शित करते हैं?",
+          "options": [
+            {
+              "prompt": "1",
+              "value": "दो त्रिभुज सर्वांगसम कहलाते हैं यदि दोनों त्रिभुजों की तीनों भुजाएँ बराबर हों।"
+            },
+            {
+              "prompt": "2",
+              "value": "दो त्रिभुज सर्वांगसम कहलाते हैं यदि <span style=\"\">एक त्रिभुज&nbsp;</span>के 2 कोण और सम्मिलित भुजा <span style=\"\">दूसरे त्रिभुज&nbsp;</span>के 2 कोणों और सम्मिलित भुजा के बराबर हो।"
+            },
+            {
+              "prompt": "3",
+              "value": "दो त्रिभुजों को सर्वांगसम कहा जाता है यदि एक त्रिभुज की 2 भुजाएँ और सम्मिलित कोण दूसरे त्रिभुज की 2 भुजाओं और सम्मिलित कोण के बराबर हों।"
+            },
+            {
+              "prompt": "4",
+              "value": "दो त्रिभुज सर्वांगसम कहलाते हैं यदि 2 कोणों का कोई युग्म और दोनों त्रिभुजों की भुजाओं का कोई 1 युग्म बराबर हो।"
+            }
+          ]
+        }
+      }
+    },
+    {
+      "id": "636615c64d1faf309b70808c",
+      "type": "mcq",
+      "isNumerical": false,
+      "posMarks": 2,
+      "negMarks": 0.5,
+      "skipMarks": 0,
+      "section": 1,
+      "subsection": 0,
+      "questionNo": 6,
+      "languages": {
+        "en": {
+          "question": "In a &Delta;PQR, PQ = PR, and S is a point on PQ, such that PS = RS = QR. Then what is the measure of &ang;QPR?",
+          "options": [
+            {
+              "prompt": "1",
+              "value": "60&deg;"
+            },
+            {
+              "prompt": "2",
+              "value": "72&deg;&nbsp;"
+            },
+            {
+              "prompt": "3",
+              "value": "23&deg;"
+            },
+            {
+              "prompt": "4",
+              "value": "36&deg;&nbsp;"
+            }
+          ]
+        },
+        "hi": {
+          "question": "एक &Delta;PQR में, PQ = PR है, और S, PQ पर एक बिंदु इस प्रकार है, कि PS = RS = QR है। तो &ang;QPR की माप क्या है?",
+          "options": [
+            {
+              "prompt": "1",
+              "value": "60&deg;"
+            },
+            {
+              "prompt": "2",
+              "value": "72&deg;&nbsp;"
+            },
+            {
+              "prompt": "3",
+              "value": "23&deg;"
+            },
+            {
+              "prompt": "4",
+              "value": "36&deg;&nbsp;"
+            }
+          ]
+        },
+        "pa": {
+          "question": "ਇੱਕ ΔPQR ਵਿੱਚ, PQ = PR, ਅਤੇ S, PQ 'ਤੇ ਇੱਕ ਬਿੰਦੂ ਹੈ, ਜਿਵੇਂ ਕਿ PS = RS = QR। ਫਿਰ ∠QPR ਦਾ ਮਾਪ ਕੀ ਹੈ?",
+          "options": [
+            {
+              "prompt": "1",
+              "value": "60°"
+            },
+            {
+              "prompt": "2",
+              "value": "72°"
+            },
+            {
+              "prompt": "3",
+              "value": "23°"
+            },
+            {
+              "prompt": "4",
+              "value": "36°"
+            }
+          ]
+        }
+      }
+    },
+    {
+      "id": "6334086ce9a1ab65b8254c96",
+      "type": "mcq",
+      "isNumerical": false,
+      "posMarks": 2,
+      "negMarks": 0.5,
+      "skipMarks": 0,
+      "section": 1,
+      "subsection": 0,
+      "questionNo": 7,
+      "languages": {
+        "en": {
+          "question": "In&nbsp;&Delta;ADE, B and C are the point on the side AD and AE respectively. The line joining BC is parallel to the side DE. If BC = (x + 2) cm and DE = (x<sup>2</sup>&nbsp;+ 2x) cm and the length of BD is twice the length of AB, then find the length of BC.",
+          "options": [
+            {
+              "prompt": "1",
+              "value": "<span style=\"\">5 cm</span>"
+            },
+            {
+              "prompt": "2",
+              "value": "<span style=\"\">10 cm</span>"
+            },
+            {
+              "prompt": "3",
+              "value": "<span style=\"\">15 cm</span>"
+            },
+            {
+              "prompt": "4",
+              "value": "None of the above"
+            }
+          ]
+        },
+        "hi": {
+          "question": "&Delta;ADE में, B और C क्रमशः भुजा AD और AE पर स्थित बिंदु हैं। BC को मिलाने वाली रेखा DE के समांतर है। यदि BC = (x + 2) cm और DE = (x<sup>2</sup> + 2x) cm और BD की लंबाई AB की लंबाई की दोगुनी है, तो BC की लंबाई ज्ञात कीजिए।",
+          "options": [
+            {
+              "prompt": "1",
+              "value": "<span style=\"\">5 सेमी&nbsp;</span>"
+            },
+            {
+              "prompt": "2",
+              "value": "<span style=\"\">10 सेमी&nbsp;</span>"
+            },
+            {
+              "prompt": "3",
+              "value": "<span style=\"\">15 सेमी&nbsp;</span>"
+            },
+            {
+              "prompt": "4",
+              "value": "उपरोक्त में से कोई भी नहीं"
+            }
+          ]
+        }
+      }
+    },
+    {
+      "id": "635902c0eee6d60609a3f18b",
+      "type": "mcq",
+      "isNumerical": false,
+      "posMarks": 2,
+      "negMarks": 0.5,
+      "skipMarks": 0,
+      "section": 1,
+      "subsection": 0,
+      "questionNo": 8,
+      "languages": {
+        "en": {
+          "question": "If &Delta;ABC is similar to &Delta;DEF such that 2AB = DE and BC = 8 cm, then EF is equal to:",
+          "options": [
+            {
+              "prompt": "1",
+              "value": "4 cm&nbsp;"
+            },
+            {
+              "prompt": "2",
+              "value": "16 cm"
+            },
+            {
+              "prompt": "3",
+              "value": "12 cm"
+            },
+            {
+              "prompt": "4",
+              "value": "8 cm"
+            }
+          ]
+        },
+        "hi": {
+          "question": "यदि ΔABC, ΔDEF के समरूप इस प्रकार है कि 2AB = DE और BC = 8 cm है, तब EF बराबर है:",
+          "options": [
+            {
+              "prompt": "1",
+              "value": "4 cm "
+            },
+            {
+              "prompt": "2",
+              "value": "16 cm"
+            },
+            {
+              "prompt": "3",
+              "value": "12 cm"
+            },
+            {
+              "prompt": "4",
+              "value": "8 cm"
+            }
+          ]
+        },
+        "te": {
+          "question": "ఒకవేళ ΔABC అనేది ΔDEFని పోలి ఉంటే 2AB = DE మరియు BC = 8 సెం.మీ, అప్పుడు EF దేనికి సమానం:",
+          "options": [
+            {
+              "prompt": "1",
+              "value": "4 సెం.మీ"
+            },
+            {
+              "prompt": "2",
+              "value": "16 సెం.మీ"
+            },
+            {
+              "prompt": "3",
+              "value": "12 సెం.మీ"
+            },
+            {
+              "prompt": "4",
+              "value": "8 సెం.మీ"
+            }
+          ]
+        },
+        "mr": {
+          "question": "जर ΔABC, ΔDEF सारखा असेल जसे की 2AB = DE आणि BC = 8 सेमी, तर EF समान किती आहे?",
+          "options": [
+            {
+              "prompt": "1",
+              "value": "4 सेमी"
+            },
+            {
+              "prompt": "2",
+              "value": "16 सेमी"
+            },
+            {
+              "prompt": "3",
+              "value": "12 सेमी"
+            },
+            {
+              "prompt": "4",
+              "value": "8 सेमी"
+            }
+          ]
+        },
+        "bn": {
+          "question": "যদি ΔABC, ΔDEF এর সাথে এমনভাবে সদৃশ হয় যে 2AB = DE এবং BC = 8 সেমি, তাহলে EF কত হবে?",
+          "options": [
+            {
+              "prompt": "1",
+              "value": "4 সেমি "
+            },
+            {
+              "prompt": "2",
+              "value": "16 সেমি "
+            },
+            {
+              "prompt": "3",
+              "value": "12 সেমি "
+            },
+            {
+              "prompt": "4",
+              "value": "8 সেমি "
+            }
+          ]
+        },
+        "gu": {
+          "question": "જો ΔABC એ ΔDEF જેવું જ છે જેમ કે 2AB = DE અને BC = 8 સેમી, તો EF શોધો.",
+          "options": [
+            {
+              "prompt": "1",
+              "value": "4 સેમી"
+            },
+            {
+              "prompt": "2",
+              "value": "16 સેમી"
+            },
+            {
+              "prompt": "3",
+              "value": "12 સેમી"
+            },
+            {
+              "prompt": "4",
+              "value": "8 સેમી"
+            }
+          ]
+        },
+        "kn": {
+          "question": "ಒಂದು ವೇಳೆ ΔABC ಎಂಬುದು ΔDEF ಗೆ ಹೋಲುವಂತಿದ್ದರೆ ಅಂದರೆ 2AB = DE ಮತ್ತು BC = 8 ಸೆಂ.ಮೀ ಆಗಿದ್ದರೆ, ನಂತರ EF ಇದಕ್ಕೆ ಸಮಾನವಾಗಿರುತ್ತದೆ:",
+          "options": [
+            {
+              "prompt": "1",
+              "value": "4 ಸೆಂ.ಮೀ"
+            },
+            {
+              "prompt": "2",
+              "value": "16 ಸೆಂ.ಮೀ"
+            },
+            {
+              "prompt": "3",
+              "value": "12 ಸೆಂ.ಮೀ"
+            },
+            {
+              "prompt": "4",
+              "value": "8 ಸೆಂ.ಮೀ"
+            }
+          ]
+        },
+        "ta": {
+          "question": "<p>ΔABC ஆனது ΔDEF ஐப் போலவே 2AB = DE</p>\n\n<p>மற்றும் BC = 8 செமீ என இருந்தால், EF எதற்குச் சமம்?</p>\n",
+          "options": [
+            {
+              "prompt": "1",
+              "value": "4 செ.மீ"
+            },
+            {
+              "prompt": "2",
+              "value": "16 செ.மீ"
+            },
+            {
+              "prompt": "3",
+              "value": "12 செ.மீ"
+            },
+            {
+              "prompt": "4",
+              "value": "8 செ.மீ"
+            }
+          ]
+        },
+        "or": {
+          "question": "ଯଦି ΔABC, ΔDEF ସହିତ ସମାନ ଏବଂ 2AB = DE ଓ BC = 8 cm ହୁଏ, ତେବେ EF କେତେ ହେବ?",
+          "options": [
+            {
+              "prompt": "1",
+              "value": "4 cm"
+            },
+            {
+              "prompt": "2",
+              "value": "16 cm"
+            },
+            {
+              "prompt": "3",
+              "value": "12 cm"
+            },
+            {
+              "prompt": "4",
+              "value": "8 cm"
+            }
+          ]
+        },
+        "pa": {
+          "question": "ਜੇਕਰ ΔABC, ΔDEF ਦੇ ਸਮਾਨ ਹੈ, ਜਿਵੇਂ ਕਿ 2AB = DE ਅਤੇ BC = 8 ਸੈ.ਮੀ., ਤਾਂ EF ਬਰਾਬਰ ਹੈ:",
+          "options": [
+            {
+              "prompt": "1",
+              "value": "4 ਸੈ.ਮੀ."
+            },
+            {
+              "prompt": "2",
+              "value": "16 ਸੈ.ਮੀ."
+            },
+            {
+              "prompt": "3",
+              "value": "12 ਸੈ.ਮੀ."
+            },
+            {
+              "prompt": "4",
+              "value": "8 ਸੈ.ਮੀ."
+            }
+          ]
+        }
+      }
+    },
+    {
+      "id": "62b73f46f5e510b50cab5df7",
+      "type": "mcq",
+      "isNumerical": false,
+      "posMarks": 2,
+      "negMarks": 0.5,
+      "skipMarks": 0,
+      "section": 1,
+      "subsection": 0,
+      "questionNo": 9,
+      "languages": {
+        "en": {
+          "question": "In <span style=\"color: rgb(102, 102, 102);  \">&Delta;</span>ABC, DE || BC, intersecting AB at D and AC at E. AD : BD :: 2 : 3 and the area of trapezium BDEC is 63 cm<sup>2</sup>. What is the area of <span style=\"color: rgb(102, 102, 102);  \">&Delta;</span>ADE?",
+          "options": [
+            {
+              "prompt": "1",
+              "value": "14 cm<sup>2</sup>"
+            },
+            {
+              "prompt": "2",
+              "value": "12 cm<sup>2</sup>"
+            },
+            {
+              "prompt": "3",
+              "value": "28 cm<sup>2</sup>"
+            },
+            {
+              "prompt": "4",
+              "value": "42 cm<sup>2</sup>"
+            }
+          ]
+        },
+        "hi": {
+          "question": "&Delta;ABC में, जहाँ DE || BC है, AB को D पर और AC को E पर प्रतिच्छेद करती है। AD : BD :: 2: 3 और समलंब चतुर्भुज BDEC का क्षेत्रफल 63 वर्ग सेंटीमीटर है। <span style=\"color: rgb(102, 102, 102); \">&Delta;</span>ADE का क्षेत्रफल कितना है?",
+          "options": [
+            {
+              "prompt": "1",
+              "value": "<span style=\"\">14 वर्ग सेंटीमीटर</span>"
+            },
+            {
+              "prompt": "2",
+              "value": "<span style=\"\">12 वर्ग सेंटीमीटर</span>"
+            },
+            {
+              "prompt": "3",
+              "value": "<span style=\"\">28 वर्ग सेंटीमीटर</span>"
+            },
+            {
+              "prompt": "4",
+              "value": "<span style=\"\">42 वर्ग सेंटीमीटर</span>"
+            }
+          ]
+        },
+        "te": {
+          "question": "<span style=\"color: rgb(102, 102, 102);  \">Δ</span>ABC లో, DE || BC, AB ని D వద్ద మరియు AC ని E వద్ద ఖండిస్తుంది. AD : BD :: 2 : 3 మరియు BDEC ట్రాపీజియం యొక్క వైశాల్యం 63 సెం.మీ<sup>2</sup>. <span style=\"color: rgb(102, 102, 102);  \">Δ</span>ADE యొక్క వైశాల్యం ఎంత?",
+          "options": [
+            {
+              "prompt": "1",
+              "value": "14 సెం.మీ<sup>2</sup>"
+            },
+            {
+              "prompt": "2",
+              "value": "12 సెం.మీ<sup>2</sup>"
+            },
+            {
+              "prompt": "3",
+              "value": "28 సెం.మీ<sup>2</sup>"
+            },
+            {
+              "prompt": "4",
+              "value": "42 సెం.మీ<sup>2</sup>"
+            }
+          ]
+        },
+        "mr": {
+          "question": "<span style=\"color: rgb(102, 102, 102);  \">Δ</span> ABC, DE || मध्ये BC, AB ला D आणि AC ला E येथे छेदतो. AD : BD :: 2 : 3 आणि <span style=\"color: rgb(33, 37, 41);\">समलंब चौकोन</span> BDEC चे क्षेत्रफळ 63 सेमी<sup>2</sup> आहे. <span style=\"color: rgb(102, 102, 102);  \">Δ</span> ADE चे क्षेत्रफळ किती आहे?",
+          "options": [
+            {
+              "prompt": "1",
+              "value": "14 सेमी<sup>2</sup>"
+            },
+            {
+              "prompt": "2",
+              "value": "12 <span style=\"color: rgb(33, 37, 41);\">सेमी</span><span style=\"position: relative;  line-height: 0; vertical-align: baseline; top: -0.5em;font-size:10.5px;\">2</span>"
+            },
+            {
+              "prompt": "3",
+              "value": "28 <span style=\"color: rgb(33, 37, 41);\">सेमी</span><span style=\"position: relative;  line-height: 0; vertical-align: baseline; top: -0.5em;font-size:10.5px;\">2</span>"
+            },
+            {
+              "prompt": "4",
+              "value": "42 <span style=\"color: rgb(33, 37, 41);\">सेमी</span><span style=\"position: relative;  line-height: 0; vertical-align: baseline; top: -0.5em;font-size:10.5px;\">2</span>"
+            }
+          ]
+        },
+        "bn": {
+          "question": "<span style=\"color: rgb(102, 102, 102);  \">Δ</span>ABC ত্রিভুজে, DE || BC, AB কে D বিন্দুতে এবং AC কে E বিন্দুতে ছেদ করে। AD : BD :: 2 : 3 এবং BDEC ট্রাপিজিয়ামের ক্ষেত্রফল 63 cm<sup>2</sup>। <span style=\"color: rgb(102, 102, 102);  \">Δ</span>ADE ত্রিভুজের ক্ষেত্রফল কত?",
+          "options": [
+            {
+              "prompt": "1",
+              "value": "14 cm<sup>2</sup>"
+            },
+            {
+              "prompt": "2",
+              "value": "12 cm<sup>2</sup>"
+            },
+            {
+              "prompt": "3",
+              "value": "28 cm<sup>2</sup>"
+            },
+            {
+              "prompt": "4",
+              "value": "42 cm<sup>2</sup>"
+            }
+          ]
+        },
+        "gu": {
+          "question": "ત્રિકોણ ABC માં, DE || BC, જે AB ને D અને AC ને E બિંદુઓ પર છેદે છે. AD : BD :: 2 : 3 અને <span data-sheets-root=\"1\" style=\"color: rgb(0, 0, 0);  \">સમલંબ ચતુષ્કોણ</span>  BDEC નું ક્ષેત્રફળ 63 સેમી<sup>2</sup> છે. તો ત્રિકોણ ADE નું ક્ષેત્રફળ શું છે?",
+          "options": [
+            {
+              "prompt": "1",
+              "value": "14 સેમી<sup>2</sup>"
+            },
+            {
+              "prompt": "2",
+              "value": "12 સેમી<sup>2</sup>"
+            },
+            {
+              "prompt": "3",
+              "value": "28 સેમી<sup>2</sup>"
+            },
+            {
+              "prompt": "4",
+              "value": "42 સેમી<sup>2</sup>"
+            }
+          ]
+        },
+        "kn": {
+          "question": "ABC ತ್ರಿಭುಜದಲ್ಲಿ, DE || BC, AB ಅನ್ನು D ಮತ್ತು AC ಅನ್ನು E ಯಲ್ಲಿ ಛೇದಿಸುತ್ತದೆ. AD : BD :: 2 : 3 ಮತ್ತು BDEC ವಿಷಮ ಚತುರ್ಭುಜದ ವಿಸ್ತೀರ್ಣ 63 ಸೆಂ.ಮೀ<sup>2</sup>. ADE ತ್ರಿಭುಜದ ವಿಸ್ತೀರ್ಣ ಎಷ್ಟು?",
+          "options": [
+            {
+              "prompt": "1",
+              "value": "14 ಸೆಂ.ಮೀ<span style=\"position: relative;  line-height: 0; vertical-align: baseline; top: -0.5em;font-size:10.5px;\">2</span>"
+            },
+            {
+              "prompt": "2",
+              "value": "12 ಸೆಂ.ಮೀ<span style=\"position: relative;  line-height: 0; vertical-align: baseline; top: -0.5em;font-size:10.5px;\">2</span>"
+            },
+            {
+              "prompt": "3",
+              "value": "28 ಸೆಂ.ಮೀ<span style=\"position: relative;  line-height: 0; vertical-align: baseline; top: -0.5em;font-size:10.5px;\">2</span>"
+            },
+            {
+              "prompt": "4",
+              "value": "42 ಸೆಂ.ಮೀ<span style=\"position: relative;  line-height: 0; vertical-align: baseline; top: -0.5em;font-size:10.5px;\">2</span>"
+            }
+          ]
+        },
+        "ta": {
+          "question": "<span style=\"color: rgb(102, 102, 102);  \">Δ</span>ABC இல், DE || BC, AB ஐ D இல் மற்றும் AC ஐ E இல் வெட்டுகிறது. AD : BD :: 2 : 3 மற்றும் BDEC என்ற சரிவகத்தின் பரப்பளவு 63 செ.மீ<sup>2</sup>. <span style=\"color: rgb(102, 102, 102);  \">Δ</span>ADE இன் பரப்பளவு என்ன?",
+          "options": [
+            {
+              "prompt": "1",
+              "value": "14 செ.மீ<sup>2</sup>"
+            },
+            {
+              "prompt": "2",
+              "value": "12 செ.மீ<sup>2</sup>"
+            },
+            {
+              "prompt": "3",
+              "value": "28 செ.மீ<sup>2</sup>"
+            },
+            {
+              "prompt": "4",
+              "value": "42 செ.மீ<sup>2</sup>"
+            }
+          ]
+        },
+        "or": {
+          "question": "<span style=\"color: rgb(102, 102, 102);\"> Δ</span>ABC ରେ, DE || BC, AB କୁ D ରେ ଏବଂ AC କୁ E ରେ ଛେଦ କରେ। AD : BD :: 2 : 3 ଏବଂ ଟ୍ରାପିଜିୟମ୍ BDEC ର କ୍ଷେତ୍ରଫଳ 63 cm<sup>2</sup> ଅଟେ। <span style=\"color: rgb(102, 102, 102);\"> Δ</span>ADE ର କ୍ଷେତ୍ରଫଳ କେତେ?",
+          "options": [
+            {
+              "prompt": "1",
+              "value": "14 cm<sup>2</sup>"
+            },
+            {
+              "prompt": "2",
+              "value": "12 cm<sup>2</sup>"
+            },
+            {
+              "prompt": "3",
+              "value": "28 cm<sup>2</sup>"
+            },
+            {
+              "prompt": "4",
+              "value": "42 cm<sup>2</sup>"
+            }
+          ]
+        }
+      }
+    },
+    {
+      "id": "6527fbc0e212d806e0d47c96",
+      "type": "mcq",
+      "isNumerical": false,
+      "posMarks": 2,
+      "negMarks": 0.5,
+      "skipMarks": 0,
+      "section": 1,
+      "subsection": 0,
+      "questionNo": 10,
+      "languages": {
+        "en": {
+          "question": "In a ∆PQR and ∆ ABC, &ang;P = &ang;A and AC = PR. Which of the following conditions is true for triangle PQR and ABC to be congruent?",
+          "options": [
+            {
+              "prompt": "1",
+              "value": "AB = PQ by SSS"
+            },
+            {
+              "prompt": "2",
+              "value": "AB = PQ by SAS"
+            },
+            {
+              "prompt": "3",
+              "value": "BC = QR by ASS"
+            },
+            {
+              "prompt": "4",
+              "value": "&ang;Q = &ang;B by AAA"
+            }
+          ]
+        },
+        "hi": {
+          "question": "∆PQR और ∆ ABC में, &ang;P = &ang;A और AC = PR है। त्रिभुज PQR और ABC के सर्वांगसम होने के लिए निम्नलिखित में से कौन सी शर्त सत्य है?",
+          "options": [
+            {
+              "prompt": "1",
+              "value": "<span style=\"color: rgb(33, 37, 41);\">SSS (भुजा-भुजा-भुजा)</span> द्वारा <span style=\"color: rgb(33, 37, 41);\">AB = PQ</span>"
+            },
+            {
+              "prompt": "2",
+              "value": "<span style=\"color: rgb(33, 37, 41);\">SAS (भुजा-कोण-भुजा) द्वारा&nbsp;</span>AB = PQ&nbsp;&nbsp;"
+            },
+            {
+              "prompt": "3",
+              "value": "<span style=\"color: rgb(33, 37, 41);\">ASS (कोण-भुजा-भुजा) द्वारा&nbsp;</span>BC = QR"
+            },
+            {
+              "prompt": "4",
+              "value": "<span style=\"color: rgb(33, 37, 41);\">AAA (कोण-कोण-कोण) द्वारा&nbsp;</span>&ang;Q = &ang;B"
+            }
+          ]
+        },
+        "or": {
+          "question": "∆PQR ଏବଂ ∆ABC ରେ, ∠P = ∠A ଏବଂ AC = PR | ∆PQR ଏବଂ ∆ABC ଙ୍କ ସର୍ବସମତା ପାଇଁ ନିମ୍ନଲିଖିତ କିଛି ସ୍ଥିତି ସତ୍ୟ କେଉଁଟି?",
+          "options": [
+            {
+              "prompt": "1",
+              "value": "SSS ଦ୍ୱାରା AB = PQ"
+            },
+            {
+              "prompt": "2",
+              "value": "SAS ଦ୍ୱାରା AB = PQ"
+            },
+            {
+              "prompt": "3",
+              "value": "ASS ଦ୍ୱାରା BC = QR"
+            },
+            {
+              "prompt": "4",
+              "value": "AAA ଦ୍ୱାରା ∠Q = ∠B"
+            }
+          ]
+        },
+        "pa": {
+          "question": "∆PQR ਅਤੇ ∆ABC ਵਿੱਚ, ∠P = ∠A ਅਤੇ AC = PR ਹੈ। ∆PQR ਅਤੇ ∆ABC ਦੇ ਸਰਬੰਗ ਹੋਣ ਲਈ ਕਿਹੜੀ ਸ਼ਰਤ ਸਹੀ ਹੈ?",
+          "options": [
+            {
+              "prompt": "1",
+              "value": "SSS ਰਾਹੀਂ AB = PQ"
+            },
+            {
+              "prompt": "2",
+              "value": "SAS ਰਾਹੀਂ AB = PQ"
+            },
+            {
+              "prompt": "3",
+              "value": "ASS ਰਾਹੀਂ BC = QR"
+            },
+            {
+              "prompt": "4",
+              "value": "AAA ਰਾਹੀਂ ∠Q = ∠B"
+            }
+          ]
+        }
+      }
+    }
+  ]
+}

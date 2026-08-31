@@ -401,11 +401,17 @@
     clear(app);
     app.appendChild(h("div", { class: "rm-loading" }, "Loading test questions..."));
 
-    // Fetch the real questions JSON
+    // Fetch the real questions JSON — try both naming conventions
     let testData;
     try {
-      const resp = await fetch("/tests/parsed_questions_" + testId + ".json");
-      if (!resp.ok) throw new Error("Not found");
+      let resp = await fetch("/tests/" + testId + ".json");
+      let ct = resp.headers.get("content-type") || "";
+      if (!resp.ok || !ct.includes("json")) {
+        // Try alternate naming
+        resp = await fetch("/tests/questions_" + testId + ".json");
+        ct = resp.headers.get("content-type") || "";
+      }
+      if (!resp.ok || !ct.includes("json")) throw new Error("Not found");
       testData = await resp.json();
     } catch (e) {
       clear(app);
@@ -514,15 +520,17 @@
     function renderQ() {
       clear(qArea);
       const q = questions[state.current];
-      const qText = q[lang] ? q[lang].question : q.en.question;
-      const opts = q[lang] && q[lang].options.length ? q[lang].options : q.en.options;
+      // Handle both old format (q.en) and new format (q.languages.en)
+      const langData = q.languages ? (q.languages[lang] || q.languages.en || {}) : (q[lang] || q.en || {});
+      const qText = langData.question || "";
+      const opts = langData.options || [];
 
       qArea.appendChild(h("div", { class: "rm-q-meta" }, [
         h("span", {}, "Section: " + (sectionNames[q.section] || ("Section " + q.section))),
         h("span", {}, "Question " + (state.current + 1) + " of " + questions.length),
-        h("span", {}, "Marks: +" + q.posMarks + " / -" + q.negMarks),
+        h("span", {}, "Marks: +" + q.posMarks + " / -" + (q.negMarks || 0.5)),
       ]));
-      // Render question HTML safely
+      // Render question HTML (may contain MathJax, images, HTML entities)
       const qDiv = h("div", { class: "rm-q-text" });
       qDiv.innerHTML = qText;
       qArea.appendChild(qDiv);
@@ -530,10 +538,12 @@
       const optsEl = h("div", { class: "rm-options" });
       opts.forEach(function (opt, oi) {
         const selected = state.answers[state.current] === oi;
-        const o = h("div", { class: "rm-option" + (selected ? " selected" : "") }, [
-          h("span", { class: "letter" }, String.fromCharCode(65 + oi)),
-          h("span", { html: opt.value })
-        ]);
+        const o = h("div", { class: "rm-option" + (selected ? " selected" : "") });
+        const letter = h("span", { class: "letter" }, String.fromCharCode(65 + oi));
+        const textSpan = h("span", {});
+        textSpan.innerHTML = opt.value;
+        o.appendChild(letter);
+        o.appendChild(textSpan);
         o.addEventListener("click", function () {
           state.answers[state.current] = oi;
           renderQ();
@@ -542,6 +552,13 @@
         optsEl.appendChild(o);
       });
       qArea.appendChild(optsEl);
+
+      // Trigger MathJax to render any LaTeX in the question + options
+      if (window.MathJax && window.MathJax.typeset) {
+        window.MathJax.typeset([qArea]);
+      } else if (window.MathJax && window.MathJax.typesetPromise) {
+        window.MathJax.typesetPromise([qArea]).catch(function(){});
+      }
 
       const controls = h("div", { class: "rm-q-controls" });
       const prevBtn = h("button", { class: "rm-btn rm-btn-ghost rm-btn-sm" }, "← Previous");
@@ -619,7 +636,7 @@
 
     const sectionNames = {1: "General Intelligence and Reasoning", 2: "General Awareness", 3: "Quantitative Aptitude", 4: "English Comprehension"};
 
-    fetch("/tests/parsed_questions_" + testId + ".json")
+    fetch("/tests/" + testId + ".json")
       .then(r => r.json())
       .then(testData => {
         const questions = testData.questions;
@@ -671,8 +688,9 @@
 
         questions.forEach(function (q, i) {
           const userAns = payload.answers[i];
-          const qText = q.en ? q.en.question : "";
-          const opts = q.en ? q.en.options : [];
+          const langData = q.languages ? (q.languages.en || {}) : (q.en || {});
+          const qText = langData.question || "";
+          const opts = langData.options || [];
           const sectionName = sectionNames[q.section] || ("Section " + q.section);
 
           const qHeading = h("div", { class: "q" }, [
