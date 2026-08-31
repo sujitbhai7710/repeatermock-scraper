@@ -46,7 +46,7 @@ from src.series_config import TARGET_SERIES, get_all_series_urls, get_series_met
 # ─── Config ────────────────────────────────────────────────────────────────
 
 PROGRESS_FILE = Path(__file__).parent.parent / "data" / "progress.json"
-DEFAULT_TIME_LIMIT_MINUTES = 45
+DEFAULT_TIME_LIMIT_MINUTES = 0  # 0 = no time limit (run until all tests scraped)
 DEFAULT_RATE_LIMIT_SECONDS = 3
 REFRESH_EVERY_N_TESTS = 8  # Access token lasts 15 min; refresh every ~3 min (8 tests × ~22s)
 
@@ -136,7 +136,7 @@ async def run_incremental_scrape(
     max_tests: int = 0,
 ):
     start_time = time.time()
-    time_limit_seconds = time_limit_minutes * 60
+    time_limit_seconds = time_limit_minutes * 60 if time_limit_minutes > 0 else 0  # 0 = no limit
     progress = load_progress()
     scraped_ids = set(progress["scraped_test_ids"])
     partial_ids = set(progress["partial_test_ids"])
@@ -275,11 +275,12 @@ async def run_incremental_scrape(
 
     try:
         for series_url in get_all_series_urls():
-            # Check time limit
-            elapsed = time.time() - start_time
-            if elapsed >= time_limit_seconds:
-                print(f"\n  ⏰ Time limit reached ({elapsed/60:.1f} min)")
-                break
+            # Check time limit (0 = no limit, run until all tests scraped)
+            if time_limit_seconds > 0:
+                elapsed = time.time() - start_time
+                if elapsed >= time_limit_seconds:
+                    print(f"\n  ⏰ Time limit reached ({elapsed/60:.1f} min)")
+                    break
 
             config = parse_series_url(series_url)
             variant = config["variant"]
@@ -336,10 +337,11 @@ async def run_incremental_scrape(
             print(f"  Scraping {len(pending)} pending tests ({already_scraped}/{total} done)...")
 
             for i, test in enumerate(pending):
-                elapsed = time.time() - start_time
-                if elapsed >= time_limit_seconds:
-                    print(f"\n  ⏰ Time limit reached ({elapsed/60:.1f} min)")
-                    break
+                if time_limit_seconds > 0:
+                    elapsed = time.time() - start_time
+                    if elapsed >= time_limit_seconds:
+                        print(f"\n  ⏰ Time limit reached ({elapsed/60:.1f} min)")
+                        break
 
                 if max_tests > 0 and (tests_scraped_this_run + tests_partial_this_run + tests_failed_this_run) >= max_tests:
                     print(f"\n  Max tests limit reached ({max_tests})")
@@ -368,8 +370,11 @@ async def run_incremental_scrape(
                             print("  ✗ 10 consecutive auth failures — aborting run")
                             break
 
-                time_remaining = time_limit_seconds - elapsed
-                mins_left = int(time_remaining / 60)
+                if time_limit_seconds > 0:
+                    time_remaining = time_limit_seconds - elapsed
+                    mins_left = int(time_remaining / 60)
+                else:
+                    mins_left = "∞"
 
                 test_id = test["id"]
                 test_title = test.get("title", "Unknown")[:60]
@@ -454,12 +459,14 @@ async def run_incremental_scrape(
                 await asyncio.sleep(DEFAULT_RATE_LIMIT_SECONDS)
 
             # Check if we hit time limit
-            elapsed = time.time() - start_time
-            if elapsed >= time_limit_seconds:
-                break
+            if time_limit_seconds > 0:
+                elapsed = time.time() - start_time
+                if elapsed >= time_limit_seconds:
+                    break
 
-            # Check if we hit auth failure limit
-            if consecutive_auth_failures >= 3:
+            # Check if we hit auth failure limit (10 consecutive failures with no successful scrapes)
+            if consecutive_auth_failures >= 10:
+                print(f"\n  ✗ {consecutive_auth_failures} consecutive auth failures — aborting run")
                 break
 
         # Summary

@@ -53,8 +53,13 @@ export REPEATERMOCK_COOKIES='[
 Then run:
 
 ```bash
-python -m src.incremental_scrape --time-limit-minutes 120
+python -m src.incremental_scrape
 ```
+
+This runs with NO time limit — it will keep scraping until ALL tests across all 53 series are fully scraped (questions + answers + solutions + analysis). Only stops if:
+- All tests are scraped (success!)
+- 10 consecutive auth failures (refresh token exhausted — re-login and update cookies)
+- You press Ctrl+C
 
 ### Option 2: Cookie file
 
@@ -68,7 +73,7 @@ cookies/account1.json
 Then run:
 
 ```bash
-python -m src.incremental_scrape --time-limit-minutes 120
+python -m src.incremental_scrape
 ```
 
 ## How to get cookies from your browser
@@ -83,10 +88,20 @@ python -m src.incremental_scrape --time-limit-minutes 120
 ## Command-line options
 
 ```bash
-python -m src.incremental_scrape \
-  --time-limit-minutes 120 \    # default: 45
-  --max-tests 0                 # default: 0 (unlimited)
+# Default: no time limit, scrape everything
+python -m src.incremental_scrape
+
+# With a time limit (optional — stops after N minutes)
+python -m src.incremental_scrape --time-limit-minutes 120
+
+# Limit to N tests (optional — useful for testing)
+python -m src.incremental_scrape --max-tests 10
 ```
+
+| Option | Default | Description |
+|--------|---------|-------------|
+| `--time-limit-minutes` | 0 (no limit) | Stop after N minutes. 0 = run until all tests scraped |
+| `--max-tests` | 0 (unlimited) | Stop after N tests scraped. 0 = no limit |
 
 ## What gets scraped
 
