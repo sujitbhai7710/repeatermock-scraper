@@ -212,7 +212,11 @@ async def scrape_test_full(context, page, test: dict, variant: str, slug: str, o
     TESTS_DIR.mkdir(parents=True, exist_ok=True)
     out_file = TESTS_DIR / f"{test_id}.json"
 
-    if result["has_questions"] and result["has_answers"] and result["has_analysis"]:
+    has_q = bool(result.get("questions"))
+    has_a = result.get("has_answers", False)
+    has_ana = result.get("has_analysis", False)
+
+    if has_q and has_a and has_ana:
         out_file.write_text(json.dumps(result, indent=2, ensure_ascii=False), encoding="utf-8")
         print(f"    ✓ Saved to {out_file.name} (FULL — Q+A+Sol+Ana)", flush=True)
     else:
@@ -220,11 +224,11 @@ async def scrape_test_full(context, page, test: dict, variant: str, slug: str, o
         if out_file.exists():
             out_file.unlink()
         missing = []
-        if not result["has_questions"]:
+        if not has_q:
             missing.append("Q")
-        if not result["has_answers"]:
+        if not has_a:
             missing.append("A")
-        if not result["has_analysis"]:
+        if not has_ana:
             missing.append("Ana")
         print(f"    ⚠ NOT saved (missing: {','.join(missing)}) — will retry next run", flush=True)
 
