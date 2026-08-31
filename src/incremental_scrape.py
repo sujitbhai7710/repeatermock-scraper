@@ -48,7 +48,7 @@ from src.series_config import TARGET_SERIES, get_all_series_urls, get_series_met
 PROGRESS_FILE = Path(__file__).parent.parent / "data" / "progress.json"
 DEFAULT_TIME_LIMIT_MINUTES = 45
 DEFAULT_RATE_LIMIT_SECONDS = 3
-REFRESH_EVERY_N_TESTS = 2  # Proactively refresh access token every 2 tests (it expires fast)
+REFRESH_EVERY_N_TESTS = 8  # Access token lasts 15 min; refresh every ~3 min (8 tests × ~22s)
 
 
 # ─── Progress tracking (granular) ──────────────────────────────────────────
