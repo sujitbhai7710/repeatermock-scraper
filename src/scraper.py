@@ -272,6 +272,16 @@ async def refresh_cookies_if_needed(context, page, max_retries: int = 3) -> list
         
         # Step 3: Try direct API check using fetch_via_context (now includes Cookie header manually)
         logger.info("  Checking /auth/me (with manually added Cookie header)...")
+        # Debug: log what cookies we have
+        all_cookies = await context.cookies()
+        cookie_names = [c["name"] for c in all_cookies if "repeatermock" in c.get("domain", "")]
+        logger.info(f"  Available cookies: {cookie_names}")
+        has_refresh = any(c["name"] == "refreshToken" for c in all_cookies)
+        logger.info(f"  Has refreshToken in context: {has_refresh}")
+        if has_refresh:
+            refresh_val = next(c["value"][:30] for c in all_cookies if c["name"] == "refreshToken")
+            logger.info(f"  refreshToken value (first 30): {refresh_val}...")
+        
         status, body = await fetch_via_context(context, f"{API_BASE}/auth/me")
         logger.info(f"  /auth/me → {status}: {body[:80]}")
 
