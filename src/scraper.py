@@ -121,12 +121,32 @@ async def create_browser_session(cookies: list[dict[str, Any]]):
             "--disable-blink-features=AutomationControlled",
         ],
     )
+    # Normalize cookies for Playwright (fix sameSite, remove extra fields)
+    clean_cookies = []
+    for c in cookies:
+        cc = {
+            "name": c["name"],
+            "value": c["value"],
+            "domain": c.get("domain", ".repeatermock.com"),
+            "path": c.get("path", "/"),
+        }
+        ss = c.get("sameSite", "Lax")
+        if ss in ("Strict", "Lax", "None"):
+            cc["sameSite"] = ss
+        else:
+            cc["sameSite"] = "Lax"
+        if c.get("secure"):
+            cc["secure"] = True
+        if c.get("httpOnly"):
+            cc["httpOnly"] = True
+        clean_cookies.append(cc)
+
     context = await browser.new_context(
         viewport={"width": 1366, "height": 768},
         user_agent="Mozilla/5.0 (X11; Linux x86_64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/127.0.0.0 Safari/537.36",
         locale="en-IN",
         timezone_id="Asia/Kolkata",
-        storage_state={"cookies": cookies},
+        storage_state={"cookies": clean_cookies},
     )
 
     # Anti-detection + anti-anti-debug

@@ -79,15 +79,26 @@ jobs:
               exit 1
             fi
             # Write cookies directly to data/cookies.json (avoids .env parsing issues with JSON)
+            # Normalize sameSite values (browser exports use "unspecified" which Playwright rejects)
             python3 -c "
           import os, json
           secret = os.environ.get('COOKIES_SECRET', '')
           if not secret:
               print('ERROR: COOKIES_SECRET is empty'); exit(1)
           cookies = json.loads(secret)
+          # Fix sameSite: Playwright only accepts Strict/Lax/None
+          for c in cookies:
+              ss = c.get('sameSite', 'Lax')
+              if ss not in ('Strict', 'Lax', 'None'):
+                  c['sameSite'] = 'Lax'
+              # Remove fields Playwright doesn't accept
+              c.pop('id', None)
+              c.pop('storeId', None)
+              c.pop('hostOnly', None)
+              c.pop('session', None)
           with open('data/cookies.json', 'w') as f:
               json.dump({'cookies': cookies, 'simple': {c['name']: c['value'] for c in cookies}, 'saved_at': 0}, f, indent=2)
-          print(f'✓ Wrote {len(cookies)} cookies to data/cookies.json')
+          print(f'✓ Wrote {len(cookies)} cookies to data/cookies.json (sameSite normalized)')
           "
           fi
 
