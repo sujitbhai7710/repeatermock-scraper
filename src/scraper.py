@@ -229,14 +229,18 @@ async def fetch_via_page(page, url: str, method: str = "GET", body: str | None =
 async def refresh_cookies_if_needed(context, page, original_cookies: list[dict] = None, max_retries: int = 3) -> list[dict[str, Any]] | None:
     """
     Check if auth is working; if not, refresh. Save rotated cookies.
-    Uses original_cookies (passed in) instead of context.cookies() which
-    gets overwritten by page loads (losing httpOnly cookies).
+    
+    CRITICAL: Do NOT call page.goto() before making API calls.
+    page.goto() loads repeatermock.com which sets its own cookies via
+    Set-Cookie headers, wiping the httpOnly cookies (accessToken,
+    refreshToken) from the context.
+    
+    Instead, use the original cookies directly as a Cookie header
+    in the API request.
     """
     import logging
     logger = logging.getLogger("repeatermock_scraper")
     
-    # Use original cookies if provided (they have refreshToken/accessToken)
-    # Fall back to context.cookies() if not
     if original_cookies:
         cookies_for_header = original_cookies
     else:
@@ -244,75 +248,53 @@ async def refresh_cookies_if_needed(context, page, original_cookies: list[dict] 
     
     cookie_str = "; ".join(f'{c["name"]}={c["value"]}' for c in cookies_for_header if "repeatermock" in c.get("domain", ""))
     has_refresh = any(c["name"] == "refreshToken" for c in cookies_for_header)
-    logger.info(f"  Cookies for auth: {[c['name'] for c in cookies_for_header]}, has refreshToken: {has_refresh}")
+    logger.info(f"  Cookies: {[c['name'] for c in cookies_for_header]}, has refreshToken: {has_refresh}")
 
-    for attempt in range(max_retries):
-        logger.info(f"Auth attempt {attempt+1}/{max_retries}")
-        
-        # Step 1: Load home page (for cf_clearance, but don't rely on it for auth cookies)
-        try:
-            logger.info("  Loading repeatermock.com...")
-            await page.goto("https://repeatermock.com/", timeout=30000, wait_until="domcontentloaded")
-        except Exception as e:
-            logger.warning(f"  Page load failed: {e}")
-        await asyncio.sleep(5)
-        
-        # Step 2: Check auth using ORIGINAL cookies (not context.cookies which got wiped)
-        logger.info("  Checking /auth/me with original cookies...")
-        headers = {
+    # Step 1: Check if access token is still valid
+    logger.info("  Checking /auth/me...")
+    try:
+        resp = await context.request.get(f"{API_BASE}/auth/me", headers={
             "Accept": "application/json",
-            "Referer": "https://repeatermock.com/",
-            "Origin": "https://repeatermock.com",
             "Cookie": cookie_str,
-        }
-        try:
-            resp = await context.request.get(f"{API_BASE}/auth/me", headers=headers)
-            body = await resp.text()
-            logger.info(f"  /auth/me → {resp.status}: {body[:80]}")
-            if resp.status == 200 and '"success":true' in body:
-                save_cookies(cookies_for_header, COOKIES_FILE)
-                logger.info("  ✓ Authenticated!")
+            "Origin": "https://repeatermock.com",
+            "Referer": "https://repeatermock.com/",
+        })
+        body = await resp.text()
+        logger.info(f"  /auth/me → {resp.status}: {body[:80]}")
+        if resp.status == 200 and '"success":true' in body:
+            logger.info("  ✓ Authenticated (access token valid)")
+            return cookies_for_header
+    except Exception as e:
+        logger.warning(f"  /auth/me error: {e}")
+
+    # Step 2: Try /auth/refresh with original cookies
+    logger.info("  Trying /auth/refresh...")
+    try:
+        resp = await context.request.post(f"{API_BASE}/auth/refresh", headers={
+            "Accept": "application/json",
+            "Content-Type": "application/json",
+            "Cookie": cookie_str,
+            "Origin": "https://repeatermock.com",
+            "Referer": "https://repeatermock.com/",
+        }, data="{}")
+        body = await resp.text()
+        logger.info(f"  /auth/refresh → {resp.status}: {body[:80]}")
+        
+        if resp.status == 200:
+            # Refresh succeeded — the server has rotated the token
+            # Re-check auth
+            resp2 = await context.request.get(f"{API_BASE}/auth/me", headers={
+                "Accept": "application/json",
+                "Cookie": cookie_str,
+            })
+            body2 = await resp2.text()
+            if resp2.status == 200 and '"success":true' in body2:
+                logger.info("  ✓ Authenticated via refresh!")
                 return cookies_for_header
-        except Exception as e:
-            logger.warning(f"  /auth/me error: {e}")
+    except Exception as e:
+        logger.warning(f"  /auth/refresh error: {e}")
 
-        # Step 3: Try /auth/refresh with original cookies
-        logger.info("  Trying /auth/refresh with original cookies...")
-        try:
-            resp = await context.request.post(f"{API_BASE}/auth/refresh", headers={
-                **headers,
-                "Content-Type": "application/json",
-            }, data="{}")
-            body = await resp.text()
-            logger.info(f"  /auth/refresh → {resp.status}: {body[:80]}")
-            
-            if resp.status == 200:
-                # The response may contain new cookies in Set-Cookie headers
-                # Re-read cookies from context (the refresh may have set new ones)
-                await asyncio.sleep(1)
-                new_cookies = await context.cookies()
-                # Also merge with original (context may have dropped httpOnly ones)
-                # Try to extract new token from response body
-                try:
-                    resp_data = json.loads(body)
-                    if resp_data.get("success"):
-                        # Re-check auth with original cookies (the refresh rotates the token server-side)
-                        resp2 = await context.request.get(f"{API_BASE}/auth/me", headers=headers)
-                        body2 = await resp2.text()
-                        if resp2.status == 200 and '"success":true' in body2:
-                            save_cookies(cookies_for_header, COOKIES_FILE)
-                            logger.info("  ✓ Authenticated via refresh!")
-                            return cookies_for_header
-                except:
-                    pass
-        except Exception as e:
-            logger.warning(f"  /auth/refresh error: {e}")
-
-        if attempt < max_retries - 1:
-            await asyncio.sleep(5)
-
-    logger.error(f"✗ Auth failed after {max_retries} attempts")
-    save_cookies(cookies_for_header, COOKIES_FILE)
+    logger.error("✗ Auth failed")
     return None
 
 
