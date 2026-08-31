@@ -4,34 +4,40 @@ on:
   # Manual trigger from Actions tab
   workflow_dispatch:
     inputs:
-      max_tests_per_series:
-        description: 'Max tests to scrape per series (0 = all)'
+      time_limit_minutes:
+        description: 'Time limit per run (minutes)'
         required: false
-        default: '3'
-      series_urls:
-        description: 'Series URLs to scrape (newline-separated, empty = use default list)'
+        default: '50'
+      max_tests:
+        description: 'Max tests per run (0 = unlimited, use time limit)'
         required: false
-        default: ''
+        default: '0'
 
-  # Daily at 3 AM UTC
+  # Check every 20 minutes whether we should run
+  # The script itself decides whether to run based on last_run_end + 20 min gap
   schedule:
-    - cron: '0 3 * * *'
+    - cron: '*/20 * * * *'
 
-  # On push to main (for testing workflow changes)
+  # On push to main (for testing workflow changes only)
   push:
     branches: [main]
     paths:
       - '.github/workflows/scrape.yml'
       - 'src/**'
-      - 'requirements.txt'
 
 env:
   PYTHON_VERSION: '3.12'
 
+# Concurrency: only one scrape run at a time
+# If a new run is triggered while one is running, the new one waits
+concurrency:
+  group: scrape-repeatermock
+  cancel-in-progress: false
+
 jobs:
   scrape:
     runs-on: ubuntu-latest
-    timeout-minutes: 30
+    timeout-minutes: 60  # Hard limit: 60 minutes (50 min work + buffer)
 
     steps:
       - name: Checkout code
@@ -47,19 +53,62 @@ jobs:
           pip install -r requirements.txt
           playwright install chromium --with-deps
 
-      - name: Create .env from secret
+      # ─── Restore cookies from cache (persisted across runs) ──────────────
+      # This is the KEY: cookies are saved to cache after each run,
+      # so the next run uses the rotated refresh token automatically.
+      # The user only needs to set the REPEATERMOCK_COOKIES_JSON secret ONCE.
+
+      - name: Restore cached cookies
+        id: cookie-cache
+        uses: actions/cache@v4
+        with:
+          path: |
+            data/cookies.json
+            data/progress.json
+            data/tests/
+            data/series/
+          key: repeatermock-scrape-state-v1
+          restore-keys: |
+            repeatermock-scrape-state-v1
+
+      - name: Create .env from secret (initial cookies — only used if no cache)
         run: |
-          if [ -z "${{ secrets.REPEATERMOCK_COOKIES_JSON }}" ]; then
-            echo "ERROR: REPEATERMOCK_COOKIES_JSON secret is not set"
-            echo "Go to Settings → Secrets and variables → Actions → New repository secret"
-            echo "Name: REPEATERMOCK_COOKIES_JSON"
-            echo "Value: JSON cookie array from browser"
-            exit 1
+          mkdir -p data/tests data/series
+
+          # If cached cookies exist, use them (they have the latest refresh token)
+          if [ -f data/cookies.json ]; then
+            echo "✓ Found cached cookies from previous run"
+            python3 -c "
+            import json
+            with open('data/cookies.json') as f:
+                data = json.load(f)
+            print(f'  Cookies: {len(data[\"cookies\"])}')
+            for c in data['cookies']:
+                print(f'    - {c[\"name\"]}: {c[\"value\"][:30]}...')
+            "
+            # Also write to .env for the scraper to pick up via env vars
+            python3 -c "
+            import json
+            with open('data/cookies.json') as f:
+                data = json.load(f)
+            with open('.env', 'w') as f:
+                f.write(f'REPEATERMOCK_COOKIES_JSON={json.dumps(data[\"cookies\"])}\n')
+            "
+          else
+            # No cache — use the secret (first run ever, or cache expired)
+            echo "No cached cookies. Using REPEATERMOCK_COOKIES_JSON secret..."
+            if [ -z "${{ secrets.REPEATERMOCK_COOKIES_JSON }}" ]; then
+              echo "ERROR: REPEATERMOCK_COOKIES_JSON secret is not set"
+              echo "Go to Settings → Secrets and variables → Actions → New repository secret"
+              echo "Name: REPEATERMOCK_COOKIES_JSON"
+              echo "Value: JSON cookie array from browser"
+              exit 1
+            fi
+            printf 'REPEATERMOCK_COOKIES_JSON=%s\n' '${{ secrets.REPEATERMOCK_COOKIES_JSON }}' > .env
+            echo "✓ .env created from secret"
           fi
-          # Use printf to avoid shell quoting issues with JSON
-          printf 'REPEATERMOCK_COOKIES_JSON=%s\n' '${{ secrets.REPEATERMOCK_COOKIES_JSON }}' > .env
-          echo "✓ .env created from secret"
-          # Verify it's valid JSON
+
+          # Verify cookies are valid JSON
           python3 -c "
           import json, os
           from dotenv import load_dotenv
@@ -67,152 +116,117 @@ jobs:
           raw = os.environ.get('REPEATERMOCK_COOKIES_JSON', '')
           if raw:
               cookies = json.loads(raw)
-              print(f'  ✓ Parsed {len(cookies)} cookies from secret')
-              for c in cookies:
-                  print(f'    - {c[\"name\"]}: {c[\"value\"][:30]}...')
+              print(f'  ✓ {len(cookies)} cookies loaded')
+              has_refresh = any(c['name'] == 'refreshToken' for c in cookies)
+              print(f'  Has refreshToken: {has_refresh}')
           else:
-              print('  ✗ No REPEATERMOCK_COOKIES_JSON in .env')
+              print('  ✗ No cookies found')
               exit(1)
           "
 
-      - name: Test scrapability of all series
-        id: test
-        continue-on-error: true
+      - name: Check if should run (respect 20-min gap between runs)
+        id: should-run
         run: |
-          mkdir -p data
-          echo "## Scrapability Test Results" > data/scrape_report.md
-          echo "" >> data/scrape_report.md
-          echo "| Series URL | Status |" >> data/scrape_report.md
-          echo "|------------|--------|" >> data/scrape_report.md
+          python3 << 'PYEOF'
+          import json, time, os
+          from pathlib import Path
 
-          # Default series list
-          SERIES_URLS="${{ github.event.inputs.series_urls }}"
-          if [ -z "$SERIES_URLS" ]; then
-            SERIES_URLS="https://repeatermock.com/tb/test-series/ssc-cgl
-          https://repeatermock.com/tb-pro/test-series/ssc-cgl
-          https://repeatermock.com/tb/test-series/ssc-maths-previous-year-questions
-          https://repeatermock.com/tb-pro/test-series/ssc-maths-previous-year-questions
-          https://repeatermock.com/tb/test-series/ssc-chsl
-          https://repeatermock.com/gd/test-series/ssc-cgl
-          https://repeatermock.com/tb-pro/test-series/ssc-english-previous-year-questions
-          https://repeatermock.com/tb/test-series/ssc-english-previous-year-questions"
-          fi
+          progress_file = Path("data/progress.json")
+          if progress_file.exists():
+              progress = json.loads(progress_file.read_text())
+              last_end = progress.get("last_run_end", 0)
+              gap = time.time() - last_end
+              gap_minutes = gap / 60
 
-          SCRAPABLE_COUNT=0
-          TOTAL_COUNT=0
+              if gap_minutes < 20:
+                  print(f"⏭ Skipping: only {gap_minutes:.1f} minutes since last run (need 20 min gap)")
+                  print(f"  Last run ended: {time.strftime('%H:%M:%S UTC', time.gmtime(last_end))}")
+                  print(f"  Next eligible: {time.strftime('%H:%M:%S UTC', time.gmtime(last_end + 1200))}")
+                  with open(os.environ['GITHUB_ENV'], 'a') as f:
+                      f.write("SHOULD_RUN=false\n")
+              else:
+                  print(f"✓ {gap_minutes:.1f} minutes since last run — proceeding")
+                  with open(os.environ['GITHUB_ENV'], 'a') as f:
+                      f.write("SHOULD_RUN=true\n")
+          else:
+              print("✓ No previous progress — first run, proceeding")
+              with open(os.environ['GITHUB_ENV'], 'a') as f:
+                  f.write("SHOULD_RUN=true\n")
+          PYEOF
 
-          while IFS= read -r url; do
-            [ -z "$url" ] && continue
-            TOTAL_COUNT=$((TOTAL_COUNT + 1))
-            echo ""
-            echo "=== Testing: $url ==="
-            # Run scraper — don't let set -e kill the loop
-            set +e
-            python -m src.scraper test-series "$url" > /tmp/test_output.txt 2>&1
-            EXIT_CODE=$?
-            set -e
-            cat /tmp/test_output.txt
-            if [ $EXIT_CODE -eq 0 ]; then
-              echo "✓ SCRAPABLE: $url"
-              echo "| \`$url\` | ✓ Scrapable |" >> data/scrape_report.md
-              SCRAPABLE_COUNT=$((SCRAPABLE_COUNT + 1))
-            else
-              echo "✗ NOT SCRAPABLE: $url (exit code $EXIT_CODE)"
-              echo "| \`$url\` | ✗ Not scrapable |" >> data/scrape_report.md
-            fi
-          done <<< "$SERIES_URLS"
-
-          echo ""
-          echo "### Scrapable series: $SCRAPABLE_COUNT / $TOTAL_COUNT" >> data/scrape_report.md
-          cat data/scrape_report.md
-
-          echo "SCRAPABLE_COUNT=$SCRAPABLE_COUNT" >> $GITHUB_ENV
-          echo "TOTAL_COUNT=$TOTAL_COUNT" >> $GITHUB_ENV
-          # Always exit 0 — we want the report even if some series fail
-          exit 0
-
-      - name: Scrape tests (limited for CI)
-        if: env.SCRAPABLE_COUNT > 0
+      - name: Run incremental scraper
+        if: env.SHOULD_RUN == 'true'
         run: |
-          MAX_TESTS="${{ github.event.inputs.max_tests_per_series }}"
-          [ -z "$MAX_TESTS" ] && MAX_TESTS="3"
-          [ "$MAX_TESTS" = "0" ] && MAX_TESTS=""
+          TIME_LIMIT="${{ github.event.inputs.time_limit_minutes }}"
+          [ -z "$TIME_LIMIT" ] && TIME_LIMIT="50"
+          MAX_TESTS="${{ github.event.inputs.max_tests }}"
+          [ -z "$MAX_TESTS" ] && MAX_TESTS="0"
 
-          echo "### Scrape Results (max $MAX_TESTS tests per series)" >> data/scrape_report.md
-          echo "" >> data/scrape_report.md
+          echo "Starting incremental scraper..."
+          echo "  Time limit: $TIME_LIMIT minutes"
+          echo "  Max tests: $MAX_TESTS"
 
-          SERIES_URLS="${{ github.event.inputs.series_urls }}"
-          if [ -z "$SERIES_URLS" ]; then
-            SERIES_URLS="https://repeatermock.com/tb/test-series/ssc-cgl
-          https://repeatermock.com/tb-pro/test-series/ssc-cgl
-          https://repeatermock.com/tb/test-series/ssc-maths-previous-year-questions
-          https://repeatermock.com/tb-pro/test-series/ssc-maths-previous-year-questions
-          https://repeatermock.com/tb/test-series/ssc-chsl
-          https://repeatermock.com/gd/test-series/ssc-cgl
-          https://repeatermock.com/tb-pro/test-series/ssc-english-previous-year-questions
-          https://repeatermock.com/tb/test-series/ssc-english-previous-year-questions"
-          fi
+          python -m src.incremental_scrape \
+            --time-limit-minutes "$TIME_LIMIT" \
+            --max-tests "$MAX_TESTS"
 
-          while IFS= read -r url; do
-            [ -z "$url" ] && continue
-            echo ""
-            echo "=== Scraping: $url (max $MAX_TESTS tests) ==="
-            ARGS=""
-            [ -n "$MAX_TESTS" ] && ARGS="--max-tests $MAX_TESTS"
-            if python -m src.scraper scrape-series "$url" $ARGS 2>&1 | tee /tmp/scrape_output.txt; then
-              echo "✓ Scraped: $url"
-              echo "| \`$url\` | ✓ Scraped |" >> data/scrape_report.md
-            else
-              echo "✗ Failed: $url"
-              echo "| \`$url\` | ✗ Failed |" >> data/scrape_report.md
-            fi
-          done <<< "$SERIES_URLS"
-
-      - name: Generate summary
+      - name: Show progress summary
         if: always()
         run: |
-          echo "## Final Summary" >> data/scrape_report.md
-          echo "" >> data/scrape_report.md
-          TEST_COUNT=$(find data/tests -name "*.json" 2>/dev/null | wc -l)
-          echo "- **Tests scraped**: $TEST_COUNT" >> data/scrape_report.md
-          echo "- **Scrapable series**: $SCRAPABLE_COUNT / $TOTAL_COUNT" >> data/scrape_report.md
-          echo "- **Timestamp**: $(date -u '+%Y-%m-%d %H:%M:%S UTC')" >> data/scrape_report.md
-          echo "" >> data/scrape_report.md
-          echo "### Scraped test files" >> data/scrape_report.md
-          echo "" >> data/scrape_report.md
-          if [ -d data/tests ]; then
-            for f in data/tests/*.json; do
-              [ -f "$f" ] || continue
-              basename "$f" >> data/scrape_report.md
-            done
+          echo "## Scrape Progress" >> $GITHUB_STEP_SUMMARY
+          echo "" >> $GITHUB_STEP_SUMMARY
+          if [ -f data/progress.json ]; then
+            python3 -c "
+            import json, time
+            with open('data/progress.json') as f:
+                p = json.load(f)
+            print(f'### Summary')
+            print(f'- Total scraped: {len(p.get(\"scraped_test_ids\", []))} tests')
+            print(f'- Total failed: {len(p.get(\"failed_test_ids\", []))} tests')
+            print(f'- Total questions: {p.get(\"total_scraped\", 0)}')
+            print()
+            print(f'### Series Progress')
+            for url, sp in p.get('series_progress', {}).items():
+                print(f'- **{sp[\"name\"][:50]}**: {sp[\"scraped\"]}/{sp[\"total\"]} scraped, {sp[\"pending\"]} pending')
+            print()
+            last = p.get('run_history', [{}])[-1] if p.get('run_history') else {}
+            if last:
+                print(f'### Last Run')
+                print(f'- Tests scraped: {last.get(\"tests_scraped\", 0)}')
+                print(f'- Questions scraped: {last.get(\"questions_scraped\", 0)}')
+                print(f'- Duration: {last.get(\"time_minutes\", 0):.1f} min')
+            " >> $GITHUB_STEP_SUMMARY
           else
-            echo "(none)" >> data/scrape_report.md
+            echo "No progress file found" >> $GITHUB_STEP_SUMMARY
           fi
-          cat data/scrape_report.md
 
-      - name: Upload scraped data
+      - name: Count scraped test files
+        if: always()
+        run: |
+          TEST_COUNT=$(find data/tests -name "*.json" 2>/dev/null | wc -l)
+          echo "Total test files in data/tests/: $TEST_COUNT"
+          if [ -f data/progress.json ]; then
+            python3 -c "
+            import json
+            with open('data/progress.json') as f:
+                p = json.load(f)
+            print(f'Scraped test IDs in progress: {len(p.get(\"scraped_test_ids\", []))}')
+            print(f'Failed test IDs: {len(p.get(\"failed_test_ids\", []))}')
+            "
+          fi
+
+      # Note: cookies.json + progress.json + tests/ are automatically saved
+      # to the cache by actions/cache (defined in the restore step above)
+      # The cache persists for 7 days and is updated after each run.
+
+      - name: Upload scraped data as artifact (backup)
         if: always()
         uses: actions/upload-artifact@v4
         with:
-          name: scraped-tests
+          name: scraped-tests-${{ github.run_id }}
           path: |
             data/tests/
             data/series/
-            data/scrape_report.md
+            data/progress.json
+            data/cookies.json
           retention-days: 30
-
-      - name: Comment on PR (if PR)
-        if: github.event_name == 'pull_request'
-        uses: actions/github-script@v7
-        with:
-          script: |
-            const fs = require('fs');
-            if (fs.existsSync('data/scrape_report.md')) {
-              const report = fs.readFileSync('data/scrape_report.md', 'utf8');
-              github.rest.issues.createComment({
-                issue_number: context.issue.number,
-                owner: context.repo.owner,
-                repo: context.repo.repo,
-                body: `## RepeaterMock Scrape Report\n\n${report}`
-              });
-            }
