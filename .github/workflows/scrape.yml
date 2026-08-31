@@ -65,6 +65,8 @@ jobs:
           restore-keys: scrape-state-v3
 
       - name: Setup cookies
+        env:
+          COOKIES_SECRET: ${{ secrets.REPEATERMOCK_COOKIES_JSON }}
         run: |
           mkdir -p data/tests data/series frontend/tests frontend/img
 
@@ -77,23 +79,36 @@ jobs:
           "
           else
             echo "Using REPEATERMOCK_COOKIES_JSON secret"
-            if [ -z "${{ secrets.REPEATERMOCK_COOKIES_JSON }}" ]; then
+            if [ -z "$COOKIES_SECRET" ]; then
               echo "ERROR: Secret not set"; exit 1
             fi
-            printf 'REPEATERMOCK_COOKIES_JSON=%s\n' '${{ secrets.REPEATERMOCK_COOKIES_JSON }}' > .env
+            python3 -c "
+          import os
+          secret = os.environ.get('COOKIES_SECRET', '')
+          if not secret:
+              print('ERROR: COOKIES_SECRET env var is empty'); exit(1)
+          with open('.env', 'w') as f: f.write(f'REPEATERMOCK_COOKIES_JSON={secret}\n')
+          print(f'Wrote .env with {len(secret)} chars')
+          "
           fi
 
           # Verify
-          python3 << 'EOF'
+          python3 -c "
           import json, os
           from dotenv import load_dotenv
           load_dotenv('.env')
           raw = os.environ.get('REPEATERMOCK_COOKIES_JSON', '')
           if not raw:
-              print('ERROR: No cookies'); exit(1)
-          cookies = json.loads(raw)
-          print(f'✓ {len(cookies)} cookies loaded')
-          EOF
+              print('ERROR: No cookies in .env'); exit(1)
+          try:
+              cookies = json.loads(raw)
+              print(f'✓ {len(cookies)} cookies loaded')
+              has_refresh = any(c['name'] == 'refreshToken' for c in cookies)
+              print(f'  Has refreshToken: {has_refresh}')
+          except json.JSONDecodeError as e:
+              print(f'ERROR: Invalid JSON: {e}')
+              exit(1)
+          "
 
       - name: Check 15-min gap + all-done check
         id: should-run
