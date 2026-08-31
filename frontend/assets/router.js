@@ -91,28 +91,56 @@
   }
 
   // ----- HOME ---------------------------------------------------------------
-  function renderHome() {
+  async function renderHome() {
     clear(app);
     app.appendChild(breadcrumb([{ label: "Home" }]));
     app.appendChild(h("h1", { style: "font-size:24px;margin:8px 0 6px;font-weight:800;" }, "Free Mock Test Series for Government Exams"));
-    app.appendChild(h("p", { class: "rm-muted", style: "margin:0 0 18px;font-size:14.5px;" }, "Free previous-year test series for SSC, Railways, Banking, and more — attempt timed mocks and get instant section-wise analysis."));
+    app.appendChild(h("p", { class: "rm-muted", style: "margin:0 0 18px;font-size:14.5px;" }, "Real previous-year mock tests scraped from RepeaterMock — attempt timed mocks and get instant section-wise analysis. Tests appear here automatically as they're scraped."));
+
+    // Loading state
+    const loadingDiv = h("div", { class: "rm-loading" }, "Loading scraped tests...");
+    app.appendChild(loadingDiv);
+
+    try {
+      await loadSeriesIndex();
+    } catch (e) {
+      console.error("loadSeriesIndex failed:", e);
+    }
+
+    // Remove loading
+    app.removeChild(loadingDiv);
+
+    const series = getAllSeries();
+    if (!series.length) {
+      // Empty state — no tests scraped yet
+      app.appendChild(h("div", { class: "rm-series-hero", style: "background:#fef3c7;border-color:#facc15;--card-accent:#ca8a04;--card-tint:#fef3c7;" }, [
+        h("h2", { style: "margin:0 0 10px;font-size:18px;color:#713f12;" }, "No tests scraped yet"),
+        h("p", { style: "margin:0 0 10px;line-height:1.65;font-size:14px;color:#713f12;" }, "The scraper is running in the background. Once tests are fully scraped (questions + answers + solutions + analysis), they will appear here automatically."),
+        h("p", { style: "margin:0;line-height:1.65;font-size:14px;color:#713f12;" }, [
+          document.createTextNode("Track progress on the "),
+          h("a", { href: "https://repeatermock-dashboard.walletxapi.workers.dev/", target: "_blank", rel: "noopener", style: "color:#ca8a04;font-weight:600;" }, "scraper dashboard"),
+          document.createTextNode("."),
+        ]),
+      ]));
+      return;
+    }
 
     const grid = h("div", { class: "rm-series-grid" });
-    getAllSeries().forEach(function (s) {
+    series.forEach(function (s) {
       const listedCount = s.sections.reduce(function (n, sec) { return n + sec.tests.length; }, 0);
+      const badge = listedCount + " TESTS";
       const card = h("article", { class: "rm-series-card", style: cardAccentVars(s) }, [
-        h("span", { class: "tier-badge" }, s.tier + " · " + s.badge_text),
-        h("h2", {}, s.title),
+        h("span", { class: "tier-badge" }, s.tier + " · " + badge),
+        h("h2", {}, s.name),
         h("div", { class: "big-count" }, [
           h("strong", {}, String(listedCount)),
-          h("span", {}, "of " + s.total_tests + " tests listed")
+          h("span", {}, "tests ready")
         ]),
         h("div", { class: "meta" }, [
-          h("span", {}, "📝 " + s.sections.length + " sections"),
+          h("span", {}, "📝 " + s.sections.length + " section(s)"),
           h("span", {}, "🌐 " + s.language),
-          h("span", {}, "🏷 " + s.category),
+          h("span", {}, "🏷 " + s.platform + "/" + s.slug),
         ]),
-        h("p", { class: "desc" }, s.description),
         h("div", { class: "actions" }, [
           h("a", { class: "rm-btn", href: "/series/" + s.id, onclick: function (e) { showToast("Added to Dashboard"); } }, "Add to Dashboard"),
           h("a", { class: "rm-btn rm-btn-secondary", href: "/series/" + s.id }, "View Tests"),
@@ -122,32 +150,30 @@
     });
     app.appendChild(grid);
 
-    // About this mirror — honest explanation
+    // Footer link to dashboard
     app.appendChild(h("div", { class: "rm-series-hero", style: "margin-top:30px;background:#dcfce7;border-color:#4ade80;--card-accent:#16a34a;--card-tint:#dcfce7;" }, [
       h("h2", { style: "margin:0 0 10px;font-size:18px;color:#14532d;" }, "About this mirror"),
-      h("p", { style: "margin:0 0 10px;line-height:1.65;font-size:14px;color:#14532d;" }, [
-        h("strong", {}, "REAL data, scraped from RepeaterMock's API. "),
-        document.createTextNode("All series metadata, section names, subsection names, test IDs, test titles, durations, marks, question counts and free/locked flags were scraped directly from "),
-        h("a", { href: "https://api.repeatermock.com/", target: "_blank", rel: "noopener" }, "api.repeatermock.com"),
-        document.createTextNode(" using Playwright (headless Chromium with human simulation to bypass Cloudflare). The total: "),
-        h("strong", {}, "2,157 real tests"),
-        document.createTextNode(" across 3 series, each with a real RepeaterMock test ID."),
-      ]),
-      h("p", { style: "margin:0 0 10px;line-height:1.65;font-size:14px;color:#14532d;" }, [
-        h("strong", {}, "What's NOT here: "),
-        document.createTextNode("The actual question text, answer options, and explanations. Those are returned by "),
-        h("code", { style: "background:#bbf7d0;padding:1px 6px;border-radius:4px;font-size:12px;" }, "POST /api/v1/attempts/start"),
-        document.createTextNode(" only after a user logs in with Google Authenticator and starts an attempt. Without an authenticated account, the question data is unreachable."),
-      ]),
       h("p", { style: "margin:0;line-height:1.65;font-size:14px;color:#14532d;" }, [
-        h("strong", {}, "\"Start Now\" buttons "),
-        document.createTextNode("link directly to the real RepeaterMock test URL (with the real test ID) — users attempt the real test on the real site, with real questions, real timer, and real analysis."),
+        h("strong", {}, "Real scraped data. "),
+        document.createTextNode("Tests shown above have been fully scraped from RepeaterMock — including questions, answer keys, solutions, and rank analysis. Partial scrapes are NOT shown; they're retried on the next scraper run."),
+      ]),
+      h("p", { style: "margin:10px 0 0;line-height:1.65;font-size:14px;color:#14532d;" }, [
+        h("a", { href: "https://repeatermock-dashboard.walletxapi.workers.dev/", target: "_blank", rel: "noopener", style: "color:#16a34a;font-weight:600;" }, "📊 View scraper dashboard"),
+        document.createTextNode(" to see live progress, failures, and run history."),
       ]),
     ]));
   }
 
   // ----- SERIES DETAIL ------------------------------------------------------
-  function renderSeries(seriesId, activeSectionIdx) {
+  async function renderSeries(seriesId, activeSectionIdx) {
+    clear(app);
+    app.appendChild(breadcrumb([
+      { label: "Home", href: "/" },
+      { label: "Loading..." }
+    ]));
+    app.appendChild(h("div", { class: "rm-loading" }, "Loading series..."));
+
+    await loadSeriesIndex();
     const s = getSeriesById(seriesId);
     clear(app);
     if (!s) { renderNotFound(); return; }
@@ -891,15 +917,15 @@
   }
 
   // ----- ROUTER -------------------------------------------------------------
-  function route() {
+  async function route() {
     const path = location.pathname.replace(/\/+$/, "") || "/";
-    if (path === "/" || path === "/index.html") { renderHome(); return; }
+    if (path === "/" || path === "/index.html") { await renderHome(); return; }
     if (path === "/pricing") { renderPricing(); return; }
     if (path === "/faq") { renderFaq(); return; }
     if (path === "/about") { renderAbout(); return; }
     let m;
-    if ((m = path.match(/^\/series\/([\w-]+)\/(\d+)$/))) { renderSeries(m[1], Number(m[2])); return; }
-    if ((m = path.match(/^\/series\/([\w-]+)$/)))            { renderSeries(m[1], 0); return; }
+    if ((m = path.match(/^\/series\/([\w-]+)\/(\d+)$/))) { await renderSeries(m[1], Number(m[2])); return; }
+    if ((m = path.match(/^\/series\/([\w-]+)$/)))            { await renderSeries(m[1], 0); return; }
     if ((m = path.match(/^\/instructions\/([\w-]+)\/(\d+)\/(\d+)$/))) { renderInstructions(m[1], m[2], m[3]); return; }
     if ((m = path.match(/^\/test\/([a-f0-9]+)$/)))            { renderRunner(m[1]); return; }
     if ((m = path.match(/^\/result\/([a-f0-9]+)$/)))          { renderResult(m[1]); return; }

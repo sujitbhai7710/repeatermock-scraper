@@ -1,25 +1,23 @@
 /**
- * RepeaterMock Scraper — Cloudflare Worker
+ * RepeaterMock Scraper — Cloudflare Worker (optimized)
+ *
+ * OPTIMIZATION: Single combined /api/dashboard endpoint returns ALL data in ONE
+ * request (overview + series + runs + failures). Dashboard refreshes every 5
+ * minutes (not 60s) to minimize D1 read requests.
  *
  * Routes:
  *   GET  /                       Public dashboard (HTML)
- *   GET  /api/overview           Overall stats (JSON)
+ *   GET  /api/dashboard          All data in one response (overview + series + runs + failures)
+ *   GET  /api/overview           Overall stats
  *   GET  /api/series             All series with progress
  *   GET  /api/series/:platform/:slug  Single series detail + tests
  *   GET  /api/tests?status=...   Tests filtered by status
  *   GET  /api/runs               Run history
- *   POST /api/trigger            Trigger GitHub Actions scrape (password-protected)
+ *   POST /api/trigger            Trigger GitHub Actions scrape (admin-only)
  *   GET  /admin                  Admin login page
- *   POST /admin                  Verify password, set cookie
+ *   POST  /admin                 Verify password, set cookie
  *
- * Cron triggers (every hour at :05):
- *   - Trigger GitHub Actions workflow_dispatch
- *
- * Env vars (set via wrangler secret or dashboard):
- *   DB                          D1 database binding
- *   ADMIN_PASSWORD              "BloggingTest@7"
- *   GH_TOKEN                    GitHub PAT with repo:workflow scope
- *   GH_REPO                     "sujitbhai7710/repeatermock-scraper"
+ * Cron: every hour at :05 — triggers GitHub Actions workflow_dispatch
  */
 
 const HTML_DASHBOARD = `<!DOCTYPE html>
@@ -72,13 +70,6 @@ const HTML_DASHBOARD = `<!DOCTYPE html>
   .progress-bar { background: #334155; border-radius: 6px; height: 8px;
                   overflow: hidden; min-width: 80px; }
   .progress-bar > div { height: 100%; background: linear-gradient(90deg, #4ade80, #22c55e); }
-  .actions { display: flex; gap: 8px; }
-  .btn { background: #2563eb; color: white; border: 0; padding: 6px 12px;
-         border-radius: 6px; cursor: pointer; font-size: 12px; text-decoration: none;
-         display: inline-block; }
-  .btn:hover { background: #1d4ed8; }
-  .btn.outline { background: transparent; border: 1px solid #475569; color: #cbd5e1; }
-  .btn.danger { background: #b91c1c; }
   .filter-bar { display: flex; gap: 12px; margin-bottom: 16px; flex-wrap: wrap; }
   .filter-bar select, .filter-bar input { background: #0f172a; color: #e2e8f0;
                                           border: 1px solid #334155; padding: 6px 10px;
@@ -91,6 +82,9 @@ const HTML_DASHBOARD = `<!DOCTYPE html>
   .platform-pill.tb-pro { background: #581c87; color: #d8b4fe; }
   .platform-pill.gd { background: #14532d; color: #86efac; }
   footer { text-align: center; color: #64748b; font-size: 12px; padding: 20px; }
+  .live-dot { display: inline-block; width: 8px; height: 8px; border-radius: 50%;
+              background: #4ade80; margin-right: 6px; animation: pulse 2s infinite; }
+  @keyframes pulse { 0%,100%{opacity:1} 50%{opacity:0.4} }
 </style>
 </head>
 <body>
@@ -103,8 +97,8 @@ const HTML_DASHBOARD = `<!DOCTYPE html>
 </header>
 <div class="container">
   <div class="hero">
-    <h2>Mock Test Mirror — Scrape Progress</h2>
-    <p>Real-time tracking of SSC, Railways, and Banking mock test scraping across 52 target series.</p>
+    <h2><span class="live-dot"></span>Mock Test Mirror — Scrape Progress</h2>
+    <p>Real-time tracking of SSC, Railways, and Banking mock test scraping across 53 target series. Auto-refresh every 5 min.</p>
   </div>
 
   <div class="stats-grid" id="overview"></div>
@@ -185,9 +179,11 @@ const HTML_DASHBOARD = `<!DOCTYPE html>
   </div>
 </div>
 
-<footer>RepeaterMock Mirror • Auto-refresh every 60s • <a href="/api/overview" style="color:#64748b">API</a></footer>
+<footer>RepeaterMock Mirror • Auto-refresh every 5 min • <a href="/api/dashboard" style="color:#64748b">API</a></footer>
 
 <script>
+let allSeries = [], allRuns = [], allFailures = [], overview = {};
+
 function fmtTime(ts) {
   if (!ts) return '—';
   const d = new Date(ts * 1000);
@@ -199,32 +195,41 @@ function fmtDur(min) {
   return (min/60).toFixed(1) + 'h';
 }
 function pct(s) { return s.total ? Math.round(s.scraped / s.total * 100) : 0; }
-
-async function loadOverview() {
-  const r = await fetch('/api/overview');
-  const d = await r.json();
-  document.getElementById('overview').innerHTML = [
-    statCard('Total Series', d.total_series, 'blue'),
-    statCard('Total Tests', d.total_tests, 'blue'),
-    statCard('Fully Scraped', d.scraped, 'green'),
-    statCard('Partial', d.partial, 'yellow'),
-    statCard('Failed', d.failed, 'red'),
-    statCard('Pending', d.pending, 'gray'),
-    statCard('Questions', (d.questions||0).toLocaleString(), 'green'),
-    statCard('Progress', d.progress_pct + '%', 'green'),
-  ].join('');
-}
-
 function statCard(label, value, color) {
   return '<div class="stat-card ' + color + '"><div class="label">' + label + '</div><div class="value">' + value + '</div></div>';
 }
 
-let allSeries = [];
-async function loadSeries() {
-  const r = await fetch('/api/series');
-  allSeries = await r.json();
-  document.getElementById('series-count').textContent = allSeries.length;
+// SINGLE API CALL — fetches everything in one request (optimization)
+async function loadDashboard() {
+  try {
+    const r = await fetch('/api/dashboard');
+    const d = await r.json();
+    overview = d.overview || {};
+    allSeries = d.series || [];
+    allRuns = d.runs || [];
+    allFailures = d.failures || [];
+    renderAll();
+  } catch (e) {
+    console.error('Load failed:', e);
+  }
+}
+
+function renderAll() {
+  // Stats
+  document.getElementById('overview').innerHTML = [
+    statCard('Total Series', overview.total_series || 0, 'blue'),
+    statCard('Total Tests', overview.total_tests || 0, 'blue'),
+    statCard('Fully Scraped', overview.scraped || 0, 'green'),
+    statCard('Partial', overview.partial || 0, 'yellow'),
+    statCard('Failed', overview.failed || 0, 'red'),
+    statCard('Pending', overview.pending || 0, 'gray'),
+    statCard('Questions', (overview.questions||0).toLocaleString(), 'green'),
+    statCard('Progress', (overview.progress_pct||0) + '%', 'green'),
+  ].join('');
+
   renderSeries();
+  renderRuns();
+  renderFailures();
 }
 
 function renderSeries() {
@@ -238,6 +243,7 @@ function renderSeries() {
     if (search && !s.name.toLowerCase().includes(search)) return false;
     return true;
   });
+  document.getElementById('series-count').textContent = allSeries.length;
   document.getElementById('series-tbody').innerHTML = filtered.map(s => {
     const p = pct(s);
     return '<tr>' +
@@ -254,10 +260,8 @@ function renderSeries() {
   }).join('') || '<tr><td colspan="9" class="empty">No matching series</td></tr>';
 }
 
-async function loadRuns() {
-  const r = await fetch('/api/runs');
-  const d = await r.json();
-  document.getElementById('runs-tbody').innerHTML = (d||[]).slice(0, 10).map(r => {
+function renderRuns() {
+  document.getElementById('runs-tbody').innerHTML = allRuns.slice(0, 10).map(r => {
     return '<tr>' +
       '<td class="timestamp">' + fmtTime(r.started_at) + '</td>' +
       '<td class="timestamp">' + fmtTime(r.ended_at) + '</td>' +
@@ -271,11 +275,8 @@ async function loadRuns() {
   }).join('') || '<tr><td colspan="8" class="empty">No runs yet</td></tr>';
 }
 
-async function loadFailures() {
-  const r = await fetch('/api/tests?status=partial,failed&limit=50');
-  const d = await r.json();
-  const tests = d.tests || d || [];
-  document.getElementById('failures-tbody').innerHTML = tests.map(t => {
+function renderFailures() {
+  document.getElementById('failures-tbody').innerHTML = allFailures.map(t => {
     const missing = [];
     if (!t.has_questions) missing.push('Q');
     if (!t.has_answers) missing.push('A');
@@ -294,11 +295,9 @@ async function loadFailures() {
   }).join('') || '<tr><td colspan="6" class="empty">No failures 🎉</td></tr>';
 }
 
-async function loadAll() {
-  await Promise.all([loadOverview(), loadSeries(), loadRuns(), loadFailures()]);
-}
-loadAll();
-setInterval(loadAll, 60000);
+loadDashboard();
+// Refresh every 5 min instead of 60s — saves D1 reads
+setInterval(loadDashboard, 300000);
 
 document.getElementById('filter-status').addEventListener('change', renderSeries);
 document.getElementById('filter-search').addEventListener('input', renderSeries);
@@ -408,41 +407,75 @@ function makeResponse(body, status = 200, headers = {}) {
     status,
     headers: {
       'Content-Type': isHtml ? 'text/html;charset=utf-8' : 'application/json',
+      'Cache-Control': isHtml ? 'no-cache' : 'public, max-age=60',
       'Access-Control-Allow-Origin': '*',
       ...headers,
     },
   });
 }
 
-// ─── Route handlers ─────────────────────────────────────────────────────────
+// ─── Combined dashboard endpoint (1 request instead of 4) ──────────────────
+
+async function handleDashboard(DB) {
+  // Run all 4 queries in parallel using a single batch call to minimize round trips
+  const [overviewRes, seriesRes, runsRes, failuresRes] = await DB.batch([
+    DB.prepare(`
+      SELECT
+        COUNT(*) as total_series,
+        COALESCE(SUM(total_tests), 0) as total_tests,
+        COALESCE(SUM(scraped_count), 0) as scraped,
+        COALESCE(SUM(partial_count), 0) as partial,
+        COALESCE(SUM(failed_count), 0) as failed,
+        COALESCE(SUM(pending_count), 0) as pending
+      FROM series
+    `),
+    DB.prepare(`
+      SELECT COALESCE(SUM(actual_questions), 0) as q
+      FROM tests WHERE status = 'scraped'
+    `),
+    DB.prepare(`
+      SELECT platform, slug, name, series_url, total_tests as total, scraped_count as scraped,
+             partial_count as partial, failed_count as failed, pending_count as pending,
+             last_fetched_at, last_scraped_at, updated_at
+      FROM series ORDER BY pending_count DESC, name
+    `),
+    DB.prepare(`
+      SELECT * FROM runs ORDER BY started_at DESC LIMIT 20
+    `),
+    DB.prepare(`
+      SELECT * FROM tests WHERE status IN ('partial', 'failed')
+      ORDER BY last_attempted_at DESC LIMIT 50
+    `),
+  ]);
+
+  const o1 = overviewRes.results[0];
+  const o2 = seriesRes.results[0];
+  const total = o1.total_tests || 0;
+  const scraped = o1.scraped || 0;
+
+  return {
+    overview: {
+      total_series: o1.total_series,
+      total_tests: total,
+      scraped,
+      partial: o1.partial,
+      failed: o1.failed,
+      pending: o1.pending,
+      questions: o2.q || 0,
+      progress_pct: total ? Math.round(scraped / total * 100) : 0,
+    },
+    series: seriesRes.results,
+    runs: runsRes.results,
+    failures: failuresRes.results,
+  };
+}
+
+
+// ─── Individual API handlers (kept for compatibility) ──────────────────────
 
 async function handleOverview(DB) {
-  const series = await DB.prepare(`
-    SELECT
-      COUNT(*) as total_series,
-      COALESCE(SUM(total_tests), 0) as total_tests,
-      COALESCE(SUM(scraped_count), 0) as scraped,
-      COALESCE(SUM(partial_count), 0) as partial,
-      COALESCE(SUM(failed_count), 0) as failed,
-      COALESCE(SUM(pending_count), 0) as pending
-    FROM series
-  `).first();
-  const tests = await DB.prepare(`
-    SELECT COALESCE(SUM(actual_questions), 0) as q
-    FROM tests WHERE status = 'scraped'
-  `).first();
-  const total = series.total_tests || 0;
-  const scraped = series.scraped || 0;
-  return {
-    total_series: series.total_series,
-    total_tests: total,
-    scraped,
-    partial: series.partial,
-    failed: series.failed,
-    pending: series.pending,
-    questions: tests.q || 0,
-    progress_pct: total ? Math.round(scraped / total * 100) : 0,
-  };
+  const r = await handleDashboard(DB);
+  return r.overview;
 }
 
 async function handleSeriesList(DB) {
@@ -547,7 +580,7 @@ async function handleTrigger(request, env) {
   return makeResponse(JSON.stringify({ success: false, error: `GitHub API ${r.status}` }), 500);
 }
 
-// ─── Cron handler ───────────────────────────────────────────────────────────
+// ─── Cron handler (every hour at :05) ───────────────────────────────────────
 
 async function handleCron(env) {
   if (env.GH_TOKEN && env.GH_REPO) {
@@ -590,6 +623,12 @@ export default {
         return handleAdminLogin(request, env);
       }
 
+      // SINGLE COMBINED ENDPOINT (optimized — main one used by dashboard)
+      if (path === '/api/dashboard') {
+        return makeResponse(JSON.stringify(await handleDashboard(DB)));
+      }
+
+      // Individual endpoints (kept for compatibility, but dashboard uses /api/dashboard)
       if (path === '/api/overview') {
         return makeResponse(JSON.stringify(await handleOverview(DB)));
       }

@@ -90,6 +90,9 @@ async def scrape_test_full(context, page, test: dict, variant: str, slug: str, o
         "is_free": test.get("isFree", False),
         "section": test.get("_section", ""),
         "subsection": test.get("_subsection", ""),
+        "platform": variant,
+        "slug": slug,
+        "series_url": f"https://repeatermock.com/{variant}/test-series/{slug}",
         "scraped_at": time.strftime("%Y-%m-%d %H:%M:%S UTC", time.gmtime()),
         "questions": [],
         "answers": {},
@@ -203,11 +206,27 @@ async def scrape_test_full(context, page, test: dict, variant: str, slug: str, o
     except Exception as e:
         print(f"    ⚠ /analysis error: {e}", flush=True)
 
-    # Save to file
+    # Save to file — ONLY if fully scraped (has Q + A + analysis)
+    # Partial scrapes are NOT saved as JSON files (they'd be useless to users)
+    # The status is still tracked in progress.json so the next run can retry
     TESTS_DIR.mkdir(parents=True, exist_ok=True)
     out_file = TESTS_DIR / f"{test_id}.json"
-    out_file.write_text(json.dumps(result, indent=2, ensure_ascii=False), encoding="utf-8")
-    print(f"    ✓ Saved to {out_file.name}", flush=True)
+
+    if result["has_questions"] and result["has_answers"] and result["has_analysis"]:
+        out_file.write_text(json.dumps(result, indent=2, ensure_ascii=False), encoding="utf-8")
+        print(f"    ✓ Saved to {out_file.name} (FULL — Q+A+Sol+Ana)", flush=True)
+    else:
+        # Remove any stale file from a previous successful scrape
+        if out_file.exists():
+            out_file.unlink()
+        missing = []
+        if not result["has_questions"]:
+            missing.append("Q")
+        if not result["has_answers"]:
+            missing.append("A")
+        if not result["has_analysis"]:
+            missing.append("Ana")
+        print(f"    ⚠ NOT saved (missing: {','.join(missing)}) — will retry next run", flush=True)
 
     return result
 

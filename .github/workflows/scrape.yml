@@ -144,15 +144,52 @@ jobs:
           python -m src.incremental_scrape --time-limit-minutes "$TIME_LIMIT" --max-tests "$MAX_TESTS" 2>&1 || true
           echo "=== Scraper finished ==="
 
-      - name: Copy scraped data to frontend
+      - name: Copy scraped data to frontend + generate index.json
         if: always()
         run: |
           mkdir -p frontend/tests frontend/img
+          # Copy fully-scraped test files (scraper only saves complete ones)
           cp data/tests/*.json frontend/tests/ 2>/dev/null || true
           # Copy image dirs from data/img/* to frontend/img/* (preserving series subdirs)
           if [ -d data/img ]; then
             cp -r data/img/* frontend/img/ 2>/dev/null || true
           fi
+          # Generate /tests/index.json — list of all fully-scraped tests
+          # (used by frontend to render series cards dynamically)
+          python3 << 'EOF'
+          import json
+          from pathlib import Path
+          tests_dir = Path("frontend/tests")
+          tests_dir.mkdir(parents=True, exist_ok=True)
+          index = []
+          for f in sorted(tests_dir.glob("*.json")):
+              if f.name == "index.json":
+                  continue
+              try:
+                  t = json.loads(f.read_text())
+                  # Only include fully-scraped tests (sanity check)
+                  if not (t.get("has_questions") and t.get("has_answers") and t.get("has_analysis")):
+                      continue
+                  index.append({
+                      "test_id": t.get("test_id"),
+                      "title": t.get("title", "Untitled"),
+                      "series_name": t.get("series_name", ""),
+                      "series_url": t.get("series_url", ""),
+                      "platform": t.get("platform", ""),
+                      "slug": t.get("slug", ""),
+                      "section": t.get("section", ""),
+                      "subsection": t.get("subsection", ""),
+                      "duration_minutes": t.get("duration_minutes", 60),
+                      "total_marks": t.get("total_marks", 200),
+                      "question_count": len(t.get("questions", [])),
+                      "is_free": t.get("is_free", True),
+                      "scraped_at": t.get("scraped_at", ""),
+                  })
+              except Exception as e:
+                  print(f"  ⚠ Error reading {f.name}: {e}")
+          (tests_dir / "index.json").write_text(json.dumps(index, indent=2, ensure_ascii=False))
+          print(f"✓ Generated /tests/index.json with {len(index)} fully-scraped tests")
+          EOF
           echo "Copied $(ls frontend/tests/*.json 2>/dev/null | wc -l) test files to frontend"
 
       - name: Sync progress to D1

@@ -1,13 +1,13 @@
 name = "repeatermock-dashboard"
 main = "src/index.js"
 compatibility_date = "2024-09-01"
-account_id = ""  # filled from env at deploy time
+account_id = "3589a076409f6d44439ff90856290ef8"  # filled from env at deploy time
 
 # D1 database binding
 [[d1_databases]]
 binding = "DB"
 database_name = "repeatermock-scraper"
-database_id = ""  # filled from env at deploy time
+database_id = "413ffea1-c5e1-4e5a-89f1-f0c395a7bdaf"  # filled from env at deploy time
 
 # Cron triggers — every hour at :05
 [triggers]
