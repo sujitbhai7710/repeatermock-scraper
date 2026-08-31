@@ -103,68 +103,34 @@ async def run_incremental_scrape(
     print(f"  Previously scraped: {len(scraped_ids)} tests")
     print(f"  Start time: {time.strftime('%Y-%m-%d %H:%M:%S UTC', time.gmtime())}")
 
-    # Load cookies — try cached first, then env vars (multiple accounts)
+    # Load cookies from cookies/ directory (JSON files committed to repo)
     import os
     cookie_sets = []
+    cookies_dir = Path(__file__).parent.parent / "cookies"
     
-    # Try cached cookies first (from previous run)
+    # Read all account*.json files from cookies/ directory
+    if cookies_dir.exists():
+        for cookie_file in sorted(cookies_dir.glob("account*.json")):
+            try:
+                account_cookies = json.loads(cookie_file.read_text())
+                if account_cookies and len(account_cookies) > 0:
+                    cookie_sets.append(account_cookies)
+                    has_refresh = any(c["name"] == "refreshToken" for c in account_cookies)
+                    print(f"  Found {cookie_file.name} ({len(account_cookies)} cookies, has refreshToken: {has_refresh})")
+            except Exception as e:
+                print(f"  Error reading {cookie_file.name}: {e}")
+    
+    # Also try cached cookies from previous run (data/cookies.json)
     if COOKIES_FILE.exists():
         try:
             cached = json.loads(COOKIES_FILE.read_text())
             if cached.get("cookies"):
-                cookie_sets.append(cached["cookies"])
-                print(f"  Found cached cookies ({len(cached['cookies'])} cookies)")
+                # Only add if not already in cookie_sets
+                if not any(cs[0].get("value") == cached["cookies"][0].get("value") for cs in cookie_sets if cs):
+                    cookie_sets.append(cached["cookies"])
+                    print(f"  Found cached cookies ({len(cached['cookies'])} cookies)")
         except:
             pass
-    
-    # Try env var cookies (from GitHub secrets)
-    for env_var in ["REPEATERMOCK_COOKIES_JSON", "REPEATERMOCK_COOKIES_JSON_1", "REPEATERMOCK_COOKIES_JSON_2"]:
-        raw = os.environ.get(env_var, "")
-        if raw:
-            try:
-                cookies_env = json.loads(raw)
-                if cookies_env and len(cookies_env) > 0:
-                    cookie_sets.append(cookies_env)
-                    print(f"  Found {env_var} ({len(cookies_env)} cookies)")
-            except:
-                pass
-    
-    # Also try .env file and cookie_accounts.json
-    try:
-        from dotenv import load_dotenv
-        load_dotenv()
-    except:
-        pass
-    
-    # Read from cookie_accounts.json (written by GitHub Actions)
-    accounts_file = Path(__file__).parent.parent / "data" / "cookie_accounts.json"
-    if accounts_file.exists():
-        try:
-            accounts = json.loads(accounts_file.read_text())
-            for key, val in accounts.items():
-                try:
-                    cookies_env = json.loads(val)
-                    if cookies_env and len(cookies_env) > 0:
-                        if not any(c[0].get("value") == cookies_env[0].get("value") for c in cookie_sets if c):
-                            cookie_sets.append(cookies_env)
-                            print(f"  Found {key} from cookie_accounts.json ({len(cookies_env)} cookies)")
-                except:
-                    pass
-        except:
-            pass
-    
-    # Also check env vars directly
-    for env_var in ["REPEATERMOCK_COOKIES_JSON", "REPEATERMOCK_COOKIES_JSON_1", "REPEATERMOCK_COOKIES_JSON_2"]:
-        raw = os.environ.get(env_var, "")
-        if raw:
-            try:
-                cookies_env = json.loads(raw)
-                if cookies_env and len(cookies_env) > 0:
-                    if not any(c[0].get("value") == cookies_env[0].get("value") for c in cookie_sets if c):
-                        cookie_sets.append(cookies_env)
-                        print(f"  Found {env_var} from env ({len(cookies_env)} cookies)")
-            except:
-                pass
 
     if not cookie_sets:
         print("✗ No cookies found anywhere. Exiting.")

@@ -1,0 +1,38 @@
+[
+  {
+    "name": "accessToken",
+    "value": "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VySWQiOiI2YTk0YjhhZWI0NDJjYmQ5YWY2MzRmNzQiLCJlbWFpbCI6ImZpbm5vbGltN0BnbWFpbC5jb20iLCJpYXQiOjE3ODgxOTg3NjcsImV4cCI6MTc4ODE5OTY2N30.EcLwgXfLhhkQBT4uXICInolYWSsWuqc6TAtNnkaVrVQ",
+    "domain": ".repeatermock.com",
+    "path": "/"
+  },
+  {
+    "name": "guestId",
+    "value": "guest%3A764c0ec1a8738eeee04a1e2a234c3c2b",
+    "domain": ".repeatermock.com",
+    "path": "/"
+  },
+  {
+    "name": "refreshToken",
+    "value": "3f05a65da25227116e673a7ace52ce1f2877adfee0595074dc2144ce1b212cbc83d23a1c8a0535e1df3d2fdb46c2048fa6e518fa5c36b13098d69ddae9f96512",
+    "domain": ".repeatermock.com",
+    "path": "/"
+  },
+  {
+    "name": "totpVerified",
+    "value": "1",
+    "domain": ".repeatermock.com",
+    "path": "/"
+  },
+  {
+    "name": "rm_fe",
+    "value": "356497b0f96bcb98",
+    "domain": "repeatermock.com",
+    "path": "/"
+  },
+  {
+    "name": "g_state",
+    "value": "{\"i_l\":0,\"i_ll\":1788188312136,\"i_b\":\"l/uEuhb5uhWa8LuV/fXulozw068XWOJYqz5cZDoSO0E\",\"i_e\":{\"enable_itp_optimization\":24},\"i_et\":1788188312136}",
+    "domain": "repeatermock.com",
+    "path": "/"
+  }
+]

@@ -1,0 +1,32 @@
+[
+  {
+    "name": "accessToken",
+    "value": "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VySWQiOiI2YTk1YjEyYjljNDk1OGE2NzEyNzkxNmIiLCJlbWFpbCI6InNwZWxsaW5nYmVlYW5zd2Vyc0BnbWFpbC5jb20iLCJpYXQiOjE3ODgxOTg5OTcsImV4cCI6MTc4ODE5OTg5N30.UXj_JCNiGjXQ_CyKhf47tDivK8mKbDrWCWjgajnuIZo",
+    "domain": ".repeatermock.com",
+    "path": "/"
+  },
+  {
+    "name": "refreshToken",
+    "value": "93b56de5ee0d33659dcf5f7d598ecb4e3b49e4fcd18f71b16f27279fbebf007268c3f9d58d826f98069968c99cf3ba463b16091cf00839e37050ec8996c9a172",
+    "domain": ".repeatermock.com",
+    "path": "/"
+  },
+  {
+    "name": "totpVerified",
+    "value": "1",
+    "domain": ".repeatermock.com",
+    "path": "/"
+  },
+  {
+    "name": "rm_fe",
+    "value": "356497b0f96bcb98",
+    "domain": "repeatermock.com",
+    "path": "/"
+  },
+  {
+    "name": "g_state",
+    "value": "{\"i_l\":0,\"i_ll\":1788195088327,\"i_b\":\"EQbrlDlZCL5Rwb0yUE1ewaMcfOPvAdLUIvGB31HcmdI\",\"i_e\":{\"enable_itp_optimization\":24},\"i_et\":1788195088327}",
+    "domain": "repeatermock.com",
+    "path": "/"
+  }
+]
