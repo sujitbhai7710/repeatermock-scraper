@@ -13,7 +13,7 @@ on:
         default: '0'
 
   schedule:
-    - cron: '*/15 * * * *'  # Check every 15 min, gap logic decides whether to run
+    - cron: '10 */1 * * *'  # Every hour at :10 min (70-min gap via concurrency + gap check)
 
   push:
     branches: [main]
@@ -64,43 +64,45 @@ jobs:
           key: scrape-state-v3
           restore-keys: scrape-state-v3
 
-      - name: Setup cookies
+      - name: Setup cookies (multi-account)
         env:
-          COOKIES_SECRET: ${{ secrets.REPEATERMOCK_COOKIES_JSON }}
+          COOKIES_SECRET_1: ${{ secrets.REPEATERMOCK_COOKIES_JSON_1 }}
+          COOKIES_SECRET_2: ${{ secrets.REPEATERMOCK_COOKIES_JSON_2 }}
         run: |
           mkdir -p data/tests data/series frontend/tests frontend/img
 
           if [ -f data/cookies.json ]; then
             echo "✓ Using cached cookies from previous run"
           else
-            echo "Setting up cookies from secret..."
-            if [ -z "$COOKIES_SECRET" ]; then
-              echo "ERROR: REPEATERMOCK_COOKIES_JSON secret not set!"
-              exit 1
-            fi
-            # Write cookies directly to data/cookies.json (avoids .env parsing issues with JSON)
-            # Normalize sameSite values (browser exports use "unspecified" which Playwright rejects)
+            echo "Setting up cookies from account 1 secret..."
             python3 -c "
           import os, json
-          secret = os.environ.get('COOKIES_SECRET', '')
+          secret = os.environ.get('COOKIES_SECRET_1', '')
           if not secret:
-              print('ERROR: COOKIES_SECRET is empty'); exit(1)
+              print('ERROR: COOKIES_SECRET_1 is empty'); exit(1)
           cookies = json.loads(secret)
-          # Fix sameSite: Playwright only accepts Strict/Lax/None
           for c in cookies:
               ss = c.get('sameSite', 'Lax')
-              if ss not in ('Strict', 'Lax', 'None'):
-                  c['sameSite'] = 'Lax'
-              # Remove fields Playwright doesn't accept
-              c.pop('id', None)
-              c.pop('storeId', None)
-              c.pop('hostOnly', None)
-              c.pop('session', None)
+              if ss not in ('Strict', 'Lax', 'None'): c['sameSite'] = 'Lax'
+              c.pop('id', None); c.pop('storeId', None); c.pop('hostOnly', None); c.pop('session', None)
           with open('data/cookies.json', 'w') as f:
               json.dump({'cookies': cookies, 'simple': {c['name']: c['value'] for c in cookies}, 'saved_at': 0}, f, indent=2)
-          print(f'✓ Wrote {len(cookies)} cookies to data/cookies.json (sameSite normalized)')
+          print(f'✓ Wrote {len(cookies)} cookies to data/cookies.json')
           "
           fi
+
+          # Write both accounts to a file the scraper can read for fallback
+          python3 -c "
+          import os, json
+          accounts = {}
+          for i, key in enumerate(['COOKIES_SECRET_1', 'COOKIES_SECRET_2'], 1):
+              val = os.environ.get(key, '')
+              if val:
+                  accounts[f'REPEATERMOCK_COOKIES_JSON_{i}'] = val
+          with open('data/cookie_accounts.json', 'w') as f:
+              json.dump(accounts, f)
+          print(f'✓ Wrote {len(accounts)} cookie accounts to data/cookie_accounts.json')
+          "
 
           # Also set as env var for the scraper (it reads from env first, then file)
 

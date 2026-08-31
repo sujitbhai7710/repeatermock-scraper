@@ -183,70 +183,128 @@ async def fetch_via_context(context, url: str, method: str = "GET", body: str | 
         return 0, f"ERROR: {e}"
 
 
-async def refresh_cookies_if_needed(context, page, max_retries: int = 3) -> list[dict[str, Any]]:
+async def refresh_cookies_if_needed(context, page, max_retries: int = 3) -> list[dict[str, Any]] | None:
     """
     Check if auth is working; if not, refresh. Save rotated cookies.
     
-    Includes retry logic and detailed logging for debugging CI failures.
-    Does NOT raise on failure — returns None so caller can handle gracefully.
+    KEY INSIGHT: RepeaterMock's client-side JS auto-refreshes the access token
+    when the page loads. We must use page.goto() (which runs JS) to trigger
+    the refresh, NOT just context.request.get() (which doesn't run JS).
+    
+    Returns None on failure (caller should handle gracefully).
     """
     import logging
     logger = logging.getLogger("repeatermock_scraper")
-    
+
     for attempt in range(max_retries):
         logger.info(f"Auth attempt {attempt+1}/{max_retries}")
         
-        # Visit home page to trigger any client-side token refresh
+        # Step 1: Load the home page in the browser — this runs RepeaterMock's
+        # JS which automatically refreshes the access token if expired.
+        # The JS calls /auth/refresh internally and sets new cookies.
         try:
-            logger.info("  Visiting home page...")
-            await page.goto("https://repeatermock.com/", timeout=30000, wait_until="domcontentloaded")
+            logger.info("  Loading repeatermock.com (triggers JS token refresh)...")
+            await page.goto("https://repeatermock.com/", timeout=45000, wait_until="networkidle")
         except Exception as e:
-            logger.warning(f"  Home page visit failed: {e}")
-        await asyncio.sleep(3)
-
-        # Check current auth status
-        logger.info("  Checking /auth/me...")
-        status, body = await fetch_via_context(context, f"{API_BASE}/auth/me")
-        logger.info(f"  /auth/me → status={status}, body={body[:100]}")
+            logger.warning(f"  Page load failed (trying domcontentloaded): {e}")
+            try:
+                await page.goto("https://repeatermock.com/", timeout=30000, wait_until="domcontentloaded")
+            except Exception as e2:
+                logger.warning(f"  domcontentloaded also failed: {e2}")
         
+        # Wait for JS to finish token refresh
+        logger.info("  Waiting for JS token refresh...")
+        await asyncio.sleep(8)
+        
+        # Step 2: Check if the page loaded as authenticated user
+        # The home page shows different content for logged-in vs logged-out users
+        try:
+            body_text = await page.evaluate("document.body ? document.body.innerText.substring(0, 500) : ''")
+            logger.info(f"  Page content preview: {body_text[:100]}")
+            
+            # Check for logged-in indicators
+            if "Dashboard" in body_text or "My Batches" in body_text or "Sign Out" in body_text or "Logout" in body_text:
+                logger.info("  ✓ User is logged in (found Dashboard/menu indicators)")
+                cookies = await context.cookies()
+                save_cookies(cookies, COOKIES_FILE)
+                return cookies
+        except Exception as e:
+            logger.warning(f"  Could not read page content: {e}")
+        
+        # Step 3: Try direct API check (the JS may have refreshed cookies by now)
+        logger.info("  Checking /auth/me via context.request...")
+        status, body = await fetch_via_context(context, f"{API_BASE}/auth/me")
+        logger.info(f"  /auth/me → {status}: {body[:80]}")
+
         if status == 200 and '"success":true' in body:
             cookies = await context.cookies()
             save_cookies(cookies, COOKIES_FILE)
-            logger.info(f"  ✓ Authenticated successfully")
+            logger.info("  ✓ Authenticated via API check")
             return cookies
 
-        # Try refresh
-        logger.info("  Trying /auth/refresh...")
+        # Step 4: Try manual /auth/refresh (backup)
+        logger.info("  Trying manual /auth/refresh...")
         status, body = await fetch_via_context(context, f"{API_BASE}/auth/refresh", method="POST")
-        logger.info(f"  /auth/refresh → status={status}, body={body[:100]}")
-        
+        logger.info(f"  /auth/refresh → {status}: {body[:80]}")
+
         if status == 200:
-            # Wait a moment for cookies to settle
-            await asyncio.sleep(1)
+            await asyncio.sleep(2)
             cookies = await context.cookies()
             save_cookies(cookies, COOKIES_FILE)
-            
-            # Verify the refresh actually worked
             status2, body2 = await fetch_via_context(context, f"{API_BASE}/auth/me")
             if status2 == 200 and '"success":true' in body2:
-                logger.info(f"  ✓ Refresh succeeded, authenticated")
+                logger.info("  ✓ Authenticated via manual refresh")
                 return cookies
-            logger.warning(f"  Refresh returned 200 but /auth/me still fails: {body2[:100]}")
-        
-        # Wait before retry
+
+        # Step 5: Try navigating to dashboard (forces redirect if logged in)
+        if attempt == 1:
+            try:
+                logger.info("  Trying /dashboard navigation...")
+                await page.goto("https://repeatermock.com/dashboard", timeout=30000, wait_until="domcontentloaded")
+                await asyncio.sleep(5)
+                url_after = page.url
+                logger.info(f"  Dashboard redirect URL: {url_after}")
+                # If we're still on /dashboard (not redirected to login), we're authed
+                if "/dashboard" in url_after and "login" not in url_after:
+                    cookies = await context.cookies()
+                    save_cookies(cookies, COOKIES_FILE)
+                    logger.info("  ✓ Authenticated via dashboard check")
+                    return cookies
+            except Exception as e:
+                logger.warning(f"  Dashboard check failed: {e}")
+
         if attempt < max_retries - 1:
             logger.info(f"  Waiting 5s before retry...")
             await asyncio.sleep(5)
-    
-    # All retries failed — log detailed error and return None (don't crash)
-    logger.error(f"✗ Authentication failed after {max_retries} attempts")
-    logger.error(f"  This usually means the refresh token has been consumed/expired.")
-    logger.error(f"  Solution: Log into repeatermock.com, export fresh cookies,")
-    logger.error(f"  update the REPEATERMOCK_COOKIES_JSON GitHub secret.")
-    
-    # Save whatever cookies we have (may still have cf_clearance)
+
+    logger.error(f"✗ Auth failed after {max_retries} attempts")
+    logger.error(f"  The refresh token may be consumed/expired.")
     cookies = await context.cookies()
     save_cookies(cookies, COOKIES_FILE)
+    return None
+
+
+async def try_auth_with_fallback(cookies_list: list[list[dict]], page_factory) -> tuple[Any, Any, Any, list[dict]] | None:
+    """
+    Try multiple cookie sets (accounts). Return first that works.
+    page_factory: async callable that returns (playwright, browser, context, page)
+    """
+    import logging
+    logger = logging.getLogger("repeatermock_scraper")
+
+    for i, cookies in enumerate(cookies_list):
+        account_name = f"Account {i+1}"
+        logger.info(f"\nTrying {account_name}...")
+        p, browser, context, page = await page_factory(cookies)
+        result = await refresh_cookies_if_needed(context, page)
+        if result is not None:
+            logger.info(f"✓ {account_name} authenticated successfully!")
+            return p, browser, context, page
+        logger.warning(f"✗ {account_name} failed, trying next...")
+        await browser.close()
+        await p.stop()
+
+    logger.error("✗ All accounts failed!")
     return None
 
 

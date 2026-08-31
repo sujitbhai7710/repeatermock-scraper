@@ -94,23 +94,114 @@ async def run_incremental_scrape(
     print(f"  Previously scraped: {len(scraped_ids)} tests")
     print(f"  Start time: {time.strftime('%Y-%m-%d %H:%M:%S UTC', time.gmtime())}")
 
-    cookies = load_cookies(COOKIES_FILE)
-    p, browser, context = await create_browser_session(cookies)
-    page = await context.new_page()
+    # Load cookies — try cached first, then env vars (multiple accounts)
+    import os
+    cookie_sets = []
+    
+    # Try cached cookies first (from previous run)
+    if COOKIES_FILE.exists():
+        try:
+            cached = json.loads(COOKIES_FILE.read_text())
+            if cached.get("cookies"):
+                cookie_sets.append(cached["cookies"])
+                print(f"  Found cached cookies ({len(cached['cookies'])} cookies)")
+        except:
+            pass
+    
+    # Try env var cookies (from GitHub secrets)
+    for env_var in ["REPEATERMOCK_COOKIES_JSON", "REPEATERMOCK_COOKIES_JSON_1", "REPEATERMOCK_COOKIES_JSON_2"]:
+        raw = os.environ.get(env_var, "")
+        if raw:
+            try:
+                cookies_env = json.loads(raw)
+                if cookies_env and len(cookies_env) > 0:
+                    cookie_sets.append(cookies_env)
+                    print(f"  Found {env_var} ({len(cookies_env)} cookies)")
+            except:
+                pass
+    
+    # Also try .env file and cookie_accounts.json
+    try:
+        from dotenv import load_dotenv
+        load_dotenv()
+    except:
+        pass
+    
+    # Read from cookie_accounts.json (written by GitHub Actions)
+    accounts_file = Path(__file__).parent.parent / "data" / "cookie_accounts.json"
+    if accounts_file.exists():
+        try:
+            accounts = json.loads(accounts_file.read_text())
+            for key, val in accounts.items():
+                try:
+                    cookies_env = json.loads(val)
+                    if cookies_env and len(cookies_env) > 0:
+                        if not any(c[0].get("value") == cookies_env[0].get("value") for c in cookie_sets if c):
+                            cookie_sets.append(cookies_env)
+                            print(f"  Found {key} from cookie_accounts.json ({len(cookies_env)} cookies)")
+                except:
+                    pass
+        except:
+            pass
+    
+    # Also check env vars directly
+    for env_var in ["REPEATERMOCK_COOKIES_JSON", "REPEATERMOCK_COOKIES_JSON_1", "REPEATERMOCK_COOKIES_JSON_2"]:
+        raw = os.environ.get(env_var, "")
+        if raw:
+            try:
+                cookies_env = json.loads(raw)
+                if cookies_env and len(cookies_env) > 0:
+                    if not any(c[0].get("value") == cookies_env[0].get("value") for c in cookie_sets if c):
+                        cookie_sets.append(cookies_env)
+                        print(f"  Found {env_var} from env ({len(cookies_env)} cookies)")
+            except:
+                pass
+
+    if not cookie_sets:
+        print("✗ No cookies found anywhere. Exiting.")
+        return
+
+    print(f"  Total cookie sets to try: {len(cookie_sets)}")
+
+    # Try each cookie set until one works
+    p = browser = context = page = None
+    authed = False
+    
+    for i, cookies in enumerate(cookie_sets):
+        print(f"\n  Trying cookie set {i+1}/{len(cookie_sets)}...")
+        try:
+            if p:
+                await browser.close()
+                await p.stop()
+            p, browser, context = await create_browser_session(cookies)
+            page = await context.new_page()
+            
+            result = await refresh_cookies_if_needed(context, page)
+            if result is not None:
+                print(f"  ✓ Cookie set {i+1} authenticated!")
+                authed = True
+                break
+            else:
+                print(f"  ✗ Cookie set {i+1} failed")
+        except Exception as e:
+            print(f"  ✗ Cookie set {i+1} error: {e}")
+            if p:
+                try:
+                    await browser.close()
+                    await p.stop()
+                except:
+                    pass
+                p = None
+
+    if not authed:
+        print("\n✗ All cookie sets failed. Exiting gracefully.")
+        print("  Update GitHub secrets with fresh cookies.")
+        return
 
     tests_scraped_this_run = 0
     questions_scraped_this_run = 0
 
     try:
-        # Refresh cookies
-        print(f"\n  Refreshing cookies...")
-        cookies = await refresh_cookies_if_needed(context, page)
-        if cookies is None:
-            print("✗ Authentication failed — cookies may be expired. Exiting gracefully.")
-            print("  Update the REPEATERMOCK_COOKIES_JSON GitHub secret with fresh cookies.")
-            return
-        print(f"  ✓ Authenticated")
-
         # Process each series — interleave listing + scraping
         for series_url in ALL_SERIES_URLS:
             # Check time limit
