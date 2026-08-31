@@ -207,9 +207,29 @@ async def run_incremental_scrape(
                 p = None
 
     if not authed:
-        print("\n✗ All cookie sets failed. Exiting gracefully.")
-        print("  Update cookies/account*.json with fresh cookies.")
-        return
+        print("\n⚠ All cookie sets failed — switching to GUEST MODE (questions only, no answers/solutions/analysis)")
+        print("  Questions are accessible without login (confirmed by guest-mode test).")
+        print("  Tests scraped in guest mode will be saved as 'partial' and retried with auth next run.")
+        # Create a guest browser session (no cookies needed)
+        try:
+            if p:
+                await browser.close()
+                await p.stop()
+        except:
+            pass
+        guest_cookies = []  # Empty cookies = guest mode
+        p, browser, context = await create_browser_session(guest_cookies)
+        page = await context.new_page()
+        active_cookies = []  # No cookies in guest mode
+        active_account_idx = -1  # No account in guest mode
+        # Visit homepage to generate cf_clearance + guestId (like a real human)
+        try:
+            await page.goto("https://repeatermock.com/", timeout=30000, wait_until="domcontentloaded")
+            await asyncio.sleep(3)
+            active_cookies = await context.cookies()
+            print(f"  ✓ Guest session created ({len(active_cookies)} guest cookies)")
+        except Exception as e:
+            print(f"  ⚠ Guest homepage visit failed: {e}")
 
     tests_scraped_this_run = 0
     tests_partial_this_run = 0
@@ -307,8 +327,9 @@ async def run_incremental_scrape(
                     break
 
                 # Proactive refresh every N tests — FORCE refresh (not just check)
-                # because access tokens expire and we need fresh ones for submit
-                if (tests_scraped_this_run + tests_partial_this_run + tests_failed_this_run) > 0 and \
+                # Skip in guest mode (no refresh token available)
+                if authed and \
+                   (tests_scraped_this_run + tests_partial_this_run + tests_failed_this_run) > 0 and \
                    (tests_scraped_this_run + tests_partial_this_run + tests_failed_this_run) % REFRESH_EVERY_N_TESTS == 0:
                     print(f"\n  Proactive token refresh ({tests_scraped_this_run + tests_partial_this_run + tests_failed_this_run} tests done)...")
                     refreshed = await force_refresh_cookies(context, page, original_cookies=active_cookies)
