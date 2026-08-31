@@ -162,11 +162,16 @@ async def create_browser_session(cookies: list[dict[str, Any]]):
 
 
 async def fetch_via_context(context, url: str, method: str = "GET", body: str | None = None) -> tuple[int, str]:
-    """Fetch a URL using the browser context (inherits cookies + cf_clearance)."""
+    """Fetch a URL using the browser context. Manually adds Cookie header from context cookies."""
+    # Get all cookies from the context (includes httpOnly ones)
+    cookies = await context.cookies()
+    cookie_str = "; ".join(f'{c["name"]}={c["value"]}' for c in cookies if "repeatermock" in c.get("domain", ""))
+    
     headers = {
         "Accept": "application/json",
         "Referer": "https://repeatermock.com/",
         "Origin": "https://repeatermock.com",
+        "Cookie": cookie_str,
     }
     if method == "POST":
         headers["Content-Type"] = "application/json"
@@ -265,9 +270,9 @@ async def refresh_cookies_if_needed(context, page, max_retries: int = 3) -> list
         except Exception as e:
             logger.warning(f"  Could not read page content: {e}")
         
-        # Step 3: Try direct API check using page.evaluate (sends httpOnly cookies!)
-        logger.info("  Checking /auth/me via page.evaluate (includes httpOnly cookies)...")
-        status, body = await fetch_via_page(page, f"{API_BASE}/auth/me")
+        # Step 3: Try direct API check using fetch_via_context (now includes Cookie header manually)
+        logger.info("  Checking /auth/me (with manually added Cookie header)...")
+        status, body = await fetch_via_context(context, f"{API_BASE}/auth/me")
         logger.info(f"  /auth/me → {status}: {body[:80]}")
 
         if status == 200 and '"success":true' in body:
@@ -276,16 +281,19 @@ async def refresh_cookies_if_needed(context, page, max_retries: int = 3) -> list
             logger.info("  ✓ Authenticated via API check")
             return cookies
 
-        # Step 4: Try manual /auth/refresh via page.evaluate (sends httpOnly refreshToken!)
-        logger.info("  Trying /auth/refresh via page.evaluate...")
-        status, body = await fetch_via_page(page, f"{API_BASE}/auth/refresh", method="POST")
+        # Step 4: Try manual /auth/refresh via fetch_via_context
+        logger.info("  Trying /auth/refresh (with Cookie header)...")
+        status, body = await fetch_via_context(context, f"{API_BASE}/auth/refresh", method="POST")
         logger.info(f"  /auth/refresh → {status}: {body[:80]}")
 
         if status == 200:
             await asyncio.sleep(2)
+            # The refresh response sets new cookies via Set-Cookie headers
+            # We need to re-read cookies from the context (they may have been updated)
             cookies = await context.cookies()
             save_cookies(cookies, COOKIES_FILE)
-            status2, body2 = await fetch_via_page(page, f"{API_BASE}/auth/me")
+            # Re-check auth with updated cookies
+            status2, body2 = await fetch_via_context(context, f"{API_BASE}/auth/me")
             if status2 == 200 and '"success":true' in body2:
                 logger.info("  ✓ Authenticated via manual refresh")
                 return cookies
