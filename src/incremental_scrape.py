@@ -219,18 +219,19 @@ async def run_incremental_scrape(
 
     async def refresh_active_cookies_callback():
         """Called by scrape_test_full when submit returns 401.
-        Force-refreshes cookies, persists them, and returns the new list."""
-        nonlocal active_cookies, consecutive_auth_failures
+        Force-refreshes cookies, persists them, and returns the new list.
+        Note: failure here doesn't abort the run — the test may still scrape
+        fully if it was previously attempted (solution/analysis pages return
+        data for previously-attempted tests regardless of auth)."""
+        nonlocal active_cookies
         print("    ↻ Force-refreshing cookies due to 401 from submit...")
         refreshed = await force_refresh_cookies(context, page, original_cookies=active_cookies)
         if refreshed is not None:
             active_cookies = refreshed
             save_account_cookies(active_account_idx, refreshed)
-            consecutive_auth_failures = 0
             return refreshed
         else:
-            consecutive_auth_failures += 1
-            print(f"    ✗ Force refresh failed (consecutive: {consecutive_auth_failures})")
+            print(f"    ⚠ Force refresh failed — will continue with current cookies (GETs may still work)")
             return None
 
     try:
@@ -306,8 +307,7 @@ async def run_incremental_scrape(
                     break
 
                 # Proactive refresh every N tests — FORCE refresh (not just check)
-                # because access tokens expire very fast (~2-3 min) and we can't
-                # afford to wait for a 401 mid-scrape
+                # because access tokens expire and we need fresh ones for submit
                 if (tests_scraped_this_run + tests_partial_this_run + tests_failed_this_run) > 0 and \
                    (tests_scraped_this_run + tests_partial_this_run + tests_failed_this_run) % REFRESH_EVERY_N_TESTS == 0:
                     print(f"\n  Proactive token refresh ({tests_scraped_this_run + tests_partial_this_run + tests_failed_this_run} tests done)...")
@@ -320,8 +320,13 @@ async def run_incremental_scrape(
                     else:
                         consecutive_auth_failures += 1
                         print(f"  ⚠ Force refresh failed (attempt {consecutive_auth_failures})")
-                        if consecutive_auth_failures >= 3:
-                            print("  ✗ 3 consecutive auth failures — aborting run")
+                        # DON'T abort here — tests may still scrape fully even without
+                        # a valid access token, because:
+                        # 1. GET /attempt returns questions regardless of auth (public page)
+                        # 2. GET /solution + /analysis return data if test was previously attempted
+                        # Only abort if we get 10 consecutive failures with NO successful scrapes
+                        if consecutive_auth_failures >= 10:
+                            print("  ✗ 10 consecutive auth failures — aborting run")
                             break
 
                 time_remaining = time_limit_seconds - elapsed
@@ -367,6 +372,7 @@ async def run_incremental_scrape(
                                               has_images=True, question_count=len(result["questions"]))
                             tests_scraped_this_run += 1
                             questions_scraped_this_run += len(result["questions"])
+                            consecutive_auth_failures = 0  # Reset — test scraped fine, access token still works for GETs
                             print(f"    ✓ FULLY SCRAPED ({len(result['questions'])} questions)")
                         elif has_q:
                             # Partial — got questions but no answers/analysis
