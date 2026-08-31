@@ -639,17 +639,24 @@
     fetch("/tests/" + testId + ".json")
       .then(r => r.json())
       .then(testData => {
-        const questions = testData.questions;
+        const questions = testData.questions || [];
+        const answers = testData.answers || {};
+        const analysis = testData.analysis || {};
         let payload = null;
         try { payload = JSON.parse(sessionStorage.getItem("rm_test_result_" + testId) || "null"); } catch (e) {}
 
         app.appendChild(breadcrumb([
           { label: "Home", href: "/" },
-          { label: testData.test_title, href: "/series/rm-tb-ssc-cgl" },
+          { label: testData.title || testData.test_title || "Test", href: "/series/rm-tb-ssc-cgl" },
           { label: "Result" }
         ]));
 
         if (!payload) {
+          // Show the answer key + analysis directly (for pre-scraped tests)
+          if (testData.has_answers || Object.keys(answers).length > 0) {
+            renderAnswerKey(testData, questions, answers, analysis, sectionNames);
+            return;
+          }
           app.appendChild(h("div", { class: "rm-instructions" }, [
             h("h1", {}, "No attempt recorded"),
             h("p", { class: "rm-muted" }, "We couldn't find an attempt for this test. Please start the test first."),
@@ -661,62 +668,57 @@
           return;
         }
 
+        // User submitted — calculate score using answer keys
         const answered = payload.answers.filter(a => a !== null).length;
         const unattempted = questions.length - answered;
         const timeMin = Math.floor(payload.timeTaken / 60);
-
-        app.appendChild(h("div", { class: "rm-result-hero" }, [
-          h("div", { class: "score-label" }, testData.test_title),
-          h("div", { class: "score-big", style: "font-size:32px;" }, "Test Submitted!"),
-          h("div", { class: "rm-muted" }, "You answered " + answered + " of " + questions.length + " questions in " + timeMin + " minutes."),
-          h("div", { class: "rm-result-stats" }, [
-            h("div", { class: "rm-result-stat ok" }, [h("div", { class: "v" }, String(answered)), h("div", { class: "l" }, "Answered")]),
-            h("div", { class: "rm-result-stat warn" }, [h("div", { class: "v" }, String(unattempted)), h("div", { class: "l" }, "Unattempted")]),
-            h("div", { class: "rm-result-stat" }, [h("div", { class: "v" }, timeMin + " min"), h("div", { class: "l" }, "Time Taken")]),
-          ]),
-          h("div", { class: "rm-instructions-actions", style: "justify-content:center;margin-top:18px;" }, [
-            h("a", { class: "rm-btn", href: "https://repeatermock.com/tb/test-series/ssc-cgl/test/" + testId + "/solution", target: "_blank", rel: "noopener" }, "View Solutions & Answer Key on RepeaterMock →"),
-            h("a", { class: "rm-btn rm-btn-secondary", href: "/test/" + testId }, "Retake Test"),
-          ])
-        ]));
-
-        // Show all questions with user's answers
-        const sol = h("div", { class: "rm-solutions" }, [
-          h("h2", {}, "Your Responses"),
-          h("p", { class: "rm-muted", style: "font-size:13px;margin:0 0 14px;" }, "The correct answers and detailed solutions are available on RepeaterMock. Click 'View Solutions' above to see the answer key.")
-        ]);
+        let correct = 0, wrong = 0, marks = 0;
 
         questions.forEach(function (q, i) {
           const userAns = payload.answers[i];
-          const langData = q.languages ? (q.languages.en || {}) : (q.en || {});
-          const qText = langData.question || "";
-          const opts = langData.options || [];
-          const sectionName = sectionNames[q.section] || ("Section " + q.section);
-
-          const qHeading = h("div", { class: "q" }, [
-            document.createTextNode("Q" + (i + 1) + ". [" + sectionName + "] "),
-            userAns === null
-              ? h("span", { class: "lock-tag", style: "margin-left:6px;" }, "Skipped")
-              : h("span", { class: "free-tag", style: "margin-left:6px;" }, "Answered: " + String.fromCharCode(65 + userAns))
-          ]);
-
-          const qBlock = h("div", { class: "rm-solution-item" }, [qHeading]);
-          // Render question text
-          const qTextDiv = h("div", { class: "q", style: "margin-bottom:8px;" });
-          qTextDiv.innerHTML = qText;
-          qBlock.insertBefore(qTextDiv, qBlock.firstChild);
-
-          const optsDiv = h("div", { class: "opts" });
-          opts.forEach(function (opt, oi) {
-            let cls = "opt";
-            if (oi === userAns) cls += " yours";
-            const optDiv = h("div", { class: cls, html: String.fromCharCode(65 + oi) + ". " + opt.value });
-            optsDiv.appendChild(optDiv);
-          });
-          qBlock.appendChild(optsDiv);
-          sol.appendChild(qBlock);
+          if (userAns === null) return;
+          const ansData = answers[q.id];
+          if (!ansData) return;
+          const correctOpt = parseInt(ansData.correctOption) - 1; // 1-based to 0-based
+          if (userAns === correctOpt) {
+            correct++;
+            marks += q.posMarks || 2;
+          } else {
+            wrong++;
+            marks -= q.negMarks || 0.5;
+          }
         });
-        app.appendChild(sol);
+
+        // Score hero
+        app.appendChild(h("div", { class: "rm-result-hero" }, [
+          h("div", { class: "score-label" }, testData.title || testData.test_title),
+          h("div", { class: "score-big" }, marks.toFixed(1) + " / " + (testData.total_marks || 200)),
+          h("div", { class: "rm-muted" }, "Correct: " + correct + " · Wrong: " + wrong + " · Unattempted: " + unattempted + " · Time: " + timeMin + " min"),
+          h("div", { class: "rm-result-stats" }, [
+            h("div", { class: "rm-result-stat ok" }, [h("div", { class: "v" }, String(correct)), h("div", { class: "l" }, "Correct")]),
+            h("div", { class: "rm-result-stat err" }, [h("div", { class: "v" }, String(wrong)), h("div", { class: "l" }, "Wrong")]),
+            h("div", { class: "rm-result-stat warn" }, [h("div", { class: "v" }, String(unattempted)), h("div", { class: "l" }, "Unattempted")]),
+            h("div", { class: "rm-result-stat" }, [h("div", { class: "v" }, Math.round((correct / questions.length) * 100) + "%"), h("div", { class: "l" }, "Accuracy")]),
+          ]),
+        ]));
+
+        // Analysis data (rank, cutoff, etc.) — from RepeaterMock
+        if (analysis.ts || analysis.analysis) {
+          const ts = analysis.ts || {};
+          const an = analysis.analysis || {};
+          app.appendChild(h("div", { class: "rm-series-hero", style: "margin-top:18px;" }, [
+            h("h2", { style: "margin:0 0 10px;font-size:17px;" }, "RepeaterMock Analysis Data"),
+            h("div", { class: "rm-result-stats" }, [
+              ts.rank ? h("div", { class: "rm-result-stat" }, [h("div", { class: "v" }, "#" + ts.rank), h("div", { class: "l" }, "Rank (RepeaterMock)")]) : null,
+              ts.percentile != null ? h("div", { class: "rm-result-stat" }, [h("div", { class: "v" }, ts.percentile.toFixed(1) + "%"), h("div", { class: "l" }, "Percentile")]) : null,
+              an.avgMarks ? h("div", { class: "rm-result-stat" }, [h("div", { class: "v" }, an.avgMarks.toFixed(1)), h("div", { class: "l" }, "Average Marks")]) : null,
+              an.totalStudents ? h("div", { class: "rm-result-stat" }, [h("div", { class: "v" }, String(an.totalStudents)), h("div", { class: "l" }, "Total Students")]) : null,
+            ]),
+          ]));
+        }
+
+        // Detailed solutions with answer keys
+        renderAnswerKey(testData, questions, answers, analysis, sectionNames, payload);
       })
       .catch(() => {
         clear(app);
@@ -725,6 +727,79 @@
           h("a", { class: "rm-btn", href: "/" }, "← Back to Test Series"),
         ]));
       });
+  }
+
+  // Helper: render answer key + solutions
+  function renderAnswerKey(testData, questions, answers, analysis, sectionNames, payload) {
+    const hasUserAttempt = payload && payload.answers;
+    const sol = h("div", { class: "rm-solutions" }, [
+      h("h2", {}, hasUserAttempt ? "Detailed Solutions & Answer Key" : "Answer Key & Solutions"),
+    ]);
+
+    questions.forEach(function (q, i) {
+      const userAns = hasUserAttempt ? payload.answers[i] : null;
+      const langData = q.languages ? (q.languages.en || {}) : (q.en || {});
+      const qText = langData.question || "";
+      const opts = langData.options || [];
+      const sectionName = sectionNames[q.section] || ("Section " + q.section);
+      const ansData = answers[q.id];
+      const correctOpt = ansData ? (parseInt(ansData.correctOption) - 1) : null;
+      const solData = ansData ? (ansData.sol || {}) : {};
+      const solEn = solData.en || {};
+      const solText = typeof solEn === 'object' ? (solEn.value || "") : String(solEn);
+
+      // Status badge
+      let badge;
+      if (!hasUserAttempt) {
+        badge = h("span", { class: "free-tag", style: "margin-left:6px;" }, "Correct: " + (correctOpt !== null ? String.fromCharCode(65 + correctOpt) : "N/A"));
+      } else if (userAns === null) {
+        badge = h("span", { class: "lock-tag", style: "margin-left:6px;" }, "Skipped");
+      } else if (userAns === correctOpt) {
+        badge = h("span", { class: "free-tag", style: "margin-left:6px;" }, "✓ Correct");
+      } else {
+        badge = h("span", { class: "lock-tag", style: "margin-left:6px;" }, "✗ Wrong");
+      }
+
+      const qBlock = h("div", { class: "rm-solution-item" });
+
+      // Question heading
+      const heading = h("div", { class: "q", style: "margin-bottom:8px;" });
+      heading.appendChild(document.createTextNode("Q" + (i + 1) + ". [" + sectionName + "] "));
+      heading.appendChild(badge);
+      qBlock.appendChild(heading);
+
+      // Question text
+      const qDiv = h("div", { class: "q", style: "margin-bottom:8px;font-weight:normal;" });
+      qDiv.innerHTML = qText;
+      qBlock.appendChild(qDiv);
+
+      // Options with correct/wrong highlighting
+      const optsDiv = h("div", { class: "opts" });
+      opts.forEach(function (opt, oi) {
+        let cls = "opt";
+        if (correctOpt !== null && oi === correctOpt) cls += " correct";
+        if (hasUserAttempt && oi === userAns && oi !== correctOpt) cls += " wrong";
+        const optDiv = h("div", { class: cls });
+        optDiv.innerHTML = String.fromCharCode(65 + oi) + ". " + opt.value;
+        optsDiv.appendChild(optDiv);
+      });
+      qBlock.appendChild(optsDiv);
+
+      // Solution explanation
+      if (solText && solText.length > 2 && solText !== "$" && !solText.match(/^\$\d+$/)) {
+        const exDiv = h("div", { class: "ex" });
+        exDiv.innerHTML = "<strong>Solution:</strong> " + solText;
+        qBlock.appendChild(exDiv);
+      }
+
+      sol.appendChild(qBlock);
+    });
+    app.appendChild(sol);
+
+    // Trigger MathJax
+    if (window.MathJax && window.MathJax.typesetPromise) {
+      window.MathJax.typesetPromise([sol]).catch(function(){});
+    }
   }
 
   function renderNotFound() {
