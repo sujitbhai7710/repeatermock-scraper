@@ -31,6 +31,27 @@ API_BASE = "https://api.repeatermock.com"
 WORKING_FORMAT_FILE = Path(__file__).parent.parent / "data" / "submit_format.json"
 
 
+async def fetch_via_context_with_cookies(context, url, method="POST", body=None, cookie_str=""):
+    """Fetch using context.request but with explicit Cookie header (includes httpOnly)."""
+    headers = {
+        "Accept": "application/json",
+        "Origin": "https://repeatermock.com",
+        "Referer": "https://repeatermock.com/",
+    }
+    if cookie_str:
+        headers["Cookie"] = cookie_str
+    if method == "POST":
+        headers["Content-Type"] = "application/json"
+    try:
+        if method == "POST":
+            resp = await context.request.post(url, headers=headers, data=body or "{}")
+        else:
+            resp = await context.request.get(url, headers=headers)
+        return resp.status, await resp.text()
+    except Exception as e:
+        return 0, f"ERROR: {e}"
+
+
 def load_working_format() -> dict | None:
     """Load the last known working submit format."""
     if WORKING_FORMAT_FILE.exists():
@@ -125,30 +146,40 @@ def build_payloads(test_id: str, questions: list[dict]) -> list[dict]:
     ]
 
 
-async def submit_attempt(context, page, test_id: str, questions: list[dict], variant: str = "tb", slug: str = "ssc-cgl") -> bool:
+async def submit_attempt(context, page, test_id: str, questions: list[dict], variant: str = "tb", slug: str = "ssc-cgl", original_cookies: list[dict] = None) -> bool:
     """
     Submit a dummy attempt for a test.
     
-    KEY FIX: Before submitting, we must visit the /attempt page via page.goto()
-    to create an "active attempt" on the server. Without this, the submit API
-    returns "No active attempt found".
+    KEY FIX: The /attempt page must be visited via page.goto() to create an
+    active attempt on the server. But page.goto() wipes httpOnly cookies,
+    so we need to pass original_cookies for the Cookie header in the submit
+    API call.
     
-    Returns True if the submit succeeded, False otherwise.
+    Also: RepeaterMock rate-limits attempt creation. After submitting a test,
+    the server blocks new attempt creation for a few seconds. We add a delay
+    between tests to avoid this.
     """
     api_prefix = "/api/v1" if variant in ("tb", "tb-pro") else "/api/v2"
     submit_url = f"{API_BASE}{api_prefix}/attempts/{test_id}/submit"
     attempt_url = f"https://repeatermock.com/{variant}/test-series/{slug}/test/{test_id}/attempt"
+    
+    # Build cookie string from original cookies (httpOnly ones included)
+    if original_cookies:
+        cookie_str = "; ".join(f'{c["name"]}={c["value"]}' for c in original_cookies if "repeatermock" in c.get("domain", ""))
+    else:
+        cookie_str = ""
     
     # Step 1: Visit /attempt page via page.goto() to create an active attempt
     # The server creates an attempt record when the page is loaded in a browser
     print(f"  Creating active attempt (visiting /attempt page)...", flush=True)
     try:
         await page.goto(attempt_url, timeout=30000, wait_until="domcontentloaded")
-        await asyncio.sleep(5)  # Wait for JS to create the attempt
+        # Wait longer for the JS to create the attempt on the server
+        await asyncio.sleep(8)
     except Exception as e:
         print(f"  ⚠ page.goto failed: {e}", flush=True)
     
-    # Step 2: Now try to submit
+    # Step 2: Now try to submit using the original cookies (not context.cookies which got wiped)
     # Check if we already have a working format
     working = load_working_format()
     if working:
@@ -157,7 +188,7 @@ async def submit_attempt(context, page, test_id: str, questions: list[dict], var
         if "testId" in payload:
             payload["testId"] = test_id
 
-        s, b = await fetch_via_context(context, submit_url, method="POST", body=json.dumps(payload))
+        s, b = await fetch_via_context_with_cookies(context, submit_url, method="POST", body=json.dumps(payload), cookie_str=cookie_str)
         if s == 200:
             print(f"  ✓ Submit succeeded with saved format", flush=True)
             return True
@@ -168,7 +199,7 @@ async def submit_attempt(context, page, test_id: str, questions: list[dict], var
     payloads = build_payloads(test_id, questions)
     for fmt in payloads:
         print(f"  Trying format: {fmt['name']}...", flush=True)
-        s, b = await fetch_via_context(context, submit_url, method="POST", body=json.dumps(fmt["payload"]))
+        s, b = await fetch_via_context_with_cookies(context, submit_url, method="POST", body=json.dumps(fmt["payload"]), cookie_str=cookie_str)
         print(f"    Status: {s}, Response: {b[:200]}", flush=True)
 
         if s == 200:
@@ -178,10 +209,31 @@ async def submit_attempt(context, page, test_id: str, questions: list[dict], var
         elif s == 429:
             print(f"  ⚠ Rate limited, waiting 10s...", flush=True)
             await asyncio.sleep(10)
+            # Retry after rate limit
+            s2, b2 = await fetch_via_context_with_cookies(context, submit_url, method="POST", body=json.dumps(fmt["payload"]), cookie_str=cookie_str)
+            if s2 == 200:
+                print(f"  ✓✓✓ SUCCESS after rate limit wait!", flush=True)
+                save_working_format(fmt)
+                return True
         elif s == 409:
             # Conflict — attempt already exists
             print(f"  ✓ Attempt already exists (409) — treating as success", flush=True)
             return True
+        elif s == 404:
+            # No active attempt — the page.goto didn't create one
+            # Wait longer and retry page.goto
+            print(f"  ⚠ No active attempt, retrying page.goto...", flush=True)
+            try:
+                await page.goto(attempt_url, timeout=30000, wait_until="domcontentloaded")
+                await asyncio.sleep(10)
+            except:
+                pass
+            # Retry submit
+            s2, b2 = await fetch_via_context_with_cookies(context, submit_url, method="POST", body=json.dumps(fmt["payload"]), cookie_str=cookie_str)
+            if s2 == 200:
+                print(f"  ✓✓✓ SUCCESS after retry!", flush=True)
+                save_working_format(fmt)
+                return True
 
     print(f"  ✗ All payload formats failed", flush=True)
     return False

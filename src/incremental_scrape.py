@@ -46,7 +46,7 @@ from src.scraper import (
 
 PROGRESS_FILE = Path(__file__).parent.parent / "data" / "progress.json"
 DEFAULT_TIME_LIMIT_MINUTES = 50
-DEFAULT_RATE_LIMIT_SECONDS = 2
+DEFAULT_RATE_LIMIT_SECONDS = 3
 
 ALL_SERIES_URLS = [
     "https://repeatermock.com/tb/test-series/bank-of-baroda-lbo",
@@ -324,7 +324,7 @@ async def run_incremental_scrape(
                 print(f"  [{tests_scraped_this_run+1}] ({mins_left}m left) {test_title}")
 
                 try:
-                    result = await scrape_test_full(context, page, test, variant, slug)
+                    result = await scrape_test_full(context, page, test, variant, slug, original_cookies=cookies)
                     if result:
                         # Download images and replace CDN URLs with local paths
                         result = await download_images_for_test(context, result, slug)
