@@ -1,104 +1,38 @@
 [
   {
     "name": "accessToken",
-    "value": "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VySWQiOiI2YTk1Yzk3ZTljNDk1OGE2NzEyNzkyYTIiLCJlbWFpbCI6InN1aml0YmhhaTc3MTBAZ21haWwuY29tIiwiaWF0IjoxNzg4MjAxMzQyLCJleHAiOjE3ODgyMDIyNDJ9.WyiQKGQO7KWDYQh0aSuZVjZqr2U_E8z_tYpvLxzng6M",
+    "value": "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VySWQiOiI2YTk0YjhhZWI0NDJjYmQ5YWY2MzRmNzQiLCJlbWFpbCI6ImZpbm5vbGltN0BnbWFpbC5jb20iLCJpYXQiOjE3ODgyMDI2MjYsImV4cCI6MTc4ODIwMzUyNn0.OvDcm_SWbK6JzKUmKLiPGss9NT7B745OCvQl_Fn42WE",
     "domain": ".repeatermock.com",
-    "path": "/",
-    "expires": -1,
-    "httpOnly": false,
-    "secure": false,
-    "sameSite": "Lax"
+    "path": "/"
   },
   {
     "name": "guestId",
     "value": "guest%3A764c0ec1a8738eeee04a1e2a234c3c2b",
     "domain": ".repeatermock.com",
-    "path": "/",
-    "expires": -1,
-    "httpOnly": false,
-    "secure": false,
-    "sameSite": "Lax"
+    "path": "/"
   },
   {
     "name": "refreshToken",
-    "value": "e383c0be6c63b37cf8b55c5869f7380579c3ec37079ab4a76da43fed3b4443bd9a8da7f0c721517260681ec8579fa50fb1bff6044a309cf714baed49753e69bd",
+    "value": "b8024867eac9816e163ad16de653a20746ad005341b355a1b2a74bcf58553d8612fff4ea54ac38db565921d2cf51cdab889b7e8362b602f4a97e512da3d7694c",
     "domain": ".repeatermock.com",
-    "path": "/",
-    "expires": -1,
-    "httpOnly": false,
-    "secure": false,
-    "sameSite": "Lax"
+    "path": "/"
   },
   {
     "name": "totpVerified",
     "value": "1",
     "domain": ".repeatermock.com",
-    "path": "/",
-    "expires": -1,
-    "httpOnly": false,
-    "secure": false,
-    "sameSite": "Lax"
+    "path": "/"
   },
   {
     "name": "rm_fe",
     "value": "356497b0f96bcb98",
     "domain": "repeatermock.com",
-    "path": "/",
-    "expires": -1,
-    "httpOnly": false,
-    "secure": false,
-    "sameSite": "Lax"
+    "path": "/"
   },
   {
     "name": "g_state",
-    "value": "{\"i_l\":0,\"i_ll\":1788201318019,\"i_b\":\"tQYY20RzNrymQi6az1pkWQuUFZHdErVi8KVhzelbo/4\",\"i_e\":{\"enable_itp_optimization\":24},\"i_et\":1788201318019}",
+    "value": "{\"i_l\":0,\"i_ll\":1788202619150,\"i_b\":\"tQYY20RzNrymQi6az1pkWQuUFZHdErVi8KVhzelbo/4\",\"i_e\":{\"enable_itp_optimization\":24},\"i_et\":1788202619150}",
     "domain": "repeatermock.com",
-    "path": "/",
-    "expires": -1,
-    "httpOnly": false,
-    "secure": false,
-    "sameSite": "Lax"
-  },
-  {
-    "name": "NEXT_LOCALE",
-    "value": "en",
-    "domain": "repeatermock.com",
-    "path": "/",
-    "expires": 1819737718.432,
-    "httpOnly": false,
-    "secure": false,
-    "sameSite": "Lax"
-  },
-  {
-    "name": "_ga",
-    "value": "GA1.1.1715512359.1788201711",
-    "domain": ".repeatermock.com",
-    "path": "/",
-    "expires": 1822761711.06043,
-    "httpOnly": false,
-    "secure": false,
-    "sameSite": "Lax"
-  },
-  {
-    "name": "cf_clearance",
-    "value": "MwipiSoVOgtDcKvXR73XjEVAGObHtsbDGVyRxUQofrM-1788201711-1.2.1.1-wuac92GlsB_uAZkRpWXX_fbmxxgPIeUIT34h42WM0BGs9Yg_glF_ybHlmnnbaPxshjWxYREmq.fege9Txc0HqFomks1mSyb57tbjefKSrNwDKyQCkHq36hPbFCSRYZoiNQDo4nllXAH73djsJmgJDViO9zku.TWZDkaH4H3pjye1M443jeXUxUTLJep08B6rQBhDCkpR2jhzAStj4m0E7x0QGzfyFMURMLvLpGaDQqfrnKXYgXJOsFQCcdZkd8yZ6lvD6ustfitsOWEtdtfrBMtu5rzFeFaa8pYLvbSaHV71DTLtMIuh2DF.rKZvUdW06OADot_pboXVb6K3bXVoL6S0jL12NaxxwnEJsW_WJVw",
-    "domain": ".repeatermock.com",
-    "path": "/",
-    "expires": 1819737711.468763,
-    "httpOnly": true,
-    "secure": true,
-    "sameSite": "None",
-    "partitionKey": "https://repeatermock.com",
-    "_crHasCrossSiteAncestor": false
-  },
-  {
-    "name": "_ga_5ZXVX6K05R",
-    "value": "GS2.1.s1788201711$o1$g0$t1788201713$j58$l0$h0",
-    "domain": ".repeatermock.com",
-    "path": "/",
-    "expires": 1822761713.572713,
-    "httpOnly": false,
-    "secure": false,
-    "sameSite": "Lax"
+    "path": "/"
   }
 ]
