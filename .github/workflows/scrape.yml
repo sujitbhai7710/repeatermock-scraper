@@ -1,0 +1,195 @@
+name: Scrape RepeaterMock Tests
+
+on:
+  # Manual trigger from Actions tab
+  workflow_dispatch:
+    inputs:
+      max_tests_per_series:
+        description: 'Max tests to scrape per series (0 = all)'
+        required: false
+        default: '3'
+      series_urls:
+        description: 'Series URLs to scrape (newline-separated, empty = use default list)'
+        required: false
+        default: ''
+
+  # Daily at 3 AM UTC
+  schedule:
+    - cron: '0 3 * * *'
+
+  # On push to main (for testing workflow changes)
+  push:
+    branches: [main]
+    paths:
+      - '.github/workflows/scrape.yml'
+      - 'src/**'
+      - 'requirements.txt'
+
+env:
+  PYTHON_VERSION: '3.12'
+
+jobs:
+  scrape:
+    runs-on: ubuntu-latest
+    timeout-minutes: 30
+
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v4
+
+      - name: Set up Python
+        uses: actions/setup-python@v5
+        with:
+          python-version: ${{ env.PYTHON_VERSION }}
+
+      - name: Install dependencies
+        run: |
+          pip install -r requirements.txt
+          playwright install chromium --with-deps
+
+      - name: Create .env from secret
+        run: |
+          if [ -z "${{ secrets.REPEATERMOCK_COOKIES_JSON }}" ]; then
+            echo "ERROR: REPEATERMOCK_COOKIES_JSON secret is not set"
+            echo "Go to Settings → Secrets and variables → Actions → New repository secret"
+            echo "Name: REPEATERMOCK_COOKIES_JSON"
+            echo "Value: JSON cookie array from browser"
+            exit 1
+          fi
+          echo "REPEATERMOCK_COOKIES_JSON=${{ secrets.REPEATERMOCK_COOKIES_JSON }}" > .env
+          echo "✓ .env created from secret"
+
+      - name: Test scrapability of all series
+        id: test
+        run: |
+          mkdir -p data
+          echo "## Scrapability Test Results" > data/scrape_report.md
+          echo "" >> data/scrape_report.md
+          echo "| Series URL | Status | Tests Found |" >> data/scrape_report.md
+          echo "|------------|--------|-------------|" >> data/scrape_report.md
+
+          # Default series list
+          SERIES_URLS="${{ github.event.inputs.series_urls }}"
+          if [ -z "$SERIES_URLS" ]; then
+            SERIES_URLS="https://repeatermock.com/tb/test-series/ssc-cgl
+          https://repeatermock.com/tb-pro/test-series/ssc-cgl
+          https://repeatermock.com/tb/test-series/ssc-maths-previous-year-questions
+          https://repeatermock.com/tb-pro/test-series/ssc-maths-previous-year-questions
+          https://repeatermock.com/tb/test-series/ssc-chsl
+          https://repeatermock.com/gd/test-series/ssc-cgl
+          https://repeatermock.com/tb-pro/test-series/ssc-english-previous-year-questions
+          https://repeatermock.com/tb/test-series/ssc-english-previous-year-questions"
+          fi
+
+          SCRAPABLE_COUNT=0
+          TOTAL_COUNT=0
+
+          while IFS= read -r url; do
+            [ -z "$url" ] && continue
+            TOTAL_COUNT=$((TOTAL_COUNT + 1))
+            echo ""
+            echo "=== Testing: $url ==="
+            if python -m src.scraper test-series "$url" 2>&1 | tee /tmp/test_output.txt; then
+              echo "✓ SCRAPABLE: $url"
+              echo "| \`$url\` | ✓ Scrapable | - |" >> data/scrape_report.md
+              SCRAPABLE_COUNT=$((SCRAPABLE_COUNT + 1))
+            else
+              echo "✗ NOT SCRAPABLE: $url"
+              echo "| \`$url\` | ✗ Not scrapable | - |" >> data/scrape_report.md
+            fi
+          done <<< "$SERIES_URLS"
+
+          echo ""
+          echo "## Summary: $SCRAPABLE_COUNT / $TOTAL_COUNT series scrapable" >> data/scrape_report.md
+          echo ""
+          echo "### Scrapable series: $SCRAPABLE_COUNT / $TOTAL_COUNT" >> data/scrape_report.md
+
+          # Save scrapable URLs for the scrape step
+          echo "SCRAPABLE_COUNT=$SCRAPABLE_COUNT" >> $GITHUB_ENV
+          echo "TOTAL_COUNT=$TOTAL_COUNT" >> $GITHUB_ENV
+
+      - name: Scrape tests (limited for CI)
+        if: env.SCRAPABLE_COUNT > 0
+        run: |
+          MAX_TESTS="${{ github.event.inputs.max_tests_per_series }}"
+          [ -z "$MAX_TESTS" ] && MAX_TESTS="3"
+          [ "$MAX_TESTS" = "0" ] && MAX_TESTS=""
+
+          echo "### Scrape Results (max $MAX_TESTS tests per series)" >> data/scrape_report.md
+          echo "" >> data/scrape_report.md
+
+          SERIES_URLS="${{ github.event.inputs.series_urls }}"
+          if [ -z "$SERIES_URLS" ]; then
+            SERIES_URLS="https://repeatermock.com/tb/test-series/ssc-cgl
+          https://repeatermock.com/tb-pro/test-series/ssc-cgl
+          https://repeatermock.com/tb/test-series/ssc-maths-previous-year-questions
+          https://repeatermock.com/tb-pro/test-series/ssc-maths-previous-year-questions
+          https://repeatermock.com/tb/test-series/ssc-chsl
+          https://repeatermock.com/gd/test-series/ssc-cgl
+          https://repeatermock.com/tb-pro/test-series/ssc-english-previous-year-questions
+          https://repeatermock.com/tb/test-series/ssc-english-previous-year-questions"
+          fi
+
+          while IFS= read -r url; do
+            [ -z "$url" ] && continue
+            echo ""
+            echo "=== Scraping: $url (max $MAX_TESTS tests) ==="
+            ARGS=""
+            [ -n "$MAX_TESTS" ] && ARGS="--max-tests $MAX_TESTS"
+            if python -m src.scraper scrape-series "$url" $ARGS 2>&1 | tee /tmp/scrape_output.txt; then
+              echo "✓ Scraped: $url"
+              echo "| \`$url\` | ✓ Scraped |" >> data/scrape_report.md
+            else
+              echo "✗ Failed: $url"
+              echo "| \`$url\` | ✗ Failed |" >> data/scrape_report.md
+            fi
+          done <<< "$SERIES_URLS"
+
+      - name: Generate summary
+        if: always()
+        run: |
+          echo "## Final Summary" >> data/scrape_report.md
+          echo "" >> data/scrape_report.md
+          TEST_COUNT=$(find data/tests -name "*.json" 2>/dev/null | wc -l)
+          echo "- **Tests scraped**: $TEST_COUNT" >> data/scrape_report.md
+          echo "- **Scrapable series**: $SCRAPABLE_COUNT / $TOTAL_COUNT" >> data/scrape_report.md
+          echo "- **Timestamp**: $(date -u '+%Y-%m-%d %H:%M:%S UTC')" >> data/scrape_report.md
+          echo "" >> data/scrape_report.md
+          echo "### Scraped test files" >> data/scrape_report.md
+          echo "" >> data/scrape_report.md
+          if [ -d data/tests ]; then
+            for f in data/tests/*.json; do
+              [ -f "$f" ] || continue
+              basename "$f" >> data/scrape_report.md
+            done
+          else
+            echo "(none)" >> data/scrape_report.md
+          fi
+          cat data/scrape_report.md
+
+      - name: Upload scraped data
+        if: always()
+        uses: actions/upload-artifact@v4
+        with:
+          name: scraped-tests
+          path: |
+            data/tests/
+            data/series/
+            data/scrape_report.md
+          retention-days: 30
+
+      - name: Comment on PR (if PR)
+        if: github.event_name == 'pull_request'
+        uses: actions/github-script@v7
+        with:
+          script: |
+            const fs = require('fs');
+            if (fs.existsSync('data/scrape_report.md')) {
+              const report = fs.readFileSync('data/scrape_report.md', 'utf8');
+              github.rest.issues.createComment({
+                issue_number: context.issue.number,
+                owner: context.repo.owner,
+                repo: context.repo.repo,
+                body: `## RepeaterMock Scrape Report\n\n${report}`
+              });
+            }
