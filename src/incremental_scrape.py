@@ -339,6 +339,11 @@ async def run_incremental_scrape(
                         save_account_cookies(acct_idx, active_cookies)
                         last_refresh_time = time.time()
                         print(f"  ✓ Back online with {label} — continuing scrape")
+                        # Recovery replaced the browser — ALL worker contexts are
+                        # dead. Bump the generation so every worker rebuilds its
+                        # context (without this, workers keep failing with
+                        # "Target page, context or browser has been closed").
+                        session_generation[0] += 1
                         return True
                     # Refresh token dead but access token still works — remember as
                     # a LAST-RESORT fallback and keep looking for a refreshable
@@ -367,6 +372,7 @@ async def run_incremental_scrape(
                     save_account_cookies(3, fresh)
                     last_refresh_time = time.time()
                     print("  ✓ Back online via CHROME (CDP) AUTO-LOGIN — continuing scrape")
+                    session_generation[0] += 1  # browser replaced — workers must rebuild
                     return True
             except Exception as e:
                 print(f"  ✗ CDP auto-login attempt failed: {e}")
@@ -392,6 +398,7 @@ async def run_incremental_scrape(
                         save_account_cookies(3, fresh)
                         last_refresh_time = time.time()
                         print("  ✓ Back online via GOOGLE AUTO-LOGIN — continuing scrape")
+                        session_generation[0] += 1  # browser replaced — workers must rebuild
                         return True
                 else:
                     print("  💡 Google-only account? Run  python scripts/setup_google_login.py")
@@ -413,6 +420,7 @@ async def run_incremental_scrape(
                         save_account_cookies(login_account, fresh)
                         last_refresh_time = time.time()
                         print(f"  ✓ Back online via AUTO-LOGIN (account{login_account+1}) — continuing scrape")
+                        session_generation[0] += 1  # browser replaced — workers must rebuild
                         return True
                 else:
                     print("  💡 Tip: set REPEATERMOCK_EMAIL + REPEATERMOCK_PASSWORD + REPEATERMOCK_TOTP_SECRET")
@@ -432,6 +440,7 @@ async def run_incremental_scrape(
                 last_refresh_time = time.time()
                 print(f"  ⚠ No refreshable session — using access-token-only session "
                       f"(account{acct_idx+1}); will re-recover when it expires")
+                session_generation[0] += 1  # browser replaced — workers must rebuild
                 return True
 
             # 5. GUEST MODE — DISABLED BY DEFAULT (ALLOW_GUEST=0).
@@ -672,7 +681,17 @@ async def run_incremental_scrape(
             if max_tests > 0 and (tests_scraped_this_run + tests_partial_this_run + tests_failed_this_run) >= max_tests:
                 break
             # Adopt a refreshed/recovered session if another worker bumped it
-            if worker_gen.get(wid) != session_generation[0] or wid not in worker_contexts:
+            needs_rebuild = worker_gen.get(wid) != session_generation[0] or wid not in worker_contexts
+            if not needs_rebuild:
+                # Defensive: if recovery replaced the shared browser, this
+                # worker's context is dead even though its generation matches.
+                # Rebuild instead of failing every test with
+                # "Target page, context or browser has been closed".
+                _ctx = worker_contexts.get(wid)
+                _b = _ctx.browser if _ctx else None
+                if _b is None or not _b.is_connected():
+                    needs_rebuild = True
+            if needs_rebuild:
                 await build_worker_session(wid)
 
             try:

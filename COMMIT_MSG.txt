@@ -1,18 +1,19 @@
-Minimize single-use refresh-token rotations (long-term chain stability)
+Fix zombie worker contexts after recovery (W1 "browser has been closed" storm)
 
-The refresh token is single-use and rotates on every /auth/refresh.
-Every avoidable rotation was a chance to lose the chain forever.
+Live-run evidence: auth + refresh chain work (workers W0/W2 fully
+scraped tests with solutions + analysis), but worker W1 failed EVERY
+test with "Target page, context or browser has been closed" and
+marked them all FAILED.
 
-- New access_token_seconds_left() decodes the JWT exp of the access
-  token, so refresh decisions are driven by real expiry, not habit.
-- Startup: no longer force-refreshes unconditionally after
-  refresh_cookies_if_needed just rotated — that was 2 rotations per
-  run where 1 sufficed. Now only force-refreshes when the access
-  token has <3 min left.
-- Recovery (wait_for_live_account): skips the verification
-  force-refresh when the auth refresh already rotated the token —
-  a successful rotation IS the proof the chain works.
-- Proactive refresh stays at 10 min (inside the 15-min window).
+Root cause: wait_for_live_account() closes and replaces the shared
+browser during recovery, but never bumped session_generation — so
+workers whose generation still "matched" never rebuilt their contexts
+and kept using the closed browser until the run ended.
 
-Net effect: ~1 rotation per scheduled run instead of 3+, chain
-sustains indefinitely once started with one valid cookie set.
+Fixes:
+- Every successful recovery path now bumps session_generation so all
+  workers rebuild their contexts on the new browser.
+- worker_loop also defensively rebuilds when its context's browser is
+  disconnected, even if the generation matches.
+
+Failed-marked tests are re-queued automatically on the next run.
