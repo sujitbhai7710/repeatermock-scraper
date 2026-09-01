@@ -1,8 +1,8 @@
 // ==UserScript==
 // @name         RepeaterMock PRO Unlocker — Take Any Test (Free or PRO)
 // @namespace    https://repeatermock.com
-// @version      4.0
-// @description  Unlocks ALL tests (free + PRO) so you can take them directly on the website. Bypasses the "Unlock" button. Take the test normally → get score → see solutions → see rank & analysis. Works with FREE accounts.
+// @version      5.0
+// @description  Unlocks ALL tests (free + PRO) so you can take them directly on the website. Bypasses the "Unlock" button by fetching test IDs via API and creating working links. Take the test normally → get score → see solutions → see rank & analysis. Works with FREE accounts.
 // @author       PWThor
 // @match        *://repeatermock.com/*
 // @match        *://www.repeatermock.com/*
@@ -17,64 +17,206 @@
     const DEBUG = true;
 
     function dbg(...args) {
-        if (DEBUG) console.log('%c[RM Unlock]', 'color:#facc15;font-weight:bold', ...args);
+        if (DEBUG) console.log('%c[RM Unlock v5]', 'color:#facc15;font-weight:bold', ...args);
     }
 
     // ═════════════════════════════════════════════════════════════════════
-    // PART 1: On series pages — make locked tests clickable
+    // PART 1: Fetch test IDs via API and build working links
     // ═════════════════════════════════════════════════════════════════════
 
-    function unlockTestButtons() {
-        // Find all test items that have "Unlock" or "PRO" badges
-        // RepeaterMock renders test cards with buttons/links
-        const allElements = document.querySelectorAll('a, button, [role="button"], [class*="test"], [class*="card"]');
+    // Cache of test IDs per series (fetched from API)
+    const testCache = new Map(); // seriesUrl → [{title, id, ...}]
 
-        allElements.forEach(el => {
-            const text = (el.textContent || '').toLowerCase().trim();
-            const href = el.getAttribute('href') || '';
+    async function fetchTestIds(variant, slug) {
+        const cacheKey = `${variant}/${slug}`;
+        if (testCache.has(cacheKey)) return testCache.get(cacheKey);
 
-            // If this element contains "unlock" text
-            if (text === 'unlock' || text.includes('unlock') || text.includes('🔒')) {
-                // Find the parent test card
-                let card = el.closest('[class*="card"]') || el.closest('[class*="test"]') || el.parentElement;
-                if (card && !card.dataset.rmUnlocked) {
-                    card.dataset.rmUnlocked = '1';
-                    dbg('Found locked test card:', card.textContent.substring(0, 80));
+        dbg(`Fetching test list for ${cacheKey}...`);
+        const apiPrefix = variant === 'gd' ? '/api/v2' : '/api/v1';
+        const tests = [];
 
-                    // Find the test ID from any link in the card
-                    const testLink = card.querySelector('a[href*="/test/"]');
-                    if (testLink) {
-                        const testHref = testLink.getAttribute('href');
-                        dbg('Test URL found:', testHref);
+        try {
+            // 1. Fetch series details to get series ID + sections
+            const seriesResp = await fetch(`${API_BASE}${apiPrefix}/test-series/${slug}${variant !== 'gd' ? `?variant=${variant}` : ''}`, {
+                credentials: 'include',
+                headers: { 'Accept': 'application/json' },
+            });
+            const seriesData = await seriesResp.json();
+            const details = seriesData?.data?.details || seriesData?.details;
+            if (!details || !details.id) {
+                dbg('✗ Could not fetch series details');
+                return [];
+            }
 
-                        // Replace the "Unlock" button with a "Start Test" link
-                        el.outerHTML = `<a href="${testHref}" class="rm-unlock-btn" style="
-                            display:inline-block; background:#16a34a; color:white;
-                            padding:8px 16px; border-radius:8px; font-weight:bold;
-                            text-decoration:none; cursor:pointer; font-size:14px;
-                        ">▶ Start Test</a>`;
-                        dbg('✓ Replaced Unlock button with Start Test link');
+            dbg(`Series: ${details.name} (${details.id})`);
+
+            // 2. Fetch tests for each section/subsection
+            for (const sec of details.sections || []) {
+                const secId = sec.id;
+                const subs = sec.subsections || [];
+
+                if (subs.length === 0) {
+                    // Fetch tests for this section directly
+                    const url = `${API_BASE}${apiPrefix}/test-series/${details.id}/sections/${secId}/tests?limit=500&offset=0${variant !== 'gd' ? `&variant=${variant}` : ''}`;
+                    const r = await fetch(url, { credentials: 'include', headers: { 'Accept': 'application/json' } });
+                    if (r.ok) {
+                        const d = await r.json();
+                        for (const t of d.data || []) {
+                            tests.push({ id: t.id, title: t.title, ...t });
+                        }
+                    }
+                } else {
+                    for (const sub of subs) {
+                        const url = `${API_BASE}${apiPrefix}/test-series/${details.id}/sections/${secId}/tests?limit=500&offset=0${variant !== 'gd' ? `&variant=${variant}` : ''}&subSectionId=${sub.id}`;
+                        const r = await fetch(url, { credentials: 'include', headers: { 'Accept': 'application/json' } });
+                        if (r.ok) {
+                            const d = await r.json();
+                            for (const t of d.data || []) {
+                                tests.push({ id: t.id, title: t.title, ...t });
+                            }
+                        }
                     }
                 }
             }
-        });
 
-        // Also: find any test links that are disabled/grayed out
-        document.querySelectorAll('a[href*="/test/"]').forEach(link => {
-            if (link.style.pointerEvents === 'none' || link.style.opacity === '0.5' || link.hasAttribute('disabled')) {
-                link.style.pointerEvents = 'auto';
-                link.style.opacity = '1';
-                link.removeAttribute('disabled');
-                dbg('✓ Re-enabled disabled test link:', link.href);
-            }
-        });
+            dbg(`✓ Fetched ${tests.length} tests for ${cacheKey}`);
+        } catch (e) {
+            dbg('Fetch error:', e.message);
+        }
+
+        testCache.set(cacheKey, tests);
+        return tests;
     }
 
     // ═════════════════════════════════════════════════════════════════════
-    // PART 2: On test pages — ensure the test UI renders (bypass paywall)
+    // PART 2: Find "Unlock" buttons and replace them with working links
     // ═════════════════════════════════════════════════════════════════════
 
-    async function ensureTestRenders() {
+    async function unlockTests() {
+        const m = window.location.pathname.match(/^\/(tb-pro|tb|gd)\/test-series\/([\w-]+)/);
+        if (!m) return;
+
+        const variant = m[1];
+        const slug = m[2];
+
+        // Fetch all test IDs for this series
+        const tests = await fetchTestIds(variant, slug);
+        if (tests.length === 0) {
+            dbg('No tests found via API — cannot unlock');
+            return;
+        }
+
+        // Build a map: test title (lowercase) → test ID
+        const titleToId = new Map();
+        const partialTitleToId = new Map();
+        for (const t of tests) {
+            titleToId.set(t.title.toLowerCase().trim(), t.id);
+            // Also map first 20 chars of title for fuzzy matching
+            partialTitleToId.set(t.title.toLowerCase().trim().substring(0, 20), t.id);
+        }
+        dbg(`Test cache: ${titleToId.size} tests`);
+
+        // Find all "Unlock" buttons on the page
+        const unlockBtns = document.querySelectorAll('button, a, [role="button"], span, div');
+        let unlocked = 0;
+
+        for (const btn of unlockBtns) {
+            const text = (btn.textContent || '').trim();
+            if (text !== 'Unlock' && !text.match(/^Unlock$/)) continue;
+
+            // Walk up to find the test card container
+            let card = btn.parentElement;
+            for (let i = 0; i < 8 && card; i++) {
+                const cardText = (card.textContent || '').toLowerCase();
+                // Try to match card text to a test title
+                let matchedId = null;
+                let matchedTitle = null;
+
+                for (const [title, id] of titleToId) {
+                    // Check if the card contains the test title (or a meaningful part)
+                    if (cardText.includes(title.substring(0, Math.min(title.length, 30)))) {
+                        matchedId = id;
+                        matchedTitle = title;
+                        break;
+                    }
+                }
+
+                if (matchedId) {
+                    const testUrl = `https://repeatermock.com/${variant}/test-series/${slug}/test/${matchedId}/attempt`;
+
+                    // Replace the Unlock button with a Start Test link
+                    const newLink = document.createElement('a');
+                    newLink.href = testUrl;
+                    newLink.innerHTML = '▶ Start Test';
+                    newLink.style.cssText = `
+                        display:inline-block; background:#16a34a; color:white !important;
+                        padding:8px 16px; border-radius:8px; font-weight:bold;
+                        text-decoration:none; cursor:pointer; font-size:14px;
+                        border:0; font-family:inherit;
+                    `;
+                    newLink.onclick = async (e) => {
+                        e.preventDefault();
+                        dbg(`Starting test: ${matchedTitle} (${matchedId})`);
+
+                        // Pre-start the attempt via API (bypasses payment check)
+                        const apiPrefix = variant === 'gd' ? '/api/v2' : '/api/v1';
+                        try {
+                            dbg(`POST ${API_BASE}${apiPrefix}/attempts/${matchedId}/start`);
+                            const resp = await fetch(`${API_BASE}${apiPrefix}/attempts/${matchedId}/start`, {
+                                method: 'POST',
+                                credentials: 'include',
+                                headers: { 'Content-Type': 'application/json', 'Accept': 'application/json' },
+                                body: '{}',
+                            });
+                            const data = await resp.json();
+                            dbg('Start response:', data);
+
+                            if (data.success || data.code === 'already_in_progress') {
+                                dbg('✓ Attempt started — navigating to test page...');
+                                window.location.href = testUrl;
+                            } else if (data.code === 'payment_required') {
+                                dbg('⚠ Payment required — trying v1 endpoint...');
+                                const resp2 = await fetch(`${API_BASE}/api/v1/attempts/${matchedId}/start`, {
+                                    method: 'POST', credentials: 'include',
+                                    headers: { 'Content-Type': 'application/json' }, body: '{}',
+                                });
+                                const data2 = await resp2.json();
+                                dbg('Retry:', data2);
+                                if (data2.success) {
+                                    window.location.href = testUrl;
+                                } else {
+                                    dbg('✗ Still blocked — navigating anyway to try');
+                                    window.location.href = testUrl;
+                                }
+                            } else {
+                                dbg('Unexpected response — navigating anyway');
+                                window.location.href = testUrl;
+                            }
+                        } catch (e) {
+                            dbg('Start error:', e.message);
+                            window.location.href = testUrl;
+                        }
+                    };
+
+                    // Replace the button
+                    btn.parentNode.replaceChild(newLink, btn);
+                    unlocked++;
+                    dbg(`✓ Unlocked: ${matchedTitle.substring(0, 40)} → ${matchedId}`);
+                    break;
+                }
+                card = card.parentElement;
+            }
+        }
+
+        dbg(`Unlocked ${unlocked} test buttons`);
+        return unlocked;
+    }
+
+    // ═════════════════════════════════════════════════════════════════════
+    // PART 3: On test pages — bypass paywall if detected
+    // ═════════════════════════════════════════════════════════════════════
+
+    async function bypassPaywall() {
         const m = window.location.pathname.match(/^\/(tb-pro|tb|gd)\/test-series\/([\w-]+)\/test\/([a-f0-9]+)/);
         if (!m) return;
 
@@ -83,14 +225,21 @@
         const testId = m[3];
         const apiPrefix = variant === 'gd' ? '/api/v2' : '/api/v1';
 
-        dbg('On test page:', { variant, slug, testId });
+        // Wait for page to load
+        await new Promise(r => setTimeout(r, 3000));
 
-        // Check if page shows "Unlock" or payment prompt
-        const bodyText = document.body ? document.body.innerText : '';
-        if (bodyText.includes('Unlock') || bodyText.includes('Subscribe') || bodyText.includes('Upgrade')) {
-            dbg('⚠ Paywall detected — auto-starting attempt to bypass...');
+        // Check if we're on a pricing/redirect page or if test isn't visible
+        const bodyText = (document.body?.innerText || '').toLowerCase();
+        const isPaywall = bodyText.includes('unlock') || bodyText.includes('subscribe') ||
+                         bodyText.includes('upgrade') || bodyText.includes('pricing') ||
+                         window.location.pathname.includes('/pricing');
 
-            // Call /start API directly (free accounts CAN start PRO tests)
+        // Check if test questions are visible
+        const hasQuestions = document.querySelector('[class*="question"], [class*="Question"], [class*="option"], [class*="Option"]');
+
+        if (isPaywall || !hasQuestions) {
+            dbg('⚠ Paywall or blank test page detected — auto-starting attempt...');
+
             try {
                 const resp = await fetch(`${API_BASE}${apiPrefix}/attempts/${testId}/start`, {
                     method: 'POST',
@@ -99,282 +248,114 @@
                     body: '{}',
                 });
                 const data = await resp.json();
-                dbg('Start attempt response:', data);
+                dbg('Start response:', data);
 
                 if (data.success) {
-                    dbg('✓ Attempt started — reloading page to show test UI...');
-                    // Reload the page — now the server knows we have an active attempt
-                    window.location.reload();
+                    dbg('✓ Attempt started — reloading page...');
+                    // Navigate to /attempt page (not /pricing)
+                    const attemptUrl = `https://repeatermock.com/${variant}/test-series/${slug}/test/${testId}/attempt`;
+                    if (window.location.pathname !== `${variant}/test-series/${slug}/test/${testId}/attempt`) {
+                        window.location.href = attemptUrl;
+                    } else {
+                        window.location.reload();
+                    }
                     return;
                 } else if (data.code === 'payment_required') {
-                    dbg('✗ Payment required — trying alternative...');
-                    // Try starting without variant param
+                    dbg('⚠ Payment required — trying v1 fallback...');
                     const resp2 = await fetch(`${API_BASE}/api/v1/attempts/${testId}/start`, {
                         method: 'POST', credentials: 'include',
                         headers: { 'Content-Type': 'application/json' }, body: '{}',
                     });
                     const data2 = await resp2.json();
-                    dbg('Retry response:', data2);
+                    dbg('v1 retry:', data2);
                     if (data2.success) {
-                        window.location.reload();
+                        window.location.href = `https://repeatermock.com/${variant}/test-series/${slug}/test/${testId}/attempt`;
                         return;
                     }
+                    // Last resort: show a message
+                    showPaywallBypass(testId, variant, slug, apiPrefix);
                 }
             } catch (e) {
                 dbg('Start error:', e.message);
+                showPaywallBypass(testId, variant, slug, apiPrefix);
             }
-        }
-
-        // If we're on /attempt page and questions aren't visible, inject them
-        if (window.location.pathname.includes('/attempt')) {
-            await injectTestUI(testId, variant, slug, apiPrefix);
+        } else {
+            dbg('✓ Test page looks normal — no bypass needed');
         }
     }
 
-    // ═════════════════════════════════════════════════════════════════════
-    // PART 3: Inject test UI if the page is blank/paywalled
-    // ═════════════════════════════════════════════════════════════════════
+    function showPaywallBypass(testId, variant, slug, apiPrefix) {
+        const existing = document.getElementById('rm-bypass-overlay');
+        if (existing) existing.remove();
 
-    async function injectTestUI(testId, variant, slug, apiPrefix) {
-        // Wait for page to load
-        await new Promise(r => setTimeout(r, 3000));
+        const overlay = document.createElement('div');
+        overlay.id = 'rm-bypass-overlay';
+        overlay.style.cssText = `
+            position:fixed; top:0; left:0; width:100%; height:100%;
+            background:#0f172a; color:#e2e8f0; z-index:999999;
+            display:flex; align-items:center; justify-content:center;
+            font-family:system-ui;
+        `;
+        overlay.innerHTML = `
+            <div style="text-align:center; max-width:500px; padding:40px;">
+                <h2 style="color:#38bdf8;">🔓 Bypassing Paywall...</h2>
+                <p style="color:#94a3b8;">Starting attempt via API for test ${testId}</p>
+                <div style="margin:20px; padding:20px; background:#1e293b; border-radius:8px;">
+                    <p id="rm-bypass-status">Calling /start API...</p>
+                </div>
+                <a href="https://repeatermock.com/${variant}/test-series/${slug}/test/${testId}/attempt"
+                   style="display:inline-block; background:#16a34a; color:white;
+                   padding:12px 24px; border-radius:8px; text-decoration:none; font-weight:bold;">
+                   ▶ Go to Test Page
+                </a>
+            </div>
+        `;
+        document.body.innerHTML = '';
+        document.body.appendChild(overlay);
 
-        // Check if test questions are already visible
-        const existingQuestions = document.querySelectorAll('[class*="question"], [class*="Question"]');
-        if (existingQuestions.length > 0) {
-            dbg('Test UI already rendered — no injection needed');
-            return;
-        }
-
-        dbg('Test UI not visible — fetching questions and injecting...');
-
-        // Fetch the /attempt page HTML
-        const baseUrl = `https://repeatermock.com/${variant}/test-series/${slug}/test/${testId}`;
-        try {
-            const resp = await fetch(`${baseUrl}/attempt`, { credentials: 'include' });
-            const html = await resp.text();
-
-            // Extract RSC payload
-            let payload = '';
-            const matches = html.matchAll(/self\.__next_f\.push\(\[1,"((?:[^"\\]|\\.)*)"\]\)/g);
-            for (const match of matches) {
-                let chunk = match[1];
-                chunk = chunk.replace(/\\n/g, '\n').replace(/\\r/g, '\r')
-                             .replace(/\\"/g, '"').replace(/\\\\/g, '\\');
-                payload += chunk;
+        // Try starting
+        fetch(`${API_BASE}${apiPrefix}/attempts/${testId}/start`, {
+            method: 'POST', credentials: 'include',
+            headers: { 'Content-Type': 'application/json' }, body: '{}',
+        })
+        .then(r => r.json())
+        .then(data => {
+            document.getElementById('rm-bypass-status').textContent = JSON.stringify(data);
+            if (data.success) {
+                setTimeout(() => {
+                    window.location.href = `https://repeatermock.com/${variant}/test-series/${slug}/test/${testId}/attempt`;
+                }, 1500);
             }
-
-            // Parse questions
-            const questions = [];
-            const searchStr = '{"isNum":';
-            let idx = 0;
-            while (true) {
-                idx = payload.indexOf(searchStr, idx);
-                if (idx < 0) break;
-                let depth = 0, inStr = false, esc = false;
-                let start = idx;
-                for (let j = idx; j < payload.length; j++) {
-                    const c = payload[j];
-                    if (esc) { esc = false; continue; }
-                    if (c === '\\') { esc = true; continue; }
-                    if (c === '"') { inStr = !inStr; continue; }
-                    if (inStr) continue;
-                    if (c === '{') depth++;
-                    else if (c === '}') {
-                        depth--;
-                        if (depth === 0) {
-                            try { questions.push(JSON.parse(payload.substring(start, j + 1))); }
-                            catch (e) {}
-                            break;
-                        }
-                    }
-                }
-                idx += 1;
-            }
-
-            dbg(`Found ${questions.length} questions in RSC payload`);
-
-            if (questions.length === 0) {
-                dbg('No questions found — page may require login');
-                return;
-            }
-
-            // Build a simple test UI
-            const testUI = document.createElement('div');
-            testUI.id = 'rm-injected-test';
-            testUI.style.cssText = `
-                position:fixed; top:0; left:0; width:100%; height:100vh;
-                background:#0f172a; color:#e2e8f0; z-index:99999;
-                overflow-y:auto; padding:20px; font-family:system-ui;
-            `;
-
-            let html2 = `<div style="max-width:800px;margin:0 auto;">
-                <h2 style="color:#38bdf8;">📝 Test (Injected by RM Unlocker)</h2>
-                <p style="color:#94a3b8;">${questions.length} questions</p>`;
-
-            questions.forEach((q, i) => {
-                let textEn = '';
-                if (q.text) {
-                    if (typeof q.text.en === 'string') textEn = q.text.en;
-                    else if (q.text.en && q.text.en.value) textEn = q.text.en.value;
-                }
-                const options = q.options || [];
-                html2 += `<div style="background:#1e293b;padding:16px;border-radius:8px;margin-bottom:12px;">
-                    <div style="font-weight:bold;margin-bottom:8px;">Q${i+1}. ${textEn}</div>`;
-                options.forEach((opt, oi) => {
-                    let optEn = '';
-                    if (typeof opt.en === 'string') optEn = opt.en;
-                    else if (opt.en && opt.en.value) optEn = opt.en.value;
-                    html2 += `<label style="display:block;padding:8px;cursor:pointer;border-radius:4px;" onmouseover="this.style.background='#334155'" onmouseout="this.style.background='transparent'">
-                        <input type="radio" name="q${i}" value="${oi+1}" style="margin-right:8px;">
-                        ${'ABCD'[oi]}. ${optEn}
-                    </label>`;
-                });
-                html2 += `</div>`;
-            });
-
-            html2 += `<button id="rm-submit-test" style="background:#16a34a;color:white;border:0;padding:12px 24px;border-radius:8px;font-size:16px;cursor:pointer;width:100%;">Submit Test</button>
-            <div id="rm-results"></div>
-            </div>`;
-
-            testUI.innerHTML = html2;
-            document.body.innerHTML = '';
-            document.body.appendChild(testUI);
-
-            // Handle submit
-            document.getElementById('rm-submit-test').onclick = async () => {
-                const answers = [];
-                questions.forEach((q, i) => {
-                    const selected = document.querySelector(`input[name="q${i}"]:checked`);
-                    answers.push({
-                        questionId: q._id || q.id,
-                        selectedOption: selected ? parseInt(selected.value) : null,
-                        markedForReview: false,
-                        timeSpent: 0,
-                    });
-                });
-
-                dbg('Submitting answers:', answers);
-
-                // Start attempt first
-                const startResp = await fetch(`${API_BASE}${apiPrefix}/attempts/${testId}/start`, {
-                    method: 'POST', credentials: 'include',
-                    headers: { 'Content-Type': 'application/json' }, body: '{}',
-                });
-                const startData = await startResp.json();
-                dbg('Start:', startData);
-
-                // Submit
-                const submitResp = await fetch(`${API_BASE}${apiPrefix}/attempts/${testId}/submit`, {
-                    method: 'POST', credentials: 'include',
-                    headers: { 'Content-Type': 'application/json' },
-                    body: JSON.stringify({ answers, timeTaken: 600, language: 'en', interface: 'classic' }),
-                });
-                const submitData = await submitResp.json();
-                dbg('Submit:', submitData);
-
-                if (submitData.success) {
-                    // Fetch solutions
-                    const solResp = await fetch(`${baseUrl}/solution`, { credentials: 'include' });
-                    const solHtml = await solResp.text();
-                    let solPayload = '';
-                    const solMatches = solHtml.matchAll(/self\.__next_f\.push\(\[1,"((?:[^"\\]|\\.)*)"\]\)/g);
-                    for (const match of solMatches) {
-                        let chunk = match[1];
-                        chunk = chunk.replace(/\\n/g, '\n').replace(/\\"/g, '"').replace(/\\\\/g, '\\');
-                        solPayload += chunk;
-                    }
-
-                    // Extract answersData
-                    const ansIdx = solPayload.indexOf('"answersData":{');
-                    let answersData = null;
-                    if (ansIdx >= 0) {
-                        let startIdx = solPayload.indexOf('{', ansIdx + 14);
-                        let depth = 0, inStr = false, esc = false;
-                        for (let j = startIdx; j < solPayload.length; j++) {
-                            const c = solPayload[j];
-                            if (esc) { esc = false; continue; }
-                            if (c === '\\') { esc = true; continue; }
-                            if (c === '"') { inStr = !inStr; continue; }
-                            if (inStr) continue;
-                            if (c === '{') depth++;
-                            else if (c === '}') {
-                                depth--;
-                                if (depth === 0) {
-                                    try { answersData = JSON.parse(solPayload.substring(startIdx, j + 1)); }
-                                    catch (e) {}
-                                    break;
-                                }
-                            }
-                        }
-                    }
-
-                    // Show results
-                    const resultsDiv = document.getElementById('rm-results');
-                    if (answersData) {
-                        let score = 0;
-                        let resultHtml = '<h3 style="color:#4ade80;margin-top:20px;">📊 Results & Solutions</h3>';
-                        questions.forEach((q, i) => {
-                            const ans = answersData[q._id || q.id];
-                            const correct = ans ? ans.correctOption : null;
-                            const userAns = answers[i] ? answers[i].selectedOption : null;
-                            const isCorrect = correct === userAns;
-                            if (isCorrect) score++;
-
-                            let textEn = '';
-                            if (q.text) {
-                                if (typeof q.text.en === 'string') textEn = q.text.en;
-                                else if (q.text.en && q.text.en.value) textEn = q.text.en.value;
-                            }
-                            const solEn = ans?.sol?.en?.value || (typeof ans?.sol?.en === 'string' ? ans.sol.en : '') || '';
-
-                            resultHtml += `<div style="background:${isCorrect ? '#166534' : '#7f1d1d'};padding:12px;border-radius:6px;margin-bottom:8px;">
-                                <div style="font-weight:bold;">Q${i+1}. ${textEn.substring(0,200)} ${isCorrect ? '✅' : '❌'}</div>
-                                <div style="margin-top:4px;">Your answer: ${userAns ? 'ABCD'[userAns-1] : 'Not answered'}</div>
-                                <div style="color:#4ade80;">Correct answer: ${correct ? 'ABCD'[correct-1] : 'N/A'}</div>
-                                ${solEn ? `<div style="margin-top:4px;padding:8px;background:#0f172a;border-radius:4px;color:#7dd3fc;">💡 ${solEn.substring(0,400)}</div>` : ''}
-                            </div>`;
-                        });
-                        resultHtml += `<div style="text-align:center;font-size:24px;color:#facc15;margin:20px;">Score: ${score}/${questions.length}</div>`;
-                        resultHtml += `<a href="${baseUrl}/analysis" style="display:block;text-align:center;background:#2563eb;color:white;padding:12px;border-radius:8px;text-decoration:none;">View Full Analysis →</a>`;
-                        resultsDiv.innerHTML = resultHtml;
-                        resultsDiv.scrollIntoView();
-                    }
-                }
-            };
-
-            dbg('✓ Test UI injected');
-        } catch (e) {
-            dbg('Injection error:', e.message);
-        }
+        })
+        .catch(e => {
+            document.getElementById('rm-bypass-status').textContent = `Error: ${e.message}`;
+        });
     }
 
     // ═════════════════════════════════════════════════════════════════════
-    // PART 4: Add a floating "Unlock All" button on series pages
+    // PART 4: Floating "Unlock All" button
     // ═════════════════════════════════════════════════════════════════════
 
     function addUnlockAllButton() {
         if (document.getElementById('rm-unlock-all-btn')) return;
-
-        // Only on series pages
         if (!window.location.pathname.includes('/test-series/')) return;
 
         const btn = document.createElement('button');
         btn.id = 'rm-unlock-all-btn';
         btn.textContent = '🔓 Unlock All Tests';
         btn.style.cssText = `
-            position:fixed; bottom:20px; right:20px; z-index:99999;
+            position:fixed; bottom:20px; right:20px; z-index:999999;
             background:#16a34a; color:white; border:0; padding:12px 24px;
             border-radius:12px; font-size:16px; font-weight:bold; cursor:pointer;
             box-shadow:0 4px 12px rgba(0,0,0,0.3);
         `;
-        btn.onclick = () => {
+        btn.onclick = async () => {
+            btn.textContent = '⏳ Unlocking...';
             dbg('Unlocking all tests...');
-            unlockTestButtons();
-            // Re-run after 2s (SPA might re-render)
-            setTimeout(unlockTestButtons, 2000);
-            setTimeout(unlockTestButtons, 5000);
-            btn.textContent = '✓ Tests Unlocked!';
+            await unlockTests();
+            setTimeout(unlockTests, 2000);
+            setTimeout(unlockTests, 5000);
+            btn.textContent = '✓ Unlocked!';
             setTimeout(() => { btn.textContent = '🔓 Unlock All Tests'; }, 3000);
         };
         document.body.appendChild(btn);
@@ -385,20 +366,25 @@
     // INIT
     // ═════════════════════════════════════════════════════════════════════
 
-    function init() {
-        dbg('v4 initialized on:', window.location.pathname);
-        unlockTestButtons();
+    async function init() {
+        dbg('v5 initialized on:', window.location.pathname);
         addUnlockAllButton();
-        ensureTestRenders();
+
+        if (window.location.pathname.includes('/test-series/')) {
+            await unlockTests();
+        }
+
+        if (window.location.pathname.includes('/test/')) {
+            await bypassPaywall();
+        }
     }
 
-    // Run on load + on SPA navigation
     let lastUrl = window.location.href;
     const observer = new MutationObserver(() => {
         if (window.location.href !== lastUrl) {
             lastUrl = window.location.href;
             dbg('URL changed:', lastUrl);
-            setTimeout(init, 1500);
+            setTimeout(init, 2000);
         }
     });
 
@@ -406,11 +392,11 @@
         observer.observe(document.body, { childList: true, subtree: true });
     }
 
-    // Initial run
     setTimeout(init, 2000);
     setTimeout(init, 5000);
+    setTimeout(init, 10000);
 
-    window.addEventListener('popstate', () => setTimeout(init, 1500));
+    window.addEventListener('popstate', () => setTimeout(init, 2000));
 
-    dbg('Script loaded — waiting for page...');
+    dbg('v5 loaded — waiting for page...');
 })();
