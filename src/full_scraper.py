@@ -66,6 +66,63 @@ def extract_json_object(payload: str, key: str) -> dict | None:
     return None
 
 
+async def fetch_with_auto_refresh(context, url, original_cookies, on_refresh=None, method="GET", body=None, max_retries=2):
+    """Fetch a URL with auto-refresh on 401.
+
+    Uses original_cookies (manually set as Cookie header) instead of context cookies
+    (which may be wiped by page.goto). If the response is 401, calls on_refresh()
+    to get new cookies, updates original_cookies in place, and retries.
+
+    Returns: (status, text) tuple
+    """
+    for attempt in range(max_retries + 1):
+        # Build Cookie header from original_cookies (includes httpOnly)
+        cookie_str = "; ".join(
+            f'{c["name"]}={c["value"]}' for c in original_cookies
+            if "repeatermock" in c.get("domain", "")
+        )
+        headers = {
+            "Accept": "text/html,application/xhtml+xml,*/*",
+            "Cookie": cookie_str,
+            "Origin": "https://repeatermock.com",
+            "Referer": "https://repeatermock.com/",
+        }
+        if method == "POST":
+            headers["Content-Type"] = "application/json"
+
+        try:
+            if method == "GET":
+                resp = await context.request.get(url, headers=headers)
+            else:
+                resp = await context.request.post(url, headers=headers, data=body or "{}")
+            text = await resp.text()
+
+            # If 401 and we haven't exhausted retries, refresh and retry
+            if resp.status == 401 and attempt < max_retries and on_refresh is not None:
+                print(f"    ↻ 401 received — auto-refreshing cookies (attempt {attempt+1}/{max_retries})...", flush=True)
+                new_cookies = await on_refresh()
+                if new_cookies:
+                    # Update original_cookies IN PLACE so caller sees new tokens
+                    for i, c in enumerate(original_cookies):
+                        for nc in new_cookies:
+                            if c.get("name") == nc.get("name") and c.get("domain") == nc.get("domain"):
+                                original_cookies[i] = nc
+                                break
+                    continue  # Retry with new cookies
+                else:
+                    print(f"    ⚠ Refresh failed — returning 401 response", flush=True)
+
+            return resp.status, text
+        except Exception as e:
+            if attempt < max_retries:
+                print(f"    ⚠ Fetch error (attempt {attempt+1}): {e} — retrying...", flush=True)
+                await asyncio.sleep(1)
+                continue
+            return 0, f"ERROR: {e}"
+
+    return 0, "ERROR: max retries exceeded"
+
+
 async def scrape_test_full(context, page, test: dict, variant: str, slug: str, original_cookies: list[dict] = None, on_submit_401=None) -> dict | None:
     """Scrape a single test: questions + answers + solutions + analysis.
 
@@ -101,19 +158,22 @@ async def scrape_test_full(context, page, test: dict, variant: str, slug: str, o
         "has_analysis": False,
     }
 
-    # 1. Fetch /attempt page → questions
+    # If original_cookies not provided, use page context (fallback)
+    if original_cookies is None:
+        original_cookies = await context.cookies()
+
+    # 1. Fetch /attempt page → questions (with auto-refresh on 401)
     try:
-        resp = await context.request.get(f"{base_url}/attempt", headers={
-            "Accept": "text/html", "Referer": "https://repeatermock.com/"
-        })
-        html = await resp.text()
-        if resp.status == 200 and len(html) > 5000:
+        status, html = await fetch_with_auto_refresh(
+            context, f"{base_url}/attempt", original_cookies, on_refresh=on_submit_401
+        )
+        if status == 200 and len(html) > 5000:
             payload = extract_flight_payload(html)
             raw_qs = parse_question_objects(payload)
             result["questions"] = [clean_question(q) for q in raw_qs]
             print(f"    ✓ {len(result['questions'])} questions", flush=True)
         else:
-            print(f"    ✗ /attempt returned {resp.status} ({len(html)} bytes)", flush=True)
+            print(f"    ✗ /attempt returned {status} ({len(html)} bytes)", flush=True)
             return None
     except Exception as e:
         print(f"    ✗ /attempt error: {e}", flush=True)
@@ -151,13 +211,12 @@ async def scrape_test_full(context, page, test: dict, variant: str, slug: str, o
         else:
             print(f"    ⚠ Submit failed — will try /solution anyway", flush=True)
 
-    # 2. Fetch /solution page → answer keys + solutions
+    # 2. Fetch /solution page → answer keys + solutions (with auto-refresh on 401)
     try:
-        resp2 = await context.request.get(f"{base_url}/solution", headers={
-            "Accept": "text/html", "Referer": "https://repeatermock.com/"
-        })
-        sol_html = await resp2.text()
-        if resp2.status == 200 and len(sol_html) > 30000:
+        sol_status, sol_html = await fetch_with_auto_refresh(
+            context, f"{base_url}/solution", original_cookies, on_refresh=on_submit_401
+        )
+        if sol_status == 200 and len(sol_html) > 30000:
             sol_payload = extract_flight_payload(sol_html)
             # Extract answersData
             answers_data = extract_json_object(sol_payload, "answersData")
@@ -174,17 +233,16 @@ async def scrape_test_full(context, page, test: dict, variant: str, slug: str, o
             else:
                 print(f"    ⚠ No answersData in solution page (test not attempted)", flush=True)
         else:
-            print(f"    ⚠ /solution returned {resp2.status} ({len(sol_html)} bytes) — no attempt data", flush=True)
+            print(f"    ⚠ /solution returned {sol_status} ({len(sol_html)} bytes) — no attempt data", flush=True)
     except Exception as e:
         print(f"    ⚠ /solution error: {e}", flush=True)
 
-    # 3. Fetch /analysis page → rank, cutoffs, percentile
+    # 3. Fetch /analysis page → rank, cutoffs, percentile (with auto-refresh on 401)
     try:
-        resp3 = await context.request.get(f"{base_url}/analysis", headers={
-            "Accept": "text/html", "Referer": "https://repeatermock.com/"
-        })
-        ana_html = await resp3.text()
-        if resp3.status == 200 and len(ana_html) > 30000:
+        ana_status, ana_html = await fetch_with_auto_refresh(
+            context, f"{base_url}/analysis", original_cookies, on_refresh=on_submit_401
+        )
+        if ana_status == 200 and len(ana_html) > 30000:
             ana_payload = extract_flight_payload(ana_html)
             # Extract analysisData
             analysis_data = extract_json_object(ana_payload, "analysisData")
@@ -202,7 +260,7 @@ async def scrape_test_full(context, page, test: dict, variant: str, slug: str, o
             else:
                 print(f"    ⚠ No analysisData (test not attempted)", flush=True)
         else:
-            print(f"    ⚠ /analysis returned {resp3.status} — no attempt data", flush=True)
+            print(f"    ⚠ /analysis returned {ana_status} — no attempt data", flush=True)
     except Exception as e:
         print(f"    ⚠ /analysis error: {e}", flush=True)
 
