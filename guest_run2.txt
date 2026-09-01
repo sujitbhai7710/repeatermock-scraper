@@ -1,0 +1,305 @@
+
+============================================================
+INCREMENTAL SCRAPE RUN
+============================================================
+  Time limit: 10 minutes
+  Max tests this run: 6
+  Previously scraped: 107 (full), 12 (partial), 363 (failed)
+  Target series: 53
+  Start time: 2026-09-01 05:23:49 UTC
+  Found account1.json (5 cookies, has refreshToken: True)
+  Found account2.json (6 cookies, has refreshToken: True)
+  Found account3.json (6 cookies, has refreshToken: True)
+  Found account4.json (4 cookies, has refreshToken: True)
+  Total cookie sets to try: 4
+
+  Trying cookie set 1/4...
+10:53:49 [INFO]   Cookies: ['accessToken', 'refreshToken', 'totpVerified', 'g_state', 'rm_fe'], has refreshToken: True
+10:53:49 [INFO]   Checking /auth/me...
+10:53:51 [INFO]   /auth/me → 401: {"success":false,"message":"Token expired"}
+10:53:51 [INFO]   Trying /auth/refresh...
+10:53:51 [INFO]   /auth/refresh → 401: {"success":false,"message":"Invalid or expired refresh token"}
+10:53:51 [ERROR] ✗ Auth failed
+  ✗ Cookie set 1 failed
+
+  Trying cookie set 2/4...
+10:53:52 [INFO]   Cookies: ['accessToken', 'guestId', 'refreshToken', 'totpVerified', 'g_state', 'rm_fe'], has refreshToken: True
+10:53:52 [INFO]   Checking /auth/me...
+10:53:52 [INFO]   /auth/me → 401: {"success":false,"message":"Token expired"}
+10:53:52 [INFO]   Trying /auth/refresh...
+10:53:52 [INFO]   /auth/refresh → 401: {"success":false,"message":"Invalid or expired refresh token"}
+10:53:52 [ERROR] ✗ Auth failed
+  ✗ Cookie set 2 failed
+
+  Trying cookie set 3/4...
+10:53:53 [INFO]   Cookies: ['accessToken', 'guestId', 'refreshToken', 'totpVerified', 'g_state', 'rm_fe'], has refreshToken: True
+10:53:53 [INFO]   Checking /auth/me...
+10:53:53 [INFO]   /auth/me → 401: {"success":false,"message":"Token expired"}
+10:53:53 [INFO]   Trying /auth/refresh...
+10:53:53 [INFO]   /auth/refresh → 401: {"success":false,"message":"Invalid or expired refresh token"}
+10:53:53 [ERROR] ✗ Auth failed
+  ✗ Cookie set 3 failed
+
+  Trying cookie set 4/4...
+10:53:54 [INFO]   Cookies: ['accessToken', 'refreshToken', 'totpVerified', 'rm_fe'], has refreshToken: True
+10:53:54 [INFO]   Checking /auth/me...
+10:53:54 [INFO]   /auth/me → 401: {"success":false,"message":"Token expired"}
+10:53:54 [INFO]   Trying /auth/refresh...
+10:53:54 [INFO]   /auth/refresh → 401: {"success":false,"message":"Invalid or expired refresh token"}
+10:53:54 [ERROR] ✗ Auth failed
+  ✗ Cookie set 4 failed
+
+✗ All cookie sets failed on startup — entering RECOVERY MODE:
+  the run stays alive and retries every 90s. Log in to repeatermock.com,
+  export fresh cookies (Cookie-Editor extension) and save them into
+  cookies/account1.json — the run picks them up automatically.
+  Press Ctrl+C to stop the run.
+  ↻ Recovery attempt 1: trying account1...
+10:53:55 [INFO]   Cookies: ['accessToken', 'refreshToken', 'totpVerified', 'g_state', 'rm_fe'], has refreshToken: True
+10:53:55 [INFO]   Checking /auth/me...
+10:53:56 [INFO]   /auth/me → 401: {"success":false,"message":"Token expired"}
+10:53:56 [INFO]   Trying /auth/refresh...
+10:53:56 [INFO]   /auth/refresh → 401: {"success":false,"message":"Invalid or expired refresh token"}
+10:53:56 [ERROR] ✗ Auth failed
+  ✗ account1 is dead
+  ↻ Recovery attempt 1: trying account2...
+10:53:57 [INFO]   Cookies: ['accessToken', 'guestId', 'refreshToken', 'totpVerified', 'g_state', 'rm_fe'], has refreshToken: True
+10:53:57 [INFO]   Checking /auth/me...
+10:53:57 [INFO]   /auth/me → 401: {"success":false,"message":"Token expired"}
+10:53:57 [INFO]   Trying /auth/refresh...
+10:53:57 [INFO]   /auth/refresh → 401: {"success":false,"message":"Invalid or expired refresh token"}
+10:53:57 [ERROR] ✗ Auth failed
+  ✗ account2 is dead
+  ↻ Recovery attempt 1: trying account3...
+10:53:58 [INFO]   Cookies: ['accessToken', 'guestId', 'refreshToken', 'totpVerified', 'g_state', 'rm_fe'], has refreshToken: True
+10:53:58 [INFO]   Checking /auth/me...
+10:53:58 [INFO]   /auth/me → 401: {"success":false,"message":"Token expired"}
+10:53:58 [INFO]   Trying /auth/refresh...
+10:53:58 [INFO]   /auth/refresh → 401: {"success":false,"message":"Invalid or expired refresh token"}
+10:53:58 [ERROR] ✗ Auth failed
+  ✗ account3 is dead
+  ↻ Recovery attempt 1: trying account4...
+10:53:59 [INFO]   Cookies: ['accessToken', 'refreshToken', 'totpVerified', 'rm_fe'], has refreshToken: True
+10:53:59 [INFO]   Checking /auth/me...
+10:53:59 [INFO]   /auth/me → 401: {"success":false,"message":"Token expired"}
+10:53:59 [INFO]   Trying /auth/refresh...
+10:54:00 [INFO]   /auth/refresh → 401: {"success":false,"message":"Invalid or expired refresh token"}
+10:54:00 [ERROR] ✗ Auth failed
+  ✗ account4 is dead
+  🤖 Trying auto-login via your real Chrome (CDP port 9222)...
+     (If Chrome isn't open yet, run:  scripts\start_scrape_chrome.bat )
+  🤖 Attempting Google auto-login via saved profile...
+  🤖 Auto-login via saved Google profile...
+  ⚠ A Chrome window will open — if a Google/RepeaterMock login page appears,
+     complete the login ONCE in that window; the scraper continues by itself.
+    → Clicked Google sign-in — completing OAuth...
+    ✗ Google profile re-login failed: BrowserContext.cookies: Target page, context or browser has been closed
+  💡 Tip: set REPEATERMOCK_EMAIL + REPEATERMOCK_PASSWORD + REPEATERMOCK_TOTP_SECRET
+     in .env and the scraper will log itself back in automatically — never waiting for you.
+  👤 Falling back to GUEST MODE (no account — free 'tb' tests only)
+  ✓ Guest session ready — scraping FREE tests as guest
+
+  → Syncing progress to Cloudflare D1 (0 changed tests)...
+  ✓ series: 53/53 rows synced
+  ✓ Synced 53 series to D1
+  ✓ Synced 0 test rows (changed tests) to D1
+  ✓ All runs already in D1
+  ✓ D1 sync complete — dashboard is up to date
+
+  [SSC CGL Mock Test Series 2026 (Tier I & Tier II)] Using cached test list (1313 tests, 283 min old)
+  + Queued 1206 tests from [SSC CGL Mock Test Series 2026 (Tier I & Tier II)] (107/1313 already done)
+
+  [SSC CGL Mock Test Series 2026 (Tier I & Tier II)] Using cached test list (795 tests, 240 min old)
+  ⏭ [SSC CGL Mock Test Series 2026 (Tier I & Tier II)] 'tb-pro' series needs an active plan — skipped in guest mode
+
+  [SSC Selection Post] Using cached test list (49 tests, 240 min old)
+  ⏭ [SSC Selection Post] 'gd' series needs an active plan — skipped in guest mode
+
+  [SBI PO] Using cached test list (233 tests, 240 min old)
+  ⏭ [SBI PO] 'gd' series needs an active plan — skipped in guest mode
+
+  [SSC CGL Free] Using cached test list (168 tests, 240 min old)
+  ⏭ [SSC CGL Free] 'gd' series needs an active plan — skipped in guest mode
+
+  [RRB Group D Mock Test Series 2025-26 (New)] Using cached test list (1345 tests, 239 min old)
+  + Queued 1345 tests from [RRB Group D Mock Test Series 2025-26 (New)] (0/1345 already done)
+
+  [RRB Group D Mock Test Series 2025-26 (New)] Using cached test list (696 tests, 239 min old)
+  ⏭ [RRB Group D Mock Test Series 2025-26 (New)] 'tb-pro' series needs an active plan — skipped in guest mode
+
+  [SSC Maths PYP Mock Test Series (20k+ Questions)] Using cached test list (2044 tests, 238 min old)
+  + Queued 2044 tests from [SSC Maths PYP Mock Test Series (20k+ Questions)] (0/2044 already done)
+
+  [SSC Maths PYP Mock Test Series (20k+ Questions)] Using cached test list (100 tests, 101 min old)
+  ⏭ [SSC Maths PYP Mock Test Series (20k+ Questions)] 'tb-pro' series needs an active plan — skipped in guest mode
+
+  [SSC Reasoning PYP Mock Test Series (20k+ Questions] Using cached test list (2100 tests, 101 min old)
+  + Queued 2100 tests from [SSC Reasoning PYP Mock Test Series (20k+ Questions] (0/2100 already done)
+
+  [SSC Reasoning PYP Mock Test Series (20k+ Questions] Using cached test list (101 tests, 101 min old)
+  ⏭ [SSC Reasoning PYP Mock Test Series (20k+ Questions] 'tb-pro' series needs an active plan — skipped in guest mode
+
+  [SSC CPO] Using cached test list (18 tests, 101 min old)
+  ⏭ [SSC CPO] 'gd' series needs an active plan — skipped in guest mode
+
+  [SSC CHSL Mock Test Series 2026 (Tier I & Tier II)] Using cached test list (1560 tests, 100 min old)
+  + Queued 1560 tests from [SSC CHSL Mock Test Series 2026 (Tier I & Tier II)] (0/1560 already done)
+
+  [SSC CHSL Mock Test Series 2026 (Tier I & Tier II)] Using cached test list (854 tests, 100 min old)
+  ⏭ [SSC CHSL Mock Test Series 2026 (Tier I & Tier II)] 'tb-pro' series needs an active plan — skipped in guest mode
+
+  [SSC CGL Previous Year Paper] Using cached test list (118 tests, 100 min old)
+  ⏭ [SSC CGL Previous Year Paper] 'gd' series needs an active plan — skipped in guest mode
+
+  [SSC English PYP Mock Test Series (20k+ Questions)] Using cached test list (1967 tests, 100 min old)
+  + Queued 1967 tests from [SSC English PYP Mock Test Series (20k+ Questions)] (0/1967 already done)
+
+  [SSC English PYP Mock Test Series (20k+ Questions)] Using cached test list (188 tests, 100 min old)
+  ⏭ [SSC English PYP Mock Test Series (20k+ Questions)] 'tb-pro' series needs an active plan — skipped in guest mode
+
+  [SSC MTS & Havaldar Mock Test Series 2026] Using cached test list (401 tests, 100 min old)
+  + Queued 401 tests from [SSC MTS & Havaldar Mock Test Series 2026] (0/401 already done)
+
+  [SSC MTS] Using cached test list (100 tests, 99 min old)
+  ⏭ [SSC MTS] 'gd' series needs an active plan — skipped in guest mode
+
+  [SSC MTS & Havaldar Mock Test Series 2026] Using cached test list (229 tests, 99 min old)
+  ⏭ [SSC MTS & Havaldar Mock Test Series 2026] 'tb-pro' series needs an active plan — skipped in guest mode
+
+  [SSC CHSL] Using cached test list (148 tests, 99 min old)
+  ⏭ [SSC CHSL] 'gd' series needs an active plan — skipped in guest mode
+
+  [SSC GK PYP Mock Test Series (20k+ Questions)] Using cached test list (2163 tests, 99 min old)
+  + Queued 2163 tests from [SSC GK PYP Mock Test Series (20k+ Questions)] (0/2163 already done)
+
+  [SSC GK PYP Mock Test Series (20k+ Questions)] Using cached test list (100 tests, 99 min old)
+  ⏭ [SSC GK PYP Mock Test Series (20k+ Questions)] 'tb-pro' series needs an active plan — skipped in guest mode
+
+  [SSC GD] Using cached test list (48 tests, 99 min old)
+  ⏭ [SSC GD] 'gd' series needs an active plan — skipped in guest mode
+
+  [SSC Stenographer Grade C & D Mock Test 2026 (New P] Using cached test list (210 tests, 99 min old)
+  ⏭ [SSC Stenographer Grade C & D Mock Test 2026 (New P] 'tb-pro' series needs an active plan — skipped in guest mode
+
+  [SSC Delhi Head Constable] Using cached test list (5 tests, 99 min old)
+  ⏭ [SSC Delhi Head Constable] 'gd' series needs an active plan — skipped in guest mode
+
+  [SSC Stenographer Grade C & D Mock Test 2026 (New P] Using cached test list (53 tests, 98 min old)
+  + Queued 53 tests from [SSC Stenographer Grade C & D Mock Test 2026 (New P] (0/53 already done)
+
+  [SSC Selection Post (Phase 14) 2026 Mock Test Serie] Using cached test list (240 tests, 98 min old)
+  + Queued 240 tests from [SSC Selection Post (Phase 14) 2026 Mock Test Serie] (0/240 already done)
+
+  [SSC CPO Rankers Test Series 2025] Using cached test list (87 tests, 98 min old)
+  ⏭ [SSC CPO Rankers Test Series 2025] 'tb-pro' series needs an active plan — skipped in guest mode
+
+  [SSC GD Constable 2026 Mock Test Series] Using cached test list (2567 tests, 98 min old)
+  + Queued 2567 tests from [SSC GD Constable 2026 Mock Test Series] (0/2567 already done)
+
+  [SSC Selection Post (Phase 14) 2026 Mock Test Serie] Using cached test list (325 tests, 98 min old)
+  ⏭ [SSC Selection Post (Phase 14) 2026 Mock Test Serie] 'tb-pro' series needs an active plan — skipped in guest mode
+
+  [SSC CPO Mock Test Series 2026 (Tier I & II)] Using cached test list (112 tests, 98 min old)
+  + Queued 112 tests from [SSC CPO Mock Test Series 2026 (Tier I & II)] (0/112 already done)
+
+  [SSC CHSL Mock Test Series 2025 (Tier I & Tier II)] Using cached test list (1519 tests, 97 min old)
+  + Queued 1519 tests from [SSC CHSL Mock Test Series 2025 (Tier I & Tier II)] (0/1519 already done)
+
+  [SSC CPO Mock Test Series 2026 (Tier I & II)] Using cached test list (272 tests, 97 min old)
+  ⏭ [SSC CPO Mock Test Series 2026 (Tier I & II)] 'tb-pro' series needs an active plan — skipped in guest mode
+
+  [SSC CPO Mock Test Series 2025 (Tier I & II) (DP SI] Using cached test list (1180 tests, 97 min old)
+  + Queued 1180 tests from [SSC CPO Mock Test Series 2025 (Tier I & II) (DP SI] (0/1180 already done)
+
+  [SSC CHSL Mock Test Series 2025 (Tier I & Tier II)] Using cached test list (969 tests, 94 min old)
+  ⏭ [SSC CHSL Mock Test Series 2025 (Tier I & Tier II)] 'tb-pro' series needs an active plan — skipped in guest mode
+
+  [SSC JE Civil 2026 Mock Test (Paper 1 & Paper 2)] Using cached test list (671 tests, 94 min old)
+  + Queued 671 tests from [SSC JE Civil 2026 Mock Test (Paper 1 & Paper 2)] (0/671 already done)
+
+  [SSC CPO Mock Test Series 2025 (Tier I & II) (DP SI] Using cached test list (553 tests, 94 min old)
+  ⏭ [SSC CPO Mock Test Series 2025 (Tier I & II) (DP SI] 'tb-pro' series needs an active plan — skipped in guest mode
+
+  [SSC MTS & Havaldar Mock Test Series 2025] Using cached test list (1606 tests, 93 min old)
+  + Queued 1606 tests from [SSC MTS & Havaldar Mock Test Series 2025] (0/1606 already done)
+
+  [SSC JE Civil 2026 Mock Test (Paper 1 & Paper 2)] Using cached test list (367 tests, 93 min old)
+  ⏭ [SSC JE Civil 2026 Mock Test (Paper 1 & Paper 2)] 'tb-pro' series needs an active plan — skipped in guest mode
+
+  [SSC JE Electrical 2026 Mock Test (Paper 1 & Paper ] Using cached test list (637 tests, 93 min old)
+  + Queued 637 tests from [SSC JE Electrical 2026 Mock Test (Paper 1 & Paper ] (0/637 already done)
+
+  [SSC MTS & Havaldar Mock Test Series 2025] Using cached test list (357 tests, 93 min old)
+  ⏭ [SSC MTS & Havaldar Mock Test Series 2025] 'tb-pro' series needs an active plan — skipped in guest mode
+
+  [WB SSC Group C & D Combined Mock Test Series 2025] Using cached test list (11 tests, 93 min old)
+  + Queued 11 tests from [WB SSC Group C & D Combined Mock Test Series 2025] (0/11 already done)
+
+  [WB SSC Group C & D Combined Mock Test Series 2025] Using cached test list (279 tests, 93 min old)
+  ⏭ [WB SSC Group C & D Combined Mock Test Series 2025] 'tb-pro' series needs an active plan — skipped in guest mode
+
+  [Mathematics for All Railway Exams Previous Year Pa] Using cached test list (10 tests, 93 min old)
+  ⏭ [Mathematics for All Railway Exams Previous Year Pa] 'tb-pro' series needs an active plan — skipped in guest mode
+
+  [General Knowledge for All Railway Exams Previous Y] Using cached test list (1002 tests, 92 min old)
+  + Queued 1002 tests from [General Knowledge for All Railway Exams Previous Y] (0/1002 already done)
+
+  [Reasoning for All Railway Exams Previous Year Pape] Using cached test list (6 tests, 92 min old)
+  ⏭ [Reasoning for All Railway Exams Previous Year Pape] 'tb-pro' series needs an active plan — skipped in guest mode
+
+  [General Science for All Railway Exams Previous Yea] Using cached test list (496 tests, 92 min old)
+  + Queued 496 tests from [General Science for All Railway Exams Previous Yea] (0/496 already done)
+
+  [General Knowledge for All Railway Exams Previous Y] Using cached test list (6 tests, 92 min old)
+  ⏭ [General Knowledge for All Railway Exams Previous Y] 'tb-pro' series needs an active plan — skipped in guest mode
+
+  [General Science for All Railway Exams Previous Yea] Using cached test list (21 tests, 92 min old)
+  ⏭ [General Science for All Railway Exams Previous Yea] 'tb-pro' series needs an active plan — skipped in guest mode
+
+  [Ace General Knowledge - For All Railway, SSC & Oth] Using cached test list (244 tests, 92 min old)
+  ⏭ [Ace General Knowledge - For All Railway, SSC & Oth] 'tb-pro' series needs an active plan — skipped in guest mode
+
+  [Polity Master Pack for SSC / Railways / State Exam] Using cached test list (34 tests, 92 min old)
+  ⏭ [Polity Master Pack for SSC / Railways / State Exam] 'tb-pro' series needs an active plan — skipped in guest mode
+
+  [Ace General Knowledge - For All Railway, SSC & Oth] Using cached test list (0 tests, 92 min old)
+  ✓ All 0 tests fully scraped — skipping
+
+  ▶ Scraping 22880 pending tests with 3 parallel workers...
+  [W0] SSC CGL 2023 Tier-I Official Paper (Held On: 17 Jul 2023 Shi
+  Scraping: SSC CGL 2023 Tier-I Official Paper (Held On: 17 Jul 2023 Shi (id=6a0f3e628d0a5c66cc0dbc0b)
+    ✗ /attempt error: APIRequestContext.get: Request context disposed.
+Call log:
+  - → GET https://repeatermock.com/tb/test-series/ssc-cgl/test/6a0f3e628d0a5c66cc0dbc0b/attempt
+    - user-agent: Mozilla/5.0 (X11; Linux x86_64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/127.0.0.0 Safari/537.36
+    - accept: text/html
+    - accept-encoding: gzip,deflate,br
+    - Referer: https://repeatermock.com/
+    - cookie: rm_fe=356497b0f96bcb98; _ga=GA1.1.1168086553.1788240258; cf_clearance=KFYl95.T.ORHKRFDL5xeMS9OR5v8VcK0ncPOXn_CkQ4-1788240258-1.2.1.1-31X2YgdkHEMMCTJMuNYaGR_AHMkNOVop0RXcrrOZM41X5kiyyTMep6fRhYlUzopVA0OACDezgVm0Nh4xIU8W8hARupNia4ij.onArNqzOBv_8ZZW_9W6cyc91cj5sIB4pRSovUv1kT.uE_Ju4iLLCQEtawiOPcJ2BE3ZNxBn29LKrNs1V8pqznyO7txNcqrLvDSq29tlwrKxNJcVLGFJY6axfMIK3_TXU1vI6Zc447n9V50zvJfvUM9lsb4JCszRB68cDZ550rToZEIgy9v04iIIsCbjIodGoPjMy6bnjfWw_XfCZdSwMfQqw1y4URZqj4MpahZ7fwrVr3ckJ2zxx3x4Y67cXx6gkVoW0jK68XA; g_state={"i_l":0,"i_ll":1788240258887,"i_b":"/dQXJ0k+/Q79zAykWYuT9UCaDNdabLVPwOPcpxTKRVc","i_e":{"enable_itp_optimization":24},"i_et":1788240258887}; _ga_5ZXVX6K05R=GS2.1.s1788240257$o1$g0$t1788240260$j57$l0$h0
+  - ← 200 OK
+    - date: Tue, 01 Sep 2026 05:25:16 GMT
+    - content-type: text/html; charset=utf-8
+    - transfer-encoding: chunked
+    - connection: keep-alive
+    - alt-svc: h3=":443"; ma=86400
+    - cache-control: private, no-cache, no-store, max-age=0, must-revalidate
+    - nel: {"report_to":"cf-nel","success_fraction":0.0,"max_age":604800}
+    - link: <https://repeatermock.com/tb/test-series/ssc-cgl/test/6a0f3e628d0a5c66cc0dbc0b/attempt>; rel="alternate"; hreflang="en", <https://repeatermock.com/hi/tb/test-series/ssc-cgl/test/6a0f3e628d0a5c66cc0dbc0b/attempt>; rel="alternate"; hreflang="hi", <https://repeatermock.com/bn/tb/test-series/ssc-cgl/test/6a0f3e628d0a5c66cc0dbc0b/attempt>; rel="alternate"; hreflang="bn", <https://repeatermock.com/mr/tb/test-series/ssc-cgl/test/6a0f3e628d0a5c66cc0dbc0b/attempt>; rel="alternate"; hreflang="mr", <https://repeatermock.com/te/tb/test-series/ssc-cgl/test/6a0f3e628d0a5c66cc0dbc0b/attempt>; rel="alternate"; hreflang="te", <https://repeatermock.com/ta/tb/test-series/ssc-cgl/test/6a0f3e628d0a5c66cc0dbc0b/attempt>; rel="alternate"; hreflang="ta", <https://repeatermock.com/gu/tb/test-series/ssc-cgl/test/6a0f3e628d0a5c66cc0dbc0b/attempt>; rel="alternate"; hreflang="gu", <https://repeatermock.com/kn/tb/test-series/ssc-cgl/test/6a0f3e628d0a5c66cc0dbc0b/attempt>; rel="alternate"; hreflang="kn", <https://repeatermock.com/ml/tb/test-series/ssc-cgl/test/6a0f3e628d0a5c66cc0dbc0b/attempt>; rel="alternate"; hreflang="ml", <https://repeatermock.com/tb/test-series/ssc-cgl/test/6a0f3e628d0a5c66cc0dbc0b/attempt>; rel="alternate"; hreflang="x-default", </_next/static/media/797e433ab948586e-s.p.08e28id.o-okb.woff2>; rel=preload; as="font"; crossorigin=""; type="font/woff2", </_next/static/media/caa3a2e1cccd8315-s.p.09~u27dqhyhd6.woff2>; rel=preload; as="font"; crossorigin=""; type="font/woff2"
+    - set-cookie: NEXT_LOCALE=en; Path=/; Expires=Wed, 01 Sep 2027 05:25:15 GMT; Max-Age=31536000; SameSite=lax
+    - vary: Accept-Encoding, rsc, next-router-state-tree, next-router-prefetch, next-router-segment-prefetch, Accept-Encoding
+    - x-middleware-rewrite: /en/tb/test-series/ssc-cgl/test/6a0f3e628d0a5c66cc0dbc0b/attempt
+    - x-powered-by: Next.js
+    - cf-cache-status: DYNAMIC
+    - server-timing: cfCacheStatus;desc="DYNAMIC", cfEdge;dur=15,cfOrigin;dur=320
+    - report-to: {"group":"cf-nel","max_age":604800,"endpoints":[{"url":"https://a.nel.cloudflare.com/report/v4?s=0v0QM%2BpJG8baD952i9z2moArQKCFFA8fomXqPA7A3NJd%2BbsO76PQCfj1qY7hUvM%2BGVrQogu5XsEPV7edSghj%2FkJ18zigDfUzXpg7NWNQUsY8dEtT%2F5fNmwh0oIWt1DDNV7Xo"}]}
+    - content-encoding: br
+    - server: cloudflare
+    - cf-ray: a341da751e36861a-BOM
+
+  [W0] ✗ FAILED: no questions fetched
+  [W0] SSC CGL 2023 Tier-I Official Paper (Held On: 17 Jul 2023 Shi
+  Scraping: SSC CGL 2023 Tier-I Official Paper (Held On: 17 Jul 2023 Shi (id=6a0f3e683b5bc48ebebf6682)
+    ✗ /attempt error: APIRequestContext.get: Target page, context or browser has been closed
+  [W0] ✗ FAILED: no questions fetched
+  [W1] worker session build failed: Browser.new_context: Target page, context or browser has been closed
+  ↻ Recovery attempt 1: trying account1...

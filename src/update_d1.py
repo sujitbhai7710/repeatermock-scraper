@@ -191,6 +191,7 @@ def send_upserts(env, table, columns, conflict_cols, rows, chunk_size=40):
     updates = ", ".join(f"{c} = excluded.{c}" for c in update_cols)
     conflict = ", ".join(conflict_cols)
     sent = 0
+    last_print = 0
     for i in range(0, len(rows), chunk_size):
         chunk = rows[i:i + chunk_size]
         values = ", ".join(
@@ -200,7 +201,9 @@ def send_upserts(env, table, columns, conflict_cols, rows, chunk_size=40):
                f"ON CONFLICT({conflict}) DO UPDATE SET {updates}")
         d1_query(env, sql)
         sent += len(chunk)
-        print(f"  ✓ {table}: {sent}/{len(rows)} rows synced")
+        if sent - last_print >= 500 or sent == len(rows):
+            print(f"  ✓ {table}: {sent}/{len(rows)} rows synced")
+            last_print = sent
     return sent
 
 

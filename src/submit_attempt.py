@@ -30,6 +30,25 @@ from src.scraper import create_browser_session, refresh_cookies_if_needed, COOKI
 API_BASE = "https://api.repeatermock.com"
 WORKING_FORMAT_FILE = Path(__file__).parent.parent / "data" / "submit_format.json"
 
+# Global pacing for attempt starts — the server 429s ("starting tests
+# unusually fast") if starts come too quickly. One lock for ALL parallel
+# workers enforces a minimum interval between starts.
+_start_lock = asyncio.Lock()
+_last_start = [0.0]
+MIN_START_INTERVAL = float(__import__("os").environ.get("START_MIN_INTERVAL", "10"))
+
+
+async def _start_attempt(context, start_url: str, cookie_str: str):
+    """POST /attempts/{id}/start with global pacing. Returns (status, body)."""
+    async with _start_lock:
+        wait = _last_start[0] + MIN_START_INTERVAL - time.time()
+        if wait > 0:
+            await asyncio.sleep(wait)
+        status, body = await fetch_via_context_with_cookies(
+            context, start_url, method="POST", body="{}", cookie_str=cookie_str)
+        _last_start[0] = time.time()
+        return status, body
+
 
 async def fetch_via_context_with_cookies(context, url, method="POST", body=None, cookie_str=""):
     """Fetch using context.request but with explicit Cookie header (includes httpOnly)."""
@@ -169,15 +188,34 @@ async def submit_attempt(context, page, test_id: str, questions: list[dict], var
     else:
         cookie_str = ""
     
-    # Step 1: Visit /attempt page via page.goto() to create an active attempt
-    # The server creates an attempt record when the page is loaded in a browser
-    print(f"  Creating active attempt (visiting /attempt page)...", flush=True)
-    try:
-        await page.goto(attempt_url, timeout=30000, wait_until="domcontentloaded")
-        # Wait longer for the JS to create the attempt on the server
-        await asyncio.sleep(8)
-    except Exception as e:
-        print(f"  ⚠ page.goto failed: {e}", flush=True)
+    # Step 1: Start the attempt via the API. The /attempt page's JS does exactly
+    # this call (POST /attempts/{id}/start); calling it directly is much faster
+    # and avoids the site's anti-debug page, which detects automated browsers
+    # and WIPES the session cookies on browser page loads ("you-idiot.html").
+    print(f"  Starting attempt via API...", flush=True)
+    start_url = f"{API_BASE}{api_prefix}/attempts/{test_id}/start"
+    started = False
+    for wait_s in (0, 30, 120, 300):
+        if wait_s:
+            print(f"  ⚠ Start rate-limited (429) — waiting {wait_s}s...", flush=True)
+            await asyncio.sleep(wait_s)
+        status, body = await _start_attempt(context, start_url, cookie_str)
+        if status in (200, 201, 204):
+            started = True
+            print(f"  ✓ Attempt started ({status})", flush=True)
+            break
+        if status == 429:
+            continue
+        print(f"  ⚠ start → {status}: {body[:80]}", flush=True)
+        # Unexpected status (404/401/auth) — fall back to the legacy page load
+        try:
+            await page.goto(attempt_url, timeout=30000, wait_until="domcontentloaded")
+            await asyncio.sleep(8)
+        except Exception as e:
+            print(f"  ⚠ page.goto failed: {e}", flush=True)
+        break
+    if not started:
+        print(f"  ⚠ Attempt start not confirmed — will try submit anyway", flush=True)
     
     # Step 2: Now try to submit using the original cookies (not context.cookies which got wiped)
     # Check if we already have a working format
@@ -229,14 +267,17 @@ async def submit_attempt(context, page, test_id: str, questions: list[dict], var
             print(f"  ✓ Attempt already exists (409) — treating as success", flush=True)
             return True
         elif s == 404:
-            # No active attempt — the page.goto didn't create one
-            # Wait longer and retry page.goto
-            print(f"  ⚠ No active attempt, retrying page.goto...", flush=True)
-            try:
-                await page.goto(attempt_url, timeout=30000, wait_until="domcontentloaded")
-                await asyncio.sleep(10)
-            except:
-                pass
+            # No active attempt — try the START endpoint directly (the legacy
+            # page.goto triggers the site's anti-debug and wipes cookies)
+            print(f"  ⚠ No active attempt — calling start endpoint...", flush=True)
+            s3, b3 = await _start_attempt(
+                context, start_url, cookie_str)
+            print(f"    start → {s3}: {b3[:100]}", flush=True)
+            if s3 == 429:
+                await asyncio.sleep(120)
+                s3, b3 = await _start_attempt(
+                    context, start_url, cookie_str)
+                print(f"    start retry → {s3}: {b3[:100]}", flush=True)
             # Retry submit
             s2, b2 = await fetch_via_context_with_cookies(context, submit_url, method="POST", body=json.dumps(fmt["payload"]), cookie_str=cookie_str)
             if s2 == 200:

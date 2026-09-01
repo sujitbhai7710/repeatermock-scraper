@@ -29,6 +29,14 @@ from src.question_parser import extract_flight_payload, parse_question_objects, 
 from src.submit_attempt import submit_attempt
 
 
+class SessionReplaced(Exception):
+    """Raised by the on_submit_401 callback when auth recovery had to replace
+    the whole browser session (new context + page). The in-flight test's
+    context/page references are stale, so the caller must retry the test
+    with the fresh session."""
+    pass
+
+
 def extract_json_object(payload: str, key: str) -> dict | None:
     """Extract a JSON object by its key from the RSC payload using brace matching."""
     search = f'"{key}":{{'
@@ -142,6 +150,10 @@ async def scrape_test_full(context, page, test: dict, variant: str, slug: str, o
                         context, page, test_id, result["questions"], variant, slug,
                         original_cookies=original_cookies,
                     )
+            except SessionReplaced:
+                # Recovery replaced the browser session — our context/page are
+                # stale. Bubble up so the caller retries with the fresh session.
+                raise
             except Exception as e:
                 print(f"    ⚠ Refresh callback error: {e}", flush=True)
 

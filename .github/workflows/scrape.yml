@@ -16,9 +16,11 @@ on:
         required: false
         default: 'false'
 
-  # Schedule disabled — user runs locally. Re-enable by uncommenting the line below.
-  # schedule:
-  #   - cron: '10 * * * *'  # Every hour at :10
+  # Automated scraping — every 45 minutes.
+  # REQUIREMENT: a CI-DEDICATED RepeaterMock account (never used locally or in a
+  # browser!) whose cookies are in the REPEATERMOCK_COOKIES secret.
+  schedule:
+    - cron: '*/45 * * * *'
 
   push:
     branches: [main]
@@ -32,7 +34,8 @@ env:
 
 concurrency:
   group: scrape-repeatermock
-  cancel-in-progress: true
+  cancel-in-progress: false   # NEVER cancel mid-run — cancelling after the server
+                              # rotated the refresh token loses the token chain
 
 jobs:
   scrape:
@@ -98,6 +101,20 @@ jobs:
               pf.write_text(json.dumps(p, indent=2))
               print("✓ Reset done")
           EOF
+
+      - name: Seed CI account cookies (first run only)
+        env:
+          REPEATERMOCK_COOKIES: ${{ secrets.REPEATERMOCK_COOKIES }}
+        run: |
+          mkdir -p cookies
+          if [ -z "$REPEATERMOCK_COOKIES" ]; then
+            echo "⚠ Secret REPEATERMOCK_COOKIES not set — add fresh cookies from a CI-dedicated account"
+          elif [ ! -f cookies/account5.json ]; then
+            echo "$REPEATERMOCK_COOKIES" > cookies/account5.json
+            echo "✓ Seeded cookies/account5.json from secret (first run)"
+          else
+            echo "✓ Using rotated cookies/account5.json from repo (persisted after last run)"
+          fi
 
       - name: Check 15-min gap + all-done check
         id: should-run

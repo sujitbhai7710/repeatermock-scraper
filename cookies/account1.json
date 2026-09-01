@@ -1,7 +1,7 @@
 [
-  {
+{
     "domain": ".repeatermock.com",
-    "expirationDate": 1788224051.469385,
+    "expirationDate": 1788225533.678667,
     "hostOnly": false,
     "httpOnly": true,
     "name": "accessToken",
@@ -10,12 +10,12 @@
     "secure": true,
     "session": false,
     "storeId": "0",
-    "value": "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VySWQiOiI2YTk1ZDZlNjljNDk1OGE2NzEyNzkzMTciLCJlbWFpbCI6ImRpYmFrYXJzZHNlbnNlQGdtYWlsLmNvbSIsImlhdCI6MTc4ODIyMzI2MSwiZXhwIjoxNzg4MjI0MTYxfQ.icmwrzAwKsUr80w-wonAzt_NxVJyoHuhjuhub49cQ7o",
+    "value": "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VySWQiOiI2YTk1ZDZlNjljNDk1OGE2NzEyNzkzMTciLCJlbWFpbCI6ImRpYmFrYXJzZHNlbnNlQGdtYWlsLmNvbSIsImlhdCI6MTc4ODIyNDYzMywiZXhwIjoxNzg4MjI1NTMzfQ.ecGz95GlLl5-6KvqInNVChDPY8xMIna1nl_pRsF3gWc",
     "id": 1
-  },
-  {
+},
+{
     "domain": ".repeatermock.com",
-    "expirationDate": 1790815151.469459,
+    "expirationDate": 1790816633.678747,
     "hostOnly": false,
     "httpOnly": true,
     "name": "refreshToken",
@@ -24,12 +24,12 @@
     "secure": true,
     "session": false,
     "storeId": "0",
-    "value": "df08e6e54b57702dba9a0708c7ab77ba90d4516fe829dd81341797b3735aebef69c12907a3b4b6ca9c1366d179af3840fe81cee34de4cb34f55d24d948415a94",
+    "value": "5dde9b1606ec25d98e93475cf357ddfcf409588e8792778b378ffd1c2b4ff5964bc78efed06a42c4ed54085fc58a57b8976ed4afd5f283ebb0518b1c0d49081b",
     "id": 2
-  },
-  {
+},
+{
     "domain": ".repeatermock.com",
-    "expirationDate": 1790815151.469515,
+    "expirationDate": 1790816633.678772,
     "hostOnly": false,
     "httpOnly": true,
     "name": "totpVerified",
@@ -40,10 +40,10 @@
     "storeId": "0",
     "value": "1",
     "id": 3
-  },
-  {
+},
+{
     "domain": "repeatermock.com",
-    "expirationDate": 1803775143,
+    "expirationDate": 1803776627,
     "hostOnly": true,
     "httpOnly": false,
     "name": "g_state",
@@ -52,10 +52,10 @@
     "secure": false,
     "session": false,
     "storeId": "0",
-    "value": "{\"i_l\":0,\"i_ll\":1788223143639,\"i_b\":\"iyFZfIM6QqwG+SleCOHE+7aqGf68Pp2/XgTyhRK17v4\",\"i_e\":{\"enable_itp_optimization\":24},\"i_et\":1788223143639}",
+    "value": "{\"i_l\":0,\"i_ll\":1788224627270,\"i_b\":\"iyFZfIM6QqwG+SleCOHE+7aqGf68Pp2/XgTyhRK17v4\",\"i_e\":{\"enable_itp_optimization\":24},\"i_et\":1788224627270}",
     "id": 4
-  },
-  {
+},
+{
     "domain": "repeatermock.com",
     "hostOnly": true,
     "httpOnly": true,
@@ -67,5 +67,5 @@
     "storeId": "0",
     "value": "2f6631856d3362ec",
     "id": 5
-  }
+}
 ]

@@ -1,0 +1,99 @@
+
+============================================================
+INCREMENTAL SCRAPE RUN
+============================================================
+  Time limit: 10 minutes
+  Max tests this run: 6
+  Previously scraped: 107 (full), 12 (partial), 363 (failed)
+  Target series: 53
+  Start time: 2026-09-01 05:07:38 UTC
+  Found account1.json (5 cookies, has refreshToken: True)
+  Found account2.json (6 cookies, has refreshToken: True)
+  Found account3.json (6 cookies, has refreshToken: True)
+  Found account4.json (4 cookies, has refreshToken: True)
+  Total cookie sets to try: 4
+
+  Trying cookie set 1/4...
+10:37:39 [INFO]   Cookies: ['accessToken', 'refreshToken', 'totpVerified', 'g_state', 'rm_fe'], has refreshToken: True
+10:37:39 [INFO]   Checking /auth/me...
+10:37:40 [INFO]   /auth/me → 401: {"success":false,"message":"Token expired"}
+10:37:40 [INFO]   Trying /auth/refresh...
+10:37:40 [INFO]   /auth/refresh → 401: {"success":false,"message":"Invalid or expired refresh token"}
+10:37:40 [ERROR] ✗ Auth failed
+  ✗ Cookie set 1 failed
+
+  Trying cookie set 2/4...
+10:37:40 [INFO]   Cookies: ['accessToken', 'guestId', 'refreshToken', 'totpVerified', 'g_state', 'rm_fe'], has refreshToken: True
+10:37:40 [INFO]   Checking /auth/me...
+10:37:41 [INFO]   /auth/me → 401: {"success":false,"message":"Token expired"}
+10:37:41 [INFO]   Trying /auth/refresh...
+10:37:41 [INFO]   /auth/refresh → 401: {"success":false,"message":"Invalid or expired refresh token"}
+10:37:41 [ERROR] ✗ Auth failed
+  ✗ Cookie set 2 failed
+
+  Trying cookie set 3/4...
+10:37:42 [INFO]   Cookies: ['accessToken', 'guestId', 'refreshToken', 'totpVerified', 'g_state', 'rm_fe'], has refreshToken: True
+10:37:42 [INFO]   Checking /auth/me...
+10:37:42 [INFO]   /auth/me → 401: {"success":false,"message":"Token expired"}
+10:37:42 [INFO]   Trying /auth/refresh...
+10:37:42 [INFO]   /auth/refresh → 401: {"success":false,"message":"Invalid or expired refresh token"}
+10:37:42 [ERROR] ✗ Auth failed
+  ✗ Cookie set 3 failed
+
+  Trying cookie set 4/4...
+10:37:43 [INFO]   Cookies: ['accessToken', 'refreshToken', 'totpVerified', 'rm_fe'], has refreshToken: True
+10:37:43 [INFO]   Checking /auth/me...
+10:37:43 [INFO]   /auth/me → 401: {"success":false,"message":"Token expired"}
+10:37:43 [INFO]   Trying /auth/refresh...
+10:37:43 [INFO]   /auth/refresh → 401: {"success":false,"message":"Invalid or expired refresh token"}
+10:37:43 [ERROR] ✗ Auth failed
+  ✗ Cookie set 4 failed
+
+✗ All cookie sets failed on startup — entering RECOVERY MODE:
+  the run stays alive and retries every 90s. Log in to repeatermock.com,
+  export fresh cookies (Cookie-Editor extension) and save them into
+  cookies/account1.json — the run picks them up automatically.
+  Press Ctrl+C to stop the run.
+  ↻ Recovery attempt 1: trying account1...
+10:37:44 [INFO]   Cookies: ['accessToken', 'refreshToken', 'totpVerified', 'g_state', 'rm_fe'], has refreshToken: True
+10:37:44 [INFO]   Checking /auth/me...
+10:37:44 [INFO]   /auth/me → 401: {"success":false,"message":"Token expired"}
+10:37:44 [INFO]   Trying /auth/refresh...
+10:37:45 [INFO]   /auth/refresh → 401: {"success":false,"message":"Invalid or expired refresh token"}
+10:37:45 [ERROR] ✗ Auth failed
+  ✗ account1 is dead
+  ↻ Recovery attempt 1: trying account2...
+10:37:45 [INFO]   Cookies: ['accessToken', 'guestId', 'refreshToken', 'totpVerified', 'g_state', 'rm_fe'], has refreshToken: True
+10:37:45 [INFO]   Checking /auth/me...
+10:37:45 [INFO]   /auth/me → 401: {"success":false,"message":"Token expired"}
+10:37:45 [INFO]   Trying /auth/refresh...
+10:37:46 [INFO]   /auth/refresh → 401: {"success":false,"message":"Invalid or expired refresh token"}
+10:37:46 [ERROR] ✗ Auth failed
+  ✗ account2 is dead
+  ↻ Recovery attempt 1: trying account3...
+10:37:46 [INFO]   Cookies: ['accessToken', 'guestId', 'refreshToken', 'totpVerified', 'g_state', 'rm_fe'], has refreshToken: True
+10:37:46 [INFO]   Checking /auth/me...
+10:37:47 [INFO]   /auth/me → 401: {"success":false,"message":"Token expired"}
+10:37:47 [INFO]   Trying /auth/refresh...
+10:37:47 [INFO]   /auth/refresh → 401: {"success":false,"message":"Invalid or expired refresh token"}
+10:37:47 [ERROR] ✗ Auth failed
+  ✗ account3 is dead
+  ↻ Recovery attempt 1: trying account4...
+10:37:47 [INFO]   Cookies: ['accessToken', 'refreshToken', 'totpVerified', 'rm_fe'], has refreshToken: True
+10:37:47 [INFO]   Checking /auth/me...
+10:37:48 [INFO]   /auth/me → 401: {"success":false,"message":"Token expired"}
+10:37:48 [INFO]   Trying /auth/refresh...
+10:37:48 [INFO]   /auth/refresh → 401: {"success":false,"message":"Invalid or expired refresh token"}
+10:37:48 [ERROR] ✗ Auth failed
+  ✗ account4 is dead
+  🤖 Trying auto-login via your real Chrome (CDP port 9222)...
+     (If Chrome isn't open yet, run:  scripts\start_scrape_chrome.bat )
+  🤖 Attempting Google auto-login via saved profile...
+  🤖 Auto-login via saved Google profile...
+  ⚠ A Chrome window will open — if a Google/RepeaterMock login page appears,
+     complete the login ONCE in that window; the scraper continues by itself.
+    → Clicked Google sign-in — completing OAuth...
+    ✗ Google profile re-login failed: BrowserContext.cookies: Target page, context or browser has been closed
+  💡 Tip: set REPEATERMOCK_EMAIL + REPEATERMOCK_PASSWORD + REPEATERMOCK_TOTP_SECRET
+     in .env and the scraper will log itself back in automatically — never waiting for you.
+  👤 Falling back to GUEST MODE (no account — free 'tb' tests only)

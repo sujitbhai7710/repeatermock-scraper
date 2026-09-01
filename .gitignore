@@ -35,3 +35,6 @@ Thumbs.db
 # Playwright
 test-results/
 playwright-report/
+
+# Dedicated browser profile for Google auto-login (contains Google session!)
+browser_profile/

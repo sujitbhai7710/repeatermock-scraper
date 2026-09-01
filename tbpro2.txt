@@ -1,0 +1,69 @@
+============================================================
+TEST: plain-cookie scrape of https://repeatermock.com/tb-pro/test-series/ssc-cgl
+============================================================
+  Minting fresh cookies via CDP (real Chrome)...
+    ✓ Connected to your real Chrome via CDP
+    → Clicked Google sign-in in your real Chrome — completing OAuth...
+    ✓ Refresh verified — captured working session cookies
+  ✓ Fresh CDP cookies authenticated
+  [Live Test / Live Test] 0 tests
+  [फटाफट Tricky Quant / Quantitative Aptitude (Trick Based)] 17 tests
+  [Eduquity PYQ Live Test / General Awareness] 12 tests
+  [Eduquity PYQ Live Test / Quantitative Aptitude] 12 tests
+  [Eduquity PYQ Live Test / Reasoning] 11 tests
+  [Eduquity PYQ Live Test / English] 12 tests
+  [Eduquity PYQ Live Test / Current Affairs] 11 tests
+  [Eduquity PYQ Live Test / General Science] 11 tests
+  [Chapter Test (Tier I) (New Pattern) / General Intelligence and Reasoning] 49 tests
+  [Chapter Test (Tier I) (New Pattern) / General Awareness] 97 tests
+  [Chapter Test (Tier I) (New Pattern) / Quantitative Aptitude] 68 tests
+  [Chapter Test (Tier I) (New Pattern) / English Comprehension] 31 tests
+  [Sectional Test (New Pattern) / General Intelligence and Reasoning] 15 tests
+  [Sectional Test (New Pattern) / General Awareness] 15 tests
+  [Sectional Test (New Pattern) / Quantitative Aptitude] 15 tests
+  [Sectional Test (New Pattern) / English Comprehension] 15 tests
+  [Sectional Test (New Pattern) / General Intelligence and Reasoning (Advanced)] 5 tests
+  [Sectional Test (New Pattern) / General Awareness (Advanced)] 5 tests
+  [Sectional Test (New Pattern) / Quantitative Aptitude (Advanced)] 5 tests
+  [Sectional Test (New Pattern) / English Comprehension (Advanced)] 5 tests
+  [Full Test (New Pattern) / Full Test] 23 tests
+  [Full Test (New Pattern) / Advanced Full Test] 7 tests
+  [CA Booster (New Pattern) / Monthly CA] 12 tests
+  [CA Booster (New Pattern) / Topicwise CA] 17 tests
+  [Chapter Test (Tier II) / General Intelligence and Reasoning] 32 tests
+  [Chapter Test (Tier II) / General Awareness] 32 tests
+  [Chapter Test (Tier II) / Quantitative Aptitude] 32 tests
+  [Chapter Test (Tier II) / English Comprehension] 23 tests
+  [Chapter Test (Tier II) / Computer Awareness] 10 tests
+  [Sectional Test (Tier II) / Section I: (Maths & LR)] 3 tests
+  [Sectional Test (Tier II) / Section II: English & GA] 5 tests
+  [Sectional Test (Tier II) / Section III: Computer Knowledge] 7 tests
+  [Advanced Sectional Test (Tier II) / Section I: (Maths & LR)] 2 tests
+  [Advanced Sectional Test (Tier II) / Section II: English & GA] 2 tests
+  [Advanced Sectional Test (Tier II) / Section III: Computer Knowledge] 2 tests
+  [Module Test (Tier II) / Mathematical Abilities] 2 tests
+  [Module Test (Tier II) / General Intelligence and Reasoning] 3 tests
+  [Module Test (Tier II) / English Comprehension] 2 tests
+  [Module Test (Tier II) / General Awareness] 2 tests
+  [Module Test (Tier II) / Computer Awareness] 2 tests
+  [Advanced Module Test (Tier II) / Mathematical Abilities] 1 tests
+  [Advanced Module Test (Tier II) / General Intelligence and Reasoning] 2 tests
+  [Advanced Module Test (Tier II) / English Comprehension] 2 tests
+  [Advanced Module Test (Tier II) / General Awareness] 2 tests
+  [Advanced Module Test (Tier II) / Computer Awareness] 2 tests
+  [Full Test (Tier II) / Full Test] 9 tests
+  [Full Test (Tier II) / Advance Full Test] 6 tests
+  [Similar PYST 2025 (New Pattern) / General Awareness] 28 tests
+  [Similar PYST 2025 (New Pattern) / English Comprehension] 28 tests
+  [Similar PYST 2025 (New Pattern) / Quantitative Aptitude] 28 tests
+  [Similar PYST 2025 (New Pattern) / General Intelligence and Reasoning] 28 tests
+  [SSC CGL 2025 Similar PYP (New Pattern) / SSC CGL 2025 Similar PYP] 28 tests
+
+  Series: SSC CGL Mock Test Series 2026 (Tier I & Tier II) — 795 tests total
+  Testing 1 pending tests with PLAIN COOKIES only...
+
+  Scraping: Percentage (id=6a43aac2f6c489960bb113e5)
+    ✓ 25 questions
+    Submitting dummy attempt...
+  Starting attempt via API...
+  ⚠ Start rate-limited (429) — waiting 30s...

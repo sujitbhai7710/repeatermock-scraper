@@ -1,0 +1,30 @@
+Traceback (most recent call last):
+  File "<frozen runpy>", line 198, in _run_module_as_main
+  File "<frozen runpy>", line 88, in _run_code
+  File "C:\Users\akasa\Projects\edu projecs\mock test\repeatermock-scraper\src\incremental_scrape.py", line 975, in <module>
+    main()
+  File "C:\Users\akasa\Projects\edu projecs\mock test\repeatermock-scraper\src\incremental_scrape.py", line 971, in main
+    asyncio.run(run_incremental_scrape(args.time_limit_minutes, args.max_tests))
+  File "C:\Users\akasa\AppData\Local\Programs\Python\Python311\Lib\asyncio\runners.py", line 190, in run
+    return runner.run(main)
+           ^^^^^^^^^^^^^^^^
+  File "C:\Users\akasa\AppData\Local\Programs\Python\Python311\Lib\asyncio\runners.py", line 118, in run
+    return self._loop.run_until_complete(task)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "C:\Users\akasa\AppData\Local\Programs\Python\Python311\Lib\asyncio\base_events.py", line 654, in run_until_complete
+    return future.result()
+           ^^^^^^^^^^^^^^^
+  File "C:\Users\akasa\Projects\edu projecs\mock test\repeatermock-scraper\src\incremental_scrape.py", line 496, in run_incremental_scrape
+    await wait_for_live_account()
+  File "C:\Users\akasa\Projects\edu projecs\mock test\repeatermock-scraper\src\incremental_scrape.py", line 431, in wait_for_live_account
+    guest_mode[0] = True
+    ^^^^^^^^^^
+NameError: cannot access free variable 'guest_mode' where it is not associated with a value in enclosing scope
+Exception ignored in: <function BaseSubprocessTransport.__del__ at 0x0000023675E2E0C0>
+Traceback (most recent call last):
+  File "C:\Users\akasa\AppData\Local\Programs\Python\Python311\Lib\asyncio\base_subprocess.py", line 126, in __del__
+  File "C:\Users\akasa\AppData\Local\Programs\Python\Python311\Lib\asyncio\base_subprocess.py", line 104, in close
+  File "C:\Users\akasa\AppData\Local\Programs\Python\Python311\Lib\asyncio\proactor_events.py", line 109, in close
+  File "C:\Users\akasa\AppData\Local\Programs\Python\Python311\Lib\asyncio\base_events.py", line 762, in call_soon
+  File "C:\Users\akasa\AppData\Local\Programs\Python\Python311\Lib\asyncio\base_events.py", line 520, in _check_closed
+RuntimeError: Event loop is closed

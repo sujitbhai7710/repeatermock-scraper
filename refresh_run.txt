@@ -1,0 +1,43 @@
+
+============================================================
+INCREMENTAL SCRAPE RUN
+============================================================
+  Time limit: 0 minutes
+  Max tests this run: 1
+  Previously scraped: 107 (full), 12 (partial), 363 (failed)
+  Target series: 53
+  Start time: 2026-09-01 04:48:09 UTC
+  Found account1.json (5 cookies, has refreshToken: True)
+  Found account2.json (6 cookies, has refreshToken: True)
+  Found account3.json (6 cookies, has refreshToken: True)
+  Found account4.json (4 cookies, has refreshToken: True)
+  Total cookie sets to try: 4
+
+  Trying cookie set 1/4...
+10:18:09 [INFO]   Cookies: ['accessToken', 'refreshToken', 'totpVerified', 'g_state', 'rm_fe'], has refreshToken: True
+10:18:09 [INFO]   Checking /auth/me...
+10:18:09 [INFO]   /auth/me → 401: {"success":false,"message":"Token expired"}
+10:18:09 [INFO]   Trying /auth/refresh...
+10:18:10 [INFO]   /auth/refresh → 401: {"success":false,"message":"Invalid or expired refresh token"}
+10:18:10 [ERROR] ✗ Auth failed
+  ✗ Cookie set 1 failed
+
+  Trying cookie set 2/4...
+10:18:10 [INFO]   Cookies: ['accessToken', 'guestId', 'refreshToken', 'totpVerified', 'g_state', 'rm_fe'], has refreshToken: True
+10:18:10 [INFO]   Checking /auth/me...
+10:18:11 [INFO]   /auth/me → 401: {"success":false,"message":"Token expired"}
+10:18:11 [INFO]   Trying /auth/refresh...
+10:18:11 [INFO]   /auth/refresh → 401: {"success":false,"message":"Invalid or expired refresh token"}
+10:18:11 [ERROR] ✗ Auth failed
+  ✗ Cookie set 2 failed
+
+  Trying cookie set 3/4...
+10:18:11 [INFO]   Cookies: ['accessToken', 'guestId', 'refreshToken', 'totpVerified', 'g_state', 'rm_fe'], has refreshToken: True
+10:18:11 [INFO]   Checking /auth/me...
+10:18:12 [INFO]   /auth/me → 401: {"success":false,"message":"Token expired"}
+10:18:12 [INFO]   Trying /auth/refresh...
+10:18:12 [INFO]   /auth/refresh → 401: {"success":false,"message":"Invalid or expired refresh token"}
+10:18:12 [ERROR] ✗ Auth failed
+  ✗ Cookie set 3 failed
+
+  Trying cookie set 4/4...
