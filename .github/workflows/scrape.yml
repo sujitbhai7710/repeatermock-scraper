@@ -152,6 +152,10 @@ jobs:
 
       - name: Run scraper
         if: env.SHOULD_RUN == 'true'
+        env:
+          CLOUDFLARE_API_TOKEN: ${{ secrets.CLOUDFLARE_API_TOKEN }}
+          CLOUDFLARE_ACCOUNT_ID: ${{ secrets.CLOUDFLARE_ACCOUNT_ID }}
+          D1_DATABASE_ID: ${{ secrets.D1_DATABASE_ID }}
         run: |
           mkdir -p data/tests data/series frontend/tests frontend/img
           TIME_LIMIT="${{ github.event.inputs.time_limit_minutes }}"
