@@ -155,7 +155,7 @@ jobs:
         run: |
           mkdir -p data/tests data/series frontend/tests frontend/img
           TIME_LIMIT="${{ github.event.inputs.time_limit_minutes }}"
-          [ -z "$TIME_LIMIT" ] && TIME_LIMIT="45"
+          [ -z "$TIME_LIMIT" ] && TIME_LIMIT="40"
           MAX_TESTS="${{ github.event.inputs.max_tests }}"
           [ -z "$MAX_TESTS" ] && MAX_TESTS="0"
           echo "=== Scraper starting (limit: ${TIME_LIMIT}min, max: ${MAX_TESTS}) ==="
