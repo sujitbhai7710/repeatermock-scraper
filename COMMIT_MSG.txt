@@ -1,28 +1,25 @@
-Fix refresh-token rotation capture + restore fresh cookies + fail loudly on dead auth
+Disable guest mode by default + 10-min proactive refresh cadence
 
-Root cause of all failed scrapes:
+Analysis of the z.ai chat history (and the live run log) shows:
 
-1. /auth/refresh sets MULTIPLE Set-Cookie headers (accessToken +
-   refreshToken + totpVerified). The old code read them via
-   resp.headers.get("set-cookie") which merges/drops repeated headers,
-   so the single-use rotated refreshToken was LOST. The consumed old
-   token was then saved back to cookies/account*.json, permanently
-   killing every account (all runs fell back to guest mode, scraped 0
-   tests, yet exited green).
+- Guest mode was added as a stopgap ("questions only, no answers/
+  solutions/analysis, saved as partial, retried with auth later").
+  It can NEVER complete a test: submit returns 404 "No active attempt
+  found" for guests, and the failed-submit chaos triggered recovery
+  loops that clobbered other workers' sessions ("Target page, context
+  or browser has been closed" storms) and marked hundreds of tests
+  FAILED in progress.json.
 
-Fixes:
+- The authed refresh chain is self-sustaining: access tokens last
+  ~15 min; refreshing every 10 min yields a fresh access token plus a
+  rotated 30-day refresh token. With the Set-Cookie capture fixed in
+  the previous commit, no login is ever needed once the chain starts.
 
-- scraper.py: new get_set_cookie_headers() uses headers_array() to read
-  EVERY Set-Cookie header individually, plus a JSON-body fallback scan
-  for rotated tokens; rotated values are also synced into the browser
-  context cookie jar.
-- scraper.py: loud warning when a 200 refresh fails to yield a new
-  refreshToken (chain broken - needs fresh cookies).
-- incremental_scrape.py: exit code 2 when a run scrapes 0 tests with no
-  authenticated session (guest/dead auth).
-- scrape.yml: fail the run red when the scraper reports dead auth;
-  re-seed account5.json automatically whenever the REPEATERMOCK_COOKIES
-  secret changes (hash comparison).
-- cookies/account1-3.json: restored the 3 fresh cookie sets shared in
-  the chat (refresh tokens valid until Oct 1).
-- test_token_capture.py: 5 unit tests for the new capture logic (all pass).
+Changes:
+
+- ALLOW_GUEST now defaults to 0 (opt-in diagnostics only). When every
+  cookie set is dead the run stays in recovery (hot-reloading fresh
+  cookies pasted into cookies/account*.json) and exits red via the
+  auth-dead check instead of pretending to scrape as guest.
+- REFRESH_AFTER_SECONDS: 12 min -> 10 min, safely inside the 15-min
+  access-token window.
