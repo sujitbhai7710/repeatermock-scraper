@@ -1,19 +1,15 @@
-Fix zombie worker contexts after recovery (W1 "browser has been closed" storm)
+Recovery cap (20 attempts) + skip impossible auto-logins in CI + safer startup rotation
 
-Live-run evidence: auth + refresh chain work (workers W0/W2 fully
-scraped tests with solutions + analysis), but worker W1 failed EVERY
-test with "Target page, context or browser has been closed" and
-marked them all FAILED.
+- wait_for_live_account now STOPS after MAX_RECOVERY_ATTEMPTS (default 20)
+  failed cycles: saves scraped progress, exits code 2 (red run) instead of
+  looping uselessly until the time limit.
+- Chrome CDP + Google-profile auto-login paths are skipped on GitHub Actions
+  (no user Chrome/profile exists there - they could never succeed and spammed
+  every 90s recovery cycle).
+- Startup force-refresh threshold raised 3 min -> 5 min: starting a 40-min
+  scrape with 3.1 min of token life guaranteed mid-run session_expired 401s.
 
-Root cause: wait_for_live_account() closes and replaces the shared
-browser during recovery, but never bumped session_generation — so
-workers whose generation still "matched" never rebuilt their contexts
-and kept using the closed browser until the run ended.
-
-Fixes:
-- Every successful recovery path now bumps session_generation so all
-  workers rebuild their contexts on the new browser.
-- worker_loop also defensively rebuilds when its context's browser is
-  disconnected, even if the generation matches.
-
-Failed-marked tests are re-queued automatically on the next run.
+NOTE on token deaths: RepeaterMock kills the ENTIRE refresh-token family when
+a consumed token is replayed (classic reuse detection). The browser
+auto-refreshing with a stale exported token (~15 min after export) is what
+has been killing freshly-deposited chains, not the scraper.

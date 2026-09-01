@@ -291,10 +291,24 @@ async def run_incremental_scrape(
         session and active cookies are replaced."""
         nonlocal p, browser, context, page, active_account_idx, active_cookies, last_refresh_time
         attempt = 0
+        max_attempts = int(os.environ.get("MAX_RECOVERY_ATTEMPTS", "20"))
+        in_ci = os.environ.get("GITHUB_ACTIONS") == "true" or os.environ.get("CI") == "true"
         dead_refresh_tokens: set[str] = set()  # tokens already proven dead this run
         fallback_session: tuple[int, list[dict]] | None = None  # auth-me OK, refresh dead
         while True:
             attempt += 1
+            if attempt > max_attempts:
+                # User requirement: stop after too many failed recoveries and
+                # SAVE what was scraped instead of looping until the time limit.
+                print(f"\n✗ RECOVERY EXHAUSTED: {max_attempts} failed attempts — stopping run.")
+                print("  Progress scraped so far has been saved; this run exits FAILED")
+                print("  (red) so dead cookies are visible. Export fresh cookies from")
+                print("  repeatermock.com, update cookies/account1.json, and re-run.")
+                try:
+                    save_progress(progress)
+                except Exception:
+                    pass
+                sys.exit(2)
             sets = load_cookie_sets_from_disk()
             if not sets:
                 print("  ⚠ No cookie files found — save fresh cookies into cookies/account1.json")
@@ -358,38 +372,16 @@ async def run_incremental_scrape(
                     print(f"  ✗ Recovery with {label} failed: {e}")
 
             # 2. CDP re-login via the user's REAL Chrome (best for Google-only
-            #    accounts — Google never blocks the user's actual browser)
-            try:
-                from src.auto_login import cdp_relogin
-                print("  🤖 Trying auto-login via your real Chrome (CDP port 9222)...")
-                print("     (If Chrome isn't open yet, run:  scripts\\start_scrape_chrome.bat )")
-                fresh = await cdp_relogin()
-                if fresh:
-                    p, browser, context = await create_browser_session(fresh)
-                    page = await context.new_page()
-                    active_account_idx = 3  # cookies/account4.json
-                    active_cookies = fresh
-                    save_account_cookies(3, fresh)
-                    last_refresh_time = time.time()
-                    print("  ✓ Back online via CHROME (CDP) AUTO-LOGIN — continuing scrape")
-                    session_generation[0] += 1  # browser replaced — workers must rebuild
-                    return True
-            except Exception as e:
-                print(f"  ✗ CDP auto-login attempt failed: {e}")
-
-            # 3. Google-profile auto-login (fallback if CDP Chrome isn't set up)
-            try:
-                from src.auto_login import google_profile_exists, google_profile_relogin
-                if google_profile_exists():
-                    print("  🤖 Attempting Google auto-login via saved profile...")
-                    if p:
-                        try:
-                            await browser.close()
-                            await p.stop()
-                        except Exception:
-                            pass
-                        p = browser = None
-                    fresh = await google_profile_relogin()
+            #    accounts — Google never blocks the user's actual browser).
+            #    IMPOSSIBLE on GitHub Actions (no user Chrome there) — skip in CI
+            #    so recovery cycles don't waste time on attempts that can never
+            #    succeed.
+            if not in_ci:
+                try:
+                    from src.auto_login import cdp_relogin
+                    print("  🤖 Trying auto-login via your real Chrome (CDP port 9222)...")
+                    print("     (If Chrome isn't open yet, run:  scripts\\start_scrape_chrome.bat )")
+                    fresh = await cdp_relogin()
                     if fresh:
                         p, browser, context = await create_browser_session(fresh)
                         page = await context.new_page()
@@ -397,14 +389,44 @@ async def run_incremental_scrape(
                         active_cookies = fresh
                         save_account_cookies(3, fresh)
                         last_refresh_time = time.time()
-                        print("  ✓ Back online via GOOGLE AUTO-LOGIN — continuing scrape")
+                        print("  ✓ Back online via CHROME (CDP) AUTO-LOGIN — continuing scrape")
                         session_generation[0] += 1  # browser replaced — workers must rebuild
                         return True
-                else:
-                    print("  💡 Google-only account? Run  python scripts/setup_google_login.py")
-                    print("     once — then the scraper re-logins via Google automatically, forever.")
-            except Exception as e:
-                print(f"  ✗ Google auto-login attempt failed: {e}")
+                except Exception as e:
+                    print(f"  ✗ CDP auto-login attempt failed: {e}")
+            else:
+                print("  ⏭ CI detected — skipping Chrome/CDP auto-login (impossible on GitHub Actions)")
+
+            # 3. Google-profile auto-login (fallback if CDP Chrome isn't set up).
+            #    Same CI limitation — the saved browser profile doesn't exist there.
+            if not in_ci:
+                try:
+                    from src.auto_login import google_profile_exists, google_profile_relogin
+                    if google_profile_exists():
+                        print("  🤖 Attempting Google auto-login via saved profile...")
+                        if p:
+                            try:
+                                await browser.close()
+                                await p.stop()
+                            except Exception:
+                                pass
+                            p = browser = None
+                        fresh = await google_profile_relogin()
+                        if fresh:
+                            p, browser, context = await create_browser_session(fresh)
+                            page = await context.new_page()
+                            active_account_idx = 3  # cookies/account4.json
+                            active_cookies = fresh
+                            save_account_cookies(3, fresh)
+                            last_refresh_time = time.time()
+                            print("  ✓ Back online via GOOGLE AUTO-LOGIN — continuing scrape")
+                            session_generation[0] += 1  # browser replaced — workers must rebuild
+                            return True
+                    else:
+                        print("  💡 Google-only account? Run  python scripts/setup_google_login.py")
+                        print("     once — then the scraper re-logins via Google automatically, forever.")
+                except Exception as e:
+                    print(f"  ✗ Google auto-login attempt failed: {e}")
 
             # 3. Password auto-login (only for accounts with a site password)
             try:
@@ -493,7 +515,10 @@ async def run_incremental_scrape(
                 # fresh — an extra /auth/refresh would waste a second single-use
                 # rotation on every startup for no benefit.
                 secs_left = access_token_seconds_left(active_cookies)
-                if secs_left is not None and secs_left >= 180:
+                # Require >=5 min of token life to start a scrape run — with
+                # only ~3 min, workers spend their first minutes in rate-limit
+                # waits, the token expires mid-flight, and every submit 401s.
+                if secs_left is not None and secs_left >= 300:
                     print(f"  ✓ Access token still fresh ({secs_left/60:.1f} min left) — no extra rotation needed")
                 else:
                     print(f"  → Access token near expiry ({secs_left if secs_left is not None else 'unknown'}s) — force-refreshing...")
