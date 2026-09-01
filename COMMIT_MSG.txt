@@ -1,25 +1,18 @@
-Disable guest mode by default + 10-min proactive refresh cadence
+Minimize single-use refresh-token rotations (long-term chain stability)
 
-Analysis of the z.ai chat history (and the live run log) shows:
+The refresh token is single-use and rotates on every /auth/refresh.
+Every avoidable rotation was a chance to lose the chain forever.
 
-- Guest mode was added as a stopgap ("questions only, no answers/
-  solutions/analysis, saved as partial, retried with auth later").
-  It can NEVER complete a test: submit returns 404 "No active attempt
-  found" for guests, and the failed-submit chaos triggered recovery
-  loops that clobbered other workers' sessions ("Target page, context
-  or browser has been closed" storms) and marked hundreds of tests
-  FAILED in progress.json.
+- New access_token_seconds_left() decodes the JWT exp of the access
+  token, so refresh decisions are driven by real expiry, not habit.
+- Startup: no longer force-refreshes unconditionally after
+  refresh_cookies_if_needed just rotated — that was 2 rotations per
+  run where 1 sufficed. Now only force-refreshes when the access
+  token has <3 min left.
+- Recovery (wait_for_live_account): skips the verification
+  force-refresh when the auth refresh already rotated the token —
+  a successful rotation IS the proof the chain works.
+- Proactive refresh stays at 10 min (inside the 15-min window).
 
-- The authed refresh chain is self-sustaining: access tokens last
-  ~15 min; refreshing every 10 min yields a fresh access token plus a
-  rotated 30-day refresh token. With the Set-Cookie capture fixed in
-  the previous commit, no login is ever needed once the chain starts.
-
-Changes:
-
-- ALLOW_GUEST now defaults to 0 (opt-in diagnostics only). When every
-  cookie set is dead the run stays in recovery (hot-reloading fresh
-  cookies pasted into cookies/account*.json) and exits red via the
-  auth-dead check instead of pretending to scrape as guest.
-- REFRESH_AFTER_SECONDS: 12 min -> 10 min, safely inside the 15-min
-  access-token window.
+Net effect: ~1 rotation per scheduled run instead of 3+, chain
+sustains indefinitely once started with one valid cookie set.

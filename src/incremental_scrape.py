@@ -43,6 +43,7 @@ from src.scraper import (
     create_browser_session,
     refresh_cookies_if_needed,
     force_refresh_cookies,
+    access_token_seconds_left,
     fetch_series_details,
     fetch_all_tests_for_series,
     parse_series_url,
@@ -320,7 +321,17 @@ async def run_incremental_scrape(
                         if rt:
                             dead_refresh_tokens.add(rt)
                         continue
-                    refreshed = await force_refresh_cookies(context, page, original_cookies=result)
+                    # If refresh_cookies_if_needed already rotated the refresh
+                    # token (access token changed), the chain is PROVEN working —
+                    # skip the extra force-refresh (each one burns a single-use
+                    # rotation). Only verify when no rotation happened.
+                    at_before = next((c.get("value") for c in cs if c.get("name") == "accessToken"), None)
+                    at_after = next((c.get("value") for c in result if c.get("name") == "accessToken"), None)
+                    if at_before != at_after:
+                        refreshed = result
+                        print(f"  ✓ {label}: refresh token chain verified (rotated during auth)")
+                    else:
+                        refreshed = await force_refresh_cookies(context, page, original_cookies=result)
                     if refreshed is not None:
                         # FULL session — refresh token works. Perfect, use it.
                         active_account_idx = acct_idx
@@ -467,21 +478,27 @@ async def run_incremental_scrape(
                 active_account_idx = acct_idx
                 active_cookies = result
 
-                # Step 2: ALWAYS force-refresh to get a FRESH access token (full 15-min window).
-                # The provided access token may be close to expiry (user exported cookies minutes ago).
-                # This also rotates the refresh token — capture + save it immediately.
-                print(f"  → Force-refreshing to get fresh access token (full 15-min window)...")
-                refreshed = await force_refresh_cookies(context, page, original_cookies=active_cookies)
-                if refreshed is not None:
-                    active_cookies = refreshed
-                    save_account_cookies(acct_idx, refreshed)
-                    print(f"  ✓ Fresh access token obtained — ready to scrape for ~15 minutes")
+                # Step 2: force-refresh ONLY if the access token is about to expire.
+                # If refresh_cookies_if_needed just rotated the token (access token
+                # changed), the chain is already proven working and the token is
+                # fresh — an extra /auth/refresh would waste a second single-use
+                # rotation on every startup for no benefit.
+                secs_left = access_token_seconds_left(active_cookies)
+                if secs_left is not None and secs_left >= 180:
+                    print(f"  ✓ Access token still fresh ({secs_left/60:.1f} min left) — no extra rotation needed")
                 else:
-                    # Refresh failed — but access token might still be valid for a few minutes.
-                    # Continue with existing tokens; proactive refresh will retry later.
-                    print(f"  ⚠ Force-refresh failed — continuing with existing access token")
-                    print(f"    (may expire soon — the time-based proactive refresh will retry in ~12 min)")
-                    save_account_cookies(acct_idx, result)
+                    print(f"  → Access token near expiry ({secs_left if secs_left is not None else 'unknown'}s) — force-refreshing...")
+                    refreshed = await force_refresh_cookies(context, page, original_cookies=active_cookies)
+                    if refreshed is not None:
+                        active_cookies = refreshed
+                        save_account_cookies(acct_idx, refreshed)
+                        print(f"  ✓ Fresh access token obtained — ready to scrape for ~15 minutes")
+                    else:
+                        # Refresh failed — but access token might still be valid for a few minutes.
+                        # Continue with existing tokens; proactive refresh will retry later.
+                        print(f"  ⚠ Force-refresh failed — continuing with existing access token")
+                        print(f"    (may expire soon — the time-based proactive refresh will retry in ~10 min)")
+                        save_account_cookies(acct_idx, result)
 
                 authed = True
                 break

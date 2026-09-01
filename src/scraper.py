@@ -334,6 +334,26 @@ async def apply_tokens_to_context(context, cookies_for_header: list[dict], new_t
         pass
 
 
+def access_token_seconds_left(cookies: list[dict]) -> float | None:
+    """
+    Seconds until the accessToken expires, decoded from its JWT payload.
+    Returns None if the token is missing/unparseable (treat as expired).
+    Used to AVOID unnecessary /auth/refresh calls — the refresh token is
+    single-use and rotates on every refresh, so every avoidable refresh
+    removes a chance of losing the token chain.
+    """
+    at = next((c.get("value") for c in cookies if c.get("name") == "accessToken"), None)
+    if not at:
+        return None
+    try:
+        payload_b64 = at.split(".")[1]
+        payload_b64 += "=" * (-len(payload_b64) % 4)  # pad base64url
+        payload = json.loads(__import__("base64").urlsafe_b64decode(payload_b64))
+        return float(payload["exp"]) - time.time()
+    except Exception:
+        return None
+
+
 async def refresh_cookies_if_needed(context, page, original_cookies: list[dict] = None, max_retries: int = 3) -> list[dict[str, Any]] | None:
     """
     Check if auth is working; if not, refresh. Save rotated cookies.
