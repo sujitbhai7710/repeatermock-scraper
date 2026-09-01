@@ -233,15 +233,116 @@ async def fetch_via_page(page, url: str, method: str = "GET", body: str | None =
         return 0, f"ERROR: {e}"
 
 
+def get_set_cookie_headers(resp) -> list[str]:
+    """
+    Return ALL raw Set-Cookie header values from a Playwright APIResponse.
+
+    CRITICAL: resp.headers (a dict) MERGES multiple Set-Cookie headers into one
+    comma-joined string (or keeps only the last one, depending on transport).
+    /auth/refresh sets MULTIPLE cookies (accessToken + refreshToken +
+    totpVerified), so the dict view loses or corrupts the rotated refreshToken.
+    headers_array() returns each header individually.
+    """
+    values: list[str] = []
+    try:
+        arr = resp.headers_array()  # sync method in Playwright Python
+        if callable(arr):
+            arr = arr()
+        for h in arr or []:
+            if str(h.get("name", "")).lower() == "set-cookie":
+                values.append(h.get("value", ""))
+    except Exception:
+        pass
+    if not values:
+        # Fallback: merged dict header (better than nothing)
+        try:
+            merged = resp.headers.get("set-cookie", "")
+        except Exception:
+            merged = ""
+        if merged:
+            values = [merged]
+    return values
+
+
+def extract_rotated_tokens(resp, body: str) -> tuple[dict[str, str], list[str]]:
+    """
+    Extract rotated auth tokens from a /auth/refresh response.
+
+    Sources, in order:
+      1. Every individual Set-Cookie header (via get_set_cookie_headers)
+      2. The JSON response body (some API builds return the new tokens in the
+         body instead of — or in addition to — Set-Cookie headers)
+
+    Returns (tokens: {cookie_name: new_value}, sources: list[str]).
+    """
+    tokens: dict[str, str] = {}
+    sources: list[str] = []
+    wanted = ("accessToken", "refreshToken", "totpVerified")
+
+    for raw in get_set_cookie_headers(resp):
+        for name in wanted:
+            m = re.search(rf'(?:^|[;\s]){name}\s*=\s*([^;]+)', raw)
+            if m:
+                val = m.group(1).strip()
+                if val and val.lower() not in ("deleted", "", "null"):
+                    if tokens.get(name) != val:
+                        tokens[name] = val
+                        sources.append(f"set-cookie:{name}")
+
+    # 2. JSON body fallback — tokens can hide anywhere in the payload
+    try:
+        data = json.loads(body)
+    except Exception:
+        data = None
+
+    def _walk(obj):
+        if isinstance(obj, dict):
+            for k, v in obj.items():
+                if k in wanted and isinstance(v, str) and v.strip():
+                    if tokens.get(k) != v.strip():
+                        tokens[k] = v.strip()
+                        sources.append(f"body:{k}")
+                elif isinstance(v, (dict, list)):
+                    _walk(v)
+        elif isinstance(obj, list):
+            for item in obj:
+                _walk(item)
+
+    if data is not None:
+        _walk(data)
+
+    return tokens, sources
+
+
+async def apply_tokens_to_context(context, cookies_for_header: list[dict], new_tokens: dict[str, str]):
+    """Update the browser context's cookie jar with rotated token values so
+    subsequent page/context requests use the fresh tokens too."""
+    try:
+        updated = []
+        for c in cookies_for_header:
+            if c.get("name") in new_tokens and "repeatermock" in c.get("domain", ""):
+                updated.append({
+                    "name": c["name"],
+                    "value": new_tokens[c["name"]],
+                    "domain": c.get("domain", ".repeatermock.com"),
+                    "path": c.get("path", "/"),
+                    "sameSite": "Lax",
+                })
+        if updated:
+            await context.add_cookies(updated)
+    except Exception:
+        pass
+
+
 async def refresh_cookies_if_needed(context, page, original_cookies: list[dict] = None, max_retries: int = 3) -> list[dict[str, Any]] | None:
     """
     Check if auth is working; if not, refresh. Save rotated cookies.
-    
+
     CRITICAL: Do NOT call page.goto() before making API calls.
     page.goto() loads repeatermock.com which sets its own cookies via
     Set-Cookie headers, wiping the httpOnly cookies (accessToken,
     refreshToken) from the context.
-    
+
     Instead, use the original cookies directly as a Cookie header
     in the API request.
     """
@@ -288,22 +389,24 @@ async def refresh_cookies_if_needed(context, page, original_cookies: list[dict] 
         logger.info(f"  /auth/refresh → {resp.status}: {body[:80]}")
         
         if resp.status == 200:
-            # Capture new tokens from Set-Cookie header
-            set_cookie = resp.headers.get("set-cookie", "")
-            if set_cookie:
-                import re as _re
-                # Extract new accessToken and refreshToken from Set-Cookie
-                for cookie_name in ["accessToken", "refreshToken", "totpVerified"]:
-                    match = _re.search(rf'{cookie_name}=([^;]+)', set_cookie)
-                    if match:
-                        new_value = match.group(1)
-                        if new_value:  # Non-empty value
-                            for c in cookies_for_header:
-                                if c["name"] == cookie_name:
-                                    c["value"] = new_value
-                                    logger.info(f"  ✓ Captured new {cookie_name} from Set-Cookie")
-                                    break
-            
+            # Capture new tokens from ALL Set-Cookie headers + JSON body.
+            # (resp.headers dict merges/drops repeated Set-Cookie headers —
+            #  that is how the rotated refreshToken used to get lost, killing
+            #  the account forever, because refresh tokens are single-use.)
+            new_tokens, sources = extract_rotated_tokens(resp, body)
+            if new_tokens:
+                logger.info(f"  ✓ Captured rotated tokens: {sorted(new_tokens)} (from: {sources})")
+                for c in cookies_for_header:
+                    if c.get("name") in new_tokens:
+                        c["value"] = new_tokens[c["name"]]
+                await apply_tokens_to_context(context, cookies_for_header, new_tokens)
+            else:
+                logger.warning(
+                    "  ⚠ /auth/refresh returned 200 but NO rotated tokens could be captured "
+                    "from Set-Cookie or body — the old refresh token is now CONSUMED "
+                    "(single-use rotation). The token chain may be broken!"
+                )
+
             # Re-check auth with updated cookies
             updated_cookie_str = "; ".join(f'{c["name"]}={c["value"]}' for c in cookies_for_header if "repeatermock" in c.get("domain", ""))
             resp2 = await context.request.get(f"{API_BASE}/auth/me", headers={
@@ -361,22 +464,30 @@ async def force_refresh_cookies(context, page, original_cookies: list[dict] = No
         logger.info(f"  /auth/refresh → {resp.status}: {body[:80]}")
 
         if resp.status == 200:
-            # Capture new tokens from Set-Cookie header
-            set_cookie = resp.headers.get("set-cookie", "")
+            # Capture new tokens from ALL Set-Cookie headers + JSON body.
+            # (Using resp.headers dict here is what historically lost the
+            #  rotated refreshToken and permanently killed cookie accounts —
+            #  refresh tokens are single-use, so a lost rotation = dead chain.)
+            new_tokens, sources = extract_rotated_tokens(resp, body)
             captured = []
-            if set_cookie:
-                import re as _re
-                for cookie_name in ["accessToken", "refreshToken", "totpVerified"]:
-                    match = _re.search(rf'{cookie_name}=([^;]+)', set_cookie)
-                    if match:
-                        new_value = match.group(1)
-                        if new_value:
-                            for c in cookies_for_header:
-                                if c["name"] == cookie_name:
-                                    c["value"] = new_value
-                                    captured.append(cookie_name)
-                                    break
-            logger.info(f"  ✓ Captured new tokens: {captured}")
+            if new_tokens:
+                for c in cookies_for_header:
+                    if c.get("name") in new_tokens:
+                        c["value"] = new_tokens[c["name"]]
+                        captured.append(c["name"])
+                await apply_tokens_to_context(context, cookies_for_header, new_tokens)
+                logger.info(f"  ✓ Captured new tokens: {sorted(captured)} (from: {sources})")
+
+            if "refreshToken" in captured:
+                logger.info("  ✓ Rotated refreshToken captured — token chain intact")
+            else:
+                logger.warning(
+                    "  ⚠ /auth/refresh → 200 but NO new refreshToken captured! "
+                    "The old refresh token has been CONSUMED by this call "
+                    "(single-use rotation). DO NOT overwrite the stored account "
+                    "cookies with the old token — the token chain is broken and "
+                    "needs fresh cookies from the browser."
+                )
             return cookies_for_header
         else:
             logger.warning(f"  Force refresh failed: HTTP {resp.status}")

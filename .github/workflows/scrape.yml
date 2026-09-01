@@ -102,18 +102,28 @@ jobs:
               print("✓ Reset done")
           EOF
 
-      - name: Seed CI account cookies (first run only)
+      - name: Seed CI account cookies (first run or secret changed)
         env:
           REPEATERMOCK_COOKIES: ${{ secrets.REPEATERMOCK_COOKIES }}
         run: |
           mkdir -p cookies
           if [ -z "$REPEATERMOCK_COOKIES" ]; then
             echo "⚠ Secret REPEATERMOCK_COOKIES not set — add fresh cookies from a CI-dedicated account"
-          elif [ ! -f cookies/account5.json ]; then
-            echo "$REPEATERMOCK_COOKIES" > cookies/account5.json
-            echo "✓ Seeded cookies/account5.json from secret (first run)"
           else
-            echo "✓ Using rotated cookies/account5.json from repo (persisted after last run)"
+            SEED_HASH=$(printf '%s' "$REPEATERMOCK_COOKIES" | sha256sum | cut -d' ' -f1)
+            if [ ! -f cookies/account5.json ]; then
+              echo "$REPEATERMOCK_COOKIES" > cookies/account5.json
+              echo "$SEED_HASH" > cookies/.account5_seed_hash
+              echo "✓ Seeded cookies/account5.json from secret (first run)"
+            elif [ ! -f cookies/.account5_seed_hash ] || [ "$(cat cookies/.account5_seed_hash)" != "$SEED_HASH" ]; then
+              # Secret was updated → the user provided fresh cookies; re-seed
+              # (the rotated account5.json in the repo is dead or stale)
+              echo "$REPEATERMOCK_COOKIES" > cookies/account5.json
+              echo "$SEED_HASH" > cookies/.account5_seed_hash
+              echo "✓ RE-SEEDED cookies/account5.json — REPEATERMOCK_COOKIES secret changed"
+            else
+              echo "✓ Using rotated cookies/account5.json from repo (persisted after last run)"
+            fi
           fi
 
       - name: Check 15-min gap + all-done check
@@ -164,6 +174,25 @@ jobs:
           [ -z "$MAX_TESTS" ] && MAX_TESTS="0"
           echo "=== Scraper starting (limit: ${TIME_LIMIT}min, max: ${MAX_TESTS}) ==="
           python -m src.incremental_scrape --time-limit-minutes "$TIME_LIMIT" --max-tests "$MAX_TESTS" 2>&1 || true
+          # `|| true` keeps the step green so post-steps still run — but a run
+          # that scrapes 0 tests is NOT success (that is how dead-cookie runs
+          # went unnoticed). Detect it via the scraper's run_history and mark
+          # the job; the "Fail run if authentication is dead" step below then
+          # turns this run red so stale cookies are impossible to miss.
+          if [ -f data/progress.json ]; then
+            python3 - << 'EOF'
+          import json, os
+          with open('data/progress.json') as f:
+              p = json.load(f)
+          hist = p.get('run_history', [])
+          last = hist[-1] if hist else {}
+          # If the last run scraped nothing at all, treat it as auth-dead
+          if last.get('tests_scraped', 0) == 0 and last.get('tests_partial', 0) == 0:
+              with open(os.environ.get('GITHUB_ENV', '/dev/null'), 'a') as f:
+                  f.write('SCRAPE_AUTH_FAILED=true\n')
+              print('::warning::Scraper run finished with 0 tests scraped and 0 partial — auth chain is likely dead (all refresh tokens consumed)')
+          EOF
+          fi
           echo "=== Scraper finished ==="
 
       - name: Copy scraped data to frontend + generate index.json
@@ -274,6 +303,16 @@ jobs:
               print(f'- \`{bar}\` {sp.get(\"name\",\"\")[:50]}: {sc}/{total} ({pct:.0f}%)')
           " >> $GITHUB_STEP_SUMMARY
           fi
+
+      - name: Fail run if authentication is dead
+        if: env.SCRAPE_AUTH_FAILED == 'true'
+        run: |
+          echo "❌ SCRAPER AUTH DEAD: this run scraped 0 tests because every"
+          echo "   refresh token is consumed (they are single-use and rotate)."
+          echo "   FIX: export fresh cookies from repeatermock.com (Cookie-Editor"
+          echo "   extension) and update cookies/account*.json (or the"
+          echo "   REPEATERMOCK_COOKIES secret for the CI-dedicated account)."
+          exit 1
 
       - name: Upload artifacts
         if: always()

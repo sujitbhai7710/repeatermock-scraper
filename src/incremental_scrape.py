@@ -959,6 +959,19 @@ async def run_incremental_scrape(
         if p:
             await p.stop()
 
+    # Signal auth failure to the workflow: the run ended with a guest or
+    # never-authenticated session AND scraped absolutely nothing — this means
+    # every cookie set is dead. Exit code 2 → the workflow turns this into a
+    # red ❌ run so dead cookies are visible immediately (instead of a green
+    # run that scraped 0 tests silently, which is how the chain death went
+    # unnoticed before).
+    if tests_scraped_this_run == 0 and tests_partial_this_run == 0:
+        if guest_mode[0] or not authed:
+            print("\n✗ RUN FAILED: 0 tests scraped and no authenticated account session "
+                  "(all cookie sets dead). Export fresh cookies from repeatermock.com "
+                  "and update cookies/account*.json.")
+            sys.exit(2)
+
     print(f"\n✓ Run complete. Progress saved.")
 
 

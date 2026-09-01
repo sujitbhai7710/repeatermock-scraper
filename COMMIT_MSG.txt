@@ -1,0 +1,28 @@
+Fix refresh-token rotation capture + restore fresh cookies + fail loudly on dead auth
+
+Root cause of all failed scrapes:
+
+1. /auth/refresh sets MULTIPLE Set-Cookie headers (accessToken +
+   refreshToken + totpVerified). The old code read them via
+   resp.headers.get("set-cookie") which merges/drops repeated headers,
+   so the single-use rotated refreshToken was LOST. The consumed old
+   token was then saved back to cookies/account*.json, permanently
+   killing every account (all runs fell back to guest mode, scraped 0
+   tests, yet exited green).
+
+Fixes:
+
+- scraper.py: new get_set_cookie_headers() uses headers_array() to read
+  EVERY Set-Cookie header individually, plus a JSON-body fallback scan
+  for rotated tokens; rotated values are also synced into the browser
+  context cookie jar.
+- scraper.py: loud warning when a 200 refresh fails to yield a new
+  refreshToken (chain broken - needs fresh cookies).
+- incremental_scrape.py: exit code 2 when a run scrapes 0 tests with no
+  authenticated session (guest/dead auth).
+- scrape.yml: fail the run red when the scraper reports dead auth;
+  re-seed account5.json automatically whenever the REPEATERMOCK_COOKIES
+  secret changes (hash comparison).
+- cookies/account1-3.json: restored the 3 fresh cookie sets shared in
+  the chat (refresh tokens valid until Oct 1).
+- test_token_capture.py: 5 unit tests for the new capture logic (all pass).
