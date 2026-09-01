@@ -170,6 +170,14 @@ jobs:
           CLOUDFLARE_API_TOKEN: ${{ secrets.CLOUDFLARE_API_TOKEN }}
           CLOUDFLARE_ACCOUNT_ID: ${{ secrets.CLOUDFLARE_ACCOUNT_ID }}
           D1_DATABASE_ID: ${{ secrets.D1_DATABASE_ID }}
+          # Self-minting sessions: when these are set, the scraper LOGS ITSELF
+          # IN (POST /auth/login + /auth/totp/verify) and never depends on
+          # manually-exported cookies. Set them in repo secrets — then no more
+          # cookie exports, ever. The CI-dedicated account must not be used in
+          # any browser (a browser auto-refresh steals the token chain).
+          REPEATERMOCK_EMAIL: ${{ secrets.REPEATERMOCK_EMAIL }}
+          REPEATERMOCK_PASSWORD: ${{ secrets.REPEATERMOCK_PASSWORD }}
+          REPEATERMOCK_TOTP_SECRET: ${{ secrets.REPEATERMOCK_TOTP_SECRET }}
         run: |
           mkdir -p data/tests data/series frontend/tests frontend/img
           TIME_LIMIT="${{ github.event.inputs.time_limit_minutes }}"
