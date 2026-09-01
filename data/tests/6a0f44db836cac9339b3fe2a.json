@@ -1,0 +1,7472 @@
+{
+  "test_id": "6a0f44db836cac9339b3fe2a",
+  "title": "PYST 9: SSC CGL 2025 - Quantitative Aptitude (Held On: 14th_September_2025_Shift_3)",
+  "duration_minutes": 15,
+  "total_marks": 50,
+  "question_count": 25,
+  "languages": [
+    "English",
+    "Hindi"
+  ],
+  "is_free": true,
+  "section": "PYST (Tier I) (New Pattern)",
+  "subsection": "Quantitative Aptitude",
+  "platform": "tb",
+  "slug": "ssc-cgl",
+  "series_url": "https://repeatermock.com/tb/test-series/ssc-cgl",
+  "scraped_at": "2026-09-01 04:04:22 UTC",
+  "questions": [
+    {
+      "id": "6909e3b8335dea9be42ab90c",
+      "type": "mcq",
+      "isNumerical": false,
+      "posMarks": 2,
+      "negMarks": 0.5,
+      "skipMarks": 0,
+      "section": 1,
+      "subsection": 0,
+      "questionNo": 1,
+      "languages": {
+        "en": {
+          "question": "If a = √7 - √3, and b = √5 - √2, then which of the following is true?",
+          "options": [
+            {
+              "prompt": "1",
+              "value": "a = b"
+            },
+            {
+              "prompt": "2",
+              "value": "a < b"
+            },
+            {
+              "prompt": "3",
+              "value": "a > b"
+            },
+            {
+              "prompt": "4",
+              "value": "Cannot be determined"
+            }
+          ]
+        },
+        "hi": {
+          "question": "यदि a = √7 - √3, और b = √5 - √2 है, तो निम्नलिखित में से कौन-सा सत्य है?",
+          "options": [
+            {
+              "prompt": "1",
+              "value": "a = b"
+            },
+            {
+              "prompt": "2",
+              "value": "a < b"
+            },
+            {
+              "prompt": "3",
+              "value": "a > b"
+            },
+            {
+              "prompt": "4",
+              "value": "निर्धारित नहीं किया जा सकता है "
+            }
+          ]
+        }
+      }
+    },
+    {
+      "id": "6909e3b97bcbac1695066a4d",
+      "type": "mcq",
+      "isNumerical": false,
+      "posMarks": 2,
+      "negMarks": 0.5,
+      "skipMarks": 0,
+      "section": 1,
+      "subsection": 0,
+      "questionNo": 2,
+      "languages": {
+        "en": {
+          "question": "Evaluate the expression: <span class=\"math-tex\">\\((\\frac{1}{4} \\div \\frac{1}{2}) \\div (\\frac{1}{15} + 1 - \\frac{9}{10}) \\)</span>",
+          "options": [
+            {
+              "prompt": "1",
+              "value": "5"
+            },
+            {
+              "prompt": "2",
+              "value": "6"
+            },
+            {
+              "prompt": "3",
+              "value": "3"
+            },
+            {
+              "prompt": "4",
+              "value": "2"
+            }
+          ]
+        },
+        "hi": {
+          "question": "व्यंजक का मान ज्ञात कीजिए: <span class=\"math-tex\">\\((\\frac{1}{4} \\div \\frac{1}{2}) \\div (\\frac{1}{15} + 1 - \\frac{9}{10})\\)</span>",
+          "options": [
+            {
+              "prompt": "1",
+              "value": "5"
+            },
+            {
+              "prompt": "2",
+              "value": "6"
+            },
+            {
+              "prompt": "3",
+              "value": "3"
+            },
+            {
+              "prompt": "4",
+              "value": "2"
+            }
+          ]
+        },
+        "ta": {
+          "question": "கோவையை மதிப்பிடுக: <span class=\"math-tex\">\\((\\frac{1}{4} \\div \\frac{1}{2}) \\div (\\frac{1}{15} + 1 - \\frac{9}{10}) \\)</span>",
+          "options": [
+            {
+              "prompt": "1",
+              "value": "5"
+            },
+            {
+              "prompt": "2",
+              "value": "6"
+            },
+            {
+              "prompt": "3",
+              "value": "3"
+            },
+            {
+              "prompt": "4",
+              "value": "2"
+            }
+          ]
+        }
+      }
+    },
+    {
+      "id": "6909e3b913685a39edc39197",
+      "type": "mcq",
+      "isNumerical": false,
+      "posMarks": 2,
+      "negMarks": 0.5,
+      "skipMarks": 0,
+      "section": 1,
+      "subsection": 0,
+      "questionNo": 3,
+      "languages": {
+        "en": {
+          "question": "The number of red, blue, and green marbles in a bag is in the ratio 3 : 4 : 6. If 20 red marbles, 15 blue marbles, and an unknown number of green marbles are added to the bag, the ratio of red, blue, and green marbles becomes 4 : 5 : 7. Determine the number of green marbles added.",
+          "options": [
+            {
+              "prompt": "1",
+              "value": "3"
+            },
+            {
+              "prompt": "2",
+              "value": "5"
+            },
+            {
+              "prompt": "3",
+              "value": "7"
+            },
+            {
+              "prompt": "4",
+              "value": "9"
+            }
+          ]
+        },
+        "hi": {
+          "question": "एक थैले में लाल, नीले और हरे कंचों की संख्या का अनुपात 3 : 4 : 6 है। यदि थैले में 20 लाल कंचे, 15 नीले कंचे और अज्ञात संख्या में हरे कंचे डाले जाएँ तो लाल, नीले और हरे कंचों का अनुपात 4 : 5 : 7 हो जाता है। डाले गए हरे कंचों की संख्या ज्ञात कीजिए।",
+          "options": [
+            {
+              "prompt": "1",
+              "value": "3"
+            },
+            {
+              "prompt": "2",
+              "value": "5"
+            },
+            {
+              "prompt": "3",
+              "value": "7"
+            },
+            {
+              "prompt": "4",
+              "value": "9"
+            }
+          ]
+        }
+      }
+    },
+    {
+      "id": "6909e3b9367763f7675479b1",
+      "type": "mcq",
+      "isNumerical": false,
+      "posMarks": 2,
+      "negMarks": 0.5,
+      "skipMarks": 0,
+      "section": 1,
+      "subsection": 0,
+      "questionNo": 4,
+      "languages": {
+        "en": {
+          "question": "A invests ₹25,000 for 12 months, B invests ₹50,000 for 6 months. What is A's share of ₹30,000 profit?",
+          "options": [
+            {
+              "prompt": "1",
+              "value": "₹10,000"
+            },
+            {
+              "prompt": "2",
+              "value": "₹12,000"
+            },
+            {
+              "prompt": "3",
+              "value": "₹15,000"
+            },
+            {
+              "prompt": "4",
+              "value": "₹18,000"
+            }
+          ]
+        },
+        "hi": {
+          "question": "A ने 12 माह के लिए ₹25,000 का निवेश किया है, B ने 6 माह के लिए ₹50,000 का निवेश किया है। ₹30,000 के लाभ में A का भाग क्या है?",
+          "options": [
+            {
+              "prompt": "1",
+              "value": "₹10,000"
+            },
+            {
+              "prompt": "2",
+              "value": "₹12,000"
+            },
+            {
+              "prompt": "3",
+              "value": "₹15,000"
+            },
+            {
+              "prompt": "4",
+              "value": "₹18,000"
+            }
+          ]
+        }
+      }
+    },
+    {
+      "id": "6909e3baa403e0dfbd77d693",
+      "type": "mcq",
+      "isNumerical": false,
+      "posMarks": 2,
+      "negMarks": 0.5,
+      "skipMarks": 0,
+      "section": 1,
+      "subsection": 0,
+      "questionNo": 5,
+      "languages": {
+        "en": {
+          "question": "A and B start a business with capitals in the ratio 5:3. After 6 months, A withdraws ₹10,000 and B doubles his investment. If the initial investment of A was ₹50,000, and the total profit after 1 year is ₹84,000, find the profit share of A.",
+          "options": [
+            {
+              "prompt": "1",
+              "value": "₹42,000"
+            },
+            {
+              "prompt": "2",
+              "value": "₹50,000"
+            },
+            {
+              "prompt": "3",
+              "value": "₹60,000"
+            },
+            {
+              "prompt": "4",
+              "value": "₹45,000"
+            }
+          ]
+        },
+        "hi": {
+          "question": "A और B, 5:3 के अनुपात में पूँजी के साथ एक व्यवसाय प्रारंभ करते हैं। 6 माह बाद, A, ₹10,000 निकाल लेता है और B अपना निवेश दोगुना कर देता है। यदि A का प्रारंभिक निवेश ₹50,000 था, और 1 वर्ष के बाद कुल लाभ ₹84,000 है, तो A का लाभ भाग ज्ञात कीजिए।",
+          "options": [
+            {
+              "prompt": "1",
+              "value": "₹42,000"
+            },
+            {
+              "prompt": "2",
+              "value": "₹50,000"
+            },
+            {
+              "prompt": "3",
+              "value": "₹60,000"
+            },
+            {
+              "prompt": "4",
+              "value": "₹45,000"
+            }
+          ]
+        }
+      }
+    },
+    {
+      "id": "6909e3ba335dea9be42ab915",
+      "type": "mcq",
+      "isNumerical": false,
+      "posMarks": 2,
+      "negMarks": 0.5,
+      "skipMarks": 0,
+      "section": 1,
+      "subsection": 0,
+      "questionNo": 6,
+      "languages": {
+        "en": {
+          "question": "What is the average of all three-digit numbers divisible by 23?",
+          "options": [
+            {
+              "prompt": "1",
+              "value": "752"
+            },
+            {
+              "prompt": "2",
+              "value": "552"
+            },
+            {
+              "prompt": "3",
+              "value": "652"
+            },
+            {
+              "prompt": "4",
+              "value": "452"
+            }
+          ]
+        },
+        "hi": {
+          "question": "23 से विभाज्य सभी तीन अंकीय संख्याओं का औसत क्या है?",
+          "options": [
+            {
+              "prompt": "1",
+              "value": "752"
+            },
+            {
+              "prompt": "2",
+              "value": "552"
+            },
+            {
+              "prompt": "3",
+              "value": "652"
+            },
+            {
+              "prompt": "4",
+              "value": "452"
+            }
+          ]
+        }
+      }
+    },
+    {
+      "id": "6909e3bad6628571318a6949",
+      "type": "mcq",
+      "isNumerical": false,
+      "posMarks": 2,
+      "negMarks": 0.5,
+      "skipMarks": 0,
+      "section": 1,
+      "subsection": 0,
+      "questionNo": 7,
+      "languages": {
+        "en": {
+          "question": "Two containers of the same volume are 40% and 50% full of water, respectively. They are then filled completely with milk. If the contents of both containers are mixed in a larger vessel, what is the percentage of milk in the final mixture?",
+          "options": [
+            {
+              "prompt": "1",
+              "value": "0.45"
+            },
+            {
+              "prompt": "2",
+              "value": "0.5"
+            },
+            {
+              "prompt": "3",
+              "value": "0.55"
+            },
+            {
+              "prompt": "4",
+              "value": "0.6"
+            }
+          ]
+        },
+        "hi": {
+          "question": "समान आयतन वाले दो पात्र क्रमशः 40% और 50% पानी से भरे हैं। फिर उन्हें दूध से पूरी तरह भर दिया जाता है। यदि दोनों <span style=\"color: rgb(33, 37, 41);\">पात्रों</span> की सामग्री को एक बड़े पात्र में मिला दिया जाए, तो अंतिम मिश्रण में दूध का प्रतिशत क्या है?",
+          "options": [
+            {
+              "prompt": "1",
+              "value": "0.45"
+            },
+            {
+              "prompt": "2",
+              "value": "0.5"
+            },
+            {
+              "prompt": "3",
+              "value": "0.55"
+            },
+            {
+              "prompt": "4",
+              "value": "0.6"
+            }
+          ]
+        }
+      }
+    },
+    {
+      "id": "6909e3bb64b6a011f3e0bd31",
+      "type": "mcq",
+      "isNumerical": false,
+      "posMarks": 2,
+      "negMarks": 0.5,
+      "skipMarks": 0,
+      "section": 1,
+      "subsection": 0,
+      "questionNo": 8,
+      "languages": {
+        "en": {
+          "question": "A stationery shop ordered 6 dozen red pens and some additional dozen blue pens. The price of the red pens per dozen was three times that of the blue ones. When the order was delivered, it was found that the number of dozens of the two colours had been interchanged. This increased the bill by 40%. Find the ratio of the number of dozens of red pens to the number of dozens of blue pens in the original order.",
+          "options": [
+            {
+              "prompt": "1",
+              "value": "1:1"
+            },
+            {
+              "prompt": "2",
+              "value": "1:2"
+            },
+            {
+              "prompt": "3",
+              "value": "2:3"
+            },
+            {
+              "prompt": "4",
+              "value": "3:4"
+            }
+          ]
+        },
+        "hi": {
+          "question": "एक स्टेशनरी की दुकान ने 6 दर्जन लाल पेन और कुछ अतिरिक्त दर्जन नीले पेन का ऑर्डर दिया है। लाल पेनों का मूल्य, प्रति दर्जन नीले पेनों के मूल्य से तीन गुना था। ऑर्डर की डिलीवरी होने पर पता चला कि दोनों रंगों के पेनों की संख्या आपस में बदल गई थी। इससे बिल में 40% की वृद्धि हो जाती है। मूल ऑर्डर में लाल पेनों की संख्या और नीले पेनों की संख्या का अनुपात ज्ञात कीजिए।",
+          "options": [
+            {
+              "prompt": "1",
+              "value": "1:1"
+            },
+            {
+              "prompt": "2",
+              "value": "1:2"
+            },
+            {
+              "prompt": "3",
+              "value": "2:3"
+            },
+            {
+              "prompt": "4",
+              "value": "3:4"
+            }
+          ]
+        }
+      }
+    },
+    {
+      "id": "6909e3bbe2777a335c2e4517",
+      "type": "mcq",
+      "isNumerical": false,
+      "posMarks": 2,
+      "negMarks": 0.5,
+      "skipMarks": 0,
+      "section": 1,
+      "subsection": 0,
+      "questionNo": 9,
+      "languages": {
+        "en": {
+          "question": "A flower vendor bought 200 flowers for ₹800. 20 flowers withered and became unsellable. At what price per flower should he sell the remaining flowers to earn a profit of 30% on his total cost?",
+          "options": [
+            {
+              "prompt": "1",
+              "value": "₹7.85"
+            },
+            {
+              "prompt": "2",
+              "value": "₹6.54"
+            },
+            {
+              "prompt": "3",
+              "value": "₹5.78"
+            },
+            {
+              "prompt": "4",
+              "value": "₹3.82"
+            }
+          ]
+        },
+        "hi": {
+          "question": "एक फूल विक्रेता  ₹800 में 200 फूल खरीदता है। 20 फूल मुरझा जाते हैं और बिकने लायक नहीं रहते हैं। उसे शेष फूलों को प्रति फूल किस मूल्य पर बेचना चाहिए ताकि उसे कुल लागत पर 30% का लाभ हो जाए?",
+          "options": [
+            {
+              "prompt": "1",
+              "value": "₹7.85"
+            },
+            {
+              "prompt": "2",
+              "value": "₹6.54"
+            },
+            {
+              "prompt": "3",
+              "value": "₹5.78"
+            },
+            {
+              "prompt": "4",
+              "value": "₹3.82"
+            }
+          ]
+        }
+      }
+    },
+    {
+      "id": "6909e3bbd9de8466e62c0b57",
+      "type": "mcq",
+      "isNumerical": false,
+      "posMarks": 2,
+      "negMarks": 0.5,
+      "skipMarks": 0,
+      "section": 1,
+      "subsection": 0,
+      "questionNo": 10,
+      "languages": {
+        "en": {
+          "question": "A furniture store sells a dining table for ₹Z, making a 25% profit. During a festive season, they increase the marked price of the same table to ₹1.6Z. They then offer a special discount of 20% on this increased marked price. What will be the percentage profit made by the store during the festive season?",
+          "options": [
+            {
+              "prompt": "1",
+              "value": "0.26"
+            },
+            {
+              "prompt": "2",
+              "value": "0.56"
+            },
+            {
+              "prompt": "3",
+              "value": "0.62"
+            },
+            {
+              "prompt": "4",
+              "value": "0.6"
+            }
+          ]
+        },
+        "hi": {
+          "question": "एक फर्नीचर स्टोर ₹Z में एक डाइनिंग टेबल बेचता है, जिससे उसे 25% का लाभ होता है। त्योहारी सीजन के दौरान, वे उस टेबल का अंकित मूल्य बढ़ाकर ₹1.6Z कर देते हैं। फिर वे इस बढ़े हुए अंकित मूल्य पर 20% की विशेष छूट देते हैं। त्योहारी सीजन के दौरान स्टोर द्वारा अर्जित लाभ प्रतिशत क्या होगा?",
+          "options": [
+            {
+              "prompt": "1",
+              "value": "0.26"
+            },
+            {
+              "prompt": "2",
+              "value": "0.56"
+            },
+            {
+              "prompt": "3",
+              "value": "0.62"
+            },
+            {
+              "prompt": "4",
+              "value": "0.6"
+            }
+          ]
+        }
+      }
+    },
+    {
+      "id": "6909e3bc621842063c1c5bed",
+      "type": "mcq",
+      "isNumerical": false,
+      "posMarks": 2,
+      "negMarks": 0.5,
+      "skipMarks": 0,
+      "section": 1,
+      "subsection": 0,
+      "questionNo": 11,
+      "languages": {
+        "en": {
+          "question": "A solution consists acid and water in the ratio 5:3. If 4 litres of water is added, the new ratio becomes 5:4. What is the original quantity of acid in the solution?",
+          "options": [
+            {
+              "prompt": "1",
+              "value": "20 litres"
+            },
+            {
+              "prompt": "2",
+              "value": "25 litres"
+            },
+            {
+              "prompt": "3",
+              "value": "30 litres"
+            },
+            {
+              "prompt": "4",
+              "value": "35 litres"
+            }
+          ]
+        },
+        "hi": {
+          "question": "एक विलयन में अम्ल और पानी का अनुपात 5:3 है। यदि इसमें 4 लीटर पानी मिलाया जाए, तो नया अनुपात 5:4 हो जाता है। विलयन में अम्ल की मूल मात्रा क्या है?",
+          "options": [
+            {
+              "prompt": "1",
+              "value": "20 लीटर"
+            },
+            {
+              "prompt": "2",
+              "value": "25 लीटर"
+            },
+            {
+              "prompt": "3",
+              "value": "30 लीटर"
+            },
+            {
+              "prompt": "4",
+              "value": "35 लीटर"
+            }
+          ]
+        }
+      }
+    },
+    {
+      "id": "6909e3bc4abbf384c68ebf37",
+      "type": "mcq",
+      "isNumerical": false,
+      "posMarks": 2,
+      "negMarks": 0.5,
+      "skipMarks": 0,
+      "section": 1,
+      "subsection": 0,
+      "questionNo": 12,
+      "languages": {
+        "en": {
+          "question": "A alone can complete a job in 12 days and B alone in 18 days. A and B agree to do the work for ₹ 7,200. With C's help they finish it in 5 days. How much should C be paid?",
+          "options": [
+            {
+              "prompt": "1",
+              "value": "₹2,200"
+            },
+            {
+              "prompt": "2",
+              "value": "₹2,400"
+            },
+            {
+              "prompt": "3",
+              "value": "₹2,600"
+            },
+            {
+              "prompt": "4",
+              "value": "₹2,800"
+            }
+          ]
+        },
+        "hi": {
+          "question": "A अकेले किसी कार्य को 12 दिनों में और B अकेले 18 दिनों में पूरा कर सकता है। A और B ₹ 7,200 में कार्य करने के लिए सहमत होते हैं। C की मदद से वे इसे 5 दिनों में पूरा कर लेते हैं। C को कितना भुगतान किया जाना चाहिए?",
+          "options": [
+            {
+              "prompt": "1",
+              "value": "₹2,200"
+            },
+            {
+              "prompt": "2",
+              "value": "₹2,400"
+            },
+            {
+              "prompt": "3",
+              "value": "₹2,600"
+            },
+            {
+              "prompt": "4",
+              "value": "₹2,800"
+            }
+          ]
+        }
+      }
+    },
+    {
+      "id": "6909e3bc03a111035ab29018",
+      "type": "mcq",
+      "isNumerical": false,
+      "posMarks": 2,
+      "negMarks": 0.5,
+      "skipMarks": 0,
+      "section": 1,
+      "subsection": 0,
+      "questionNo": 13,
+      "languages": {
+        "en": {
+          "question": "A tank has a mixture of solutions A, B, and C in the respective ratio of 7:8:5. 40 litres of this mixture is drained out, and subsequently, 15 litres of solution A and 5 litres of solution C are added to the tank. If the resultant quantity of solution A is 25 litres less than the resultant quantity of solution B, what was the initial quantity of mixture in the tank (in litres)?",
+          "options": [
+            {
+              "prompt": "1",
+              "value": "840"
+            },
+            {
+              "prompt": "2",
+              "value": "240"
+            },
+            {
+              "prompt": "3",
+              "value": "890"
+            },
+            {
+              "prompt": "4",
+              "value": "320"
+            }
+          ]
+        },
+        "hi": {
+          "question": "एक टंकी में 7:8:5 के अनुपात में विलयन A, B और C का मिश्रण है। इस मिश्रण का 40 लीटर निकाल दिया जाता है और बाद में, टंकी में 15 लीटर विलयन A और 5 लीटर विलयन C डाला जाता है। यदि विलयन A की परिणामी मात्रा, विलयन B की परिणामी मात्रा से 25 लीटर कम है, तो टंकी में मिश्रण की प्रारंभिक मात्रा (लीटर में) क्या थी?",
+          "options": [
+            {
+              "prompt": "1",
+              "value": "840"
+            },
+            {
+              "prompt": "2",
+              "value": "240"
+            },
+            {
+              "prompt": "3",
+              "value": "890"
+            },
+            {
+              "prompt": "4",
+              "value": "320"
+            }
+          ]
+        }
+      }
+    },
+    {
+      "id": "6909e3bdd9de8466e62c0b5d",
+      "type": "mcq",
+      "isNumerical": false,
+      "posMarks": 2,
+      "negMarks": 0.5,
+      "skipMarks": 0,
+      "section": 1,
+      "subsection": 0,
+      "questionNo": 14,
+      "languages": {
+        "en": {
+          "question": "The ratio of the time taken by A and B to complete a task is 3 : 2. If B can complete the task alone in 18 hours, how many hours will they take to complete the task if they work together?",
+          "options": [
+            {
+              "prompt": "1",
+              "value": "12 hours"
+            },
+            {
+              "prompt": "2",
+              "value": "10.8 hours"
+            },
+            {
+              "prompt": "3",
+              "value": "9.8 hours"
+            },
+            {
+              "prompt": "4",
+              "value": "10 hours"
+            }
+          ]
+        },
+        "hi": {
+          "question": "किसी कार्य को पूरा करने में A और B द्वारा लिए गए समय का अनुपात 3 : 2 है। यदि B अकेले उस कार्य को 18 घंटे में पूरा कर सकता है, तो यदि वे दोनों एक साथ कार्य करते हैं तो उन्हें उस कार्य को पूरा करने में कितने घंटे लगेंगे?",
+          "options": [
+            {
+              "prompt": "1",
+              "value": "12 घंटे"
+            },
+            {
+              "prompt": "2",
+              "value": "10.8 घंटे"
+            },
+            {
+              "prompt": "3",
+              "value": "9.8 घंटे"
+            },
+            {
+              "prompt": "4",
+              "value": "10 घंटे"
+            }
+          ]
+        }
+      }
+    },
+    {
+      "id": "6909e3bd621842063c1c5bf4",
+      "type": "mcq",
+      "isNumerical": false,
+      "posMarks": 2,
+      "negMarks": 0.5,
+      "skipMarks": 0,
+      "section": 1,
+      "subsection": 0,
+      "questionNo": 15,
+      "languages": {
+        "en": {
+          "question": "Three friends, X, Y, and Z, are cycling on a circular track with a circumference of 2 km. They all start from the same point at 9:00 a.m. and travel in the same direction with speeds of 10 km/h, 12 km/h, and 15 km/h respectively. How many times will all three of them meet at the starting point if they continue cycling until 1:00 p.m.?",
+          "options": [
+            {
+              "prompt": "1",
+              "value": "1 time"
+            },
+            {
+              "prompt": "2",
+              "value": "2 times"
+            },
+            {
+              "prompt": "3",
+              "value": "3 times"
+            },
+            {
+              "prompt": "4",
+              "value": "4 times"
+            }
+          ]
+        },
+        "hi": {
+          "question": "तीन मित्र, X, Y और Z, 2 किमी परिधि वाले एक वृत्ताकार ट्रैक पर साइकिल चला रहे हैं। वे सभी सुबह 9:00 बजे एक ही बिंदु से चलना प्रारंभ करते हैं और क्रमशः 10 किमी/घंटा, 12 किमी/घंटा और 15 किमी/घंटा की चाल से एक ही दिशा में यात्रा करते हैं। यदि वे दोपहर 1:00 बजे तक साइकिल चलाना जारी रखते हैं, तो वे तीनों कितनी बार प्रारंभिक बिंदु पर मिलेंगे?",
+          "options": [
+            {
+              "prompt": "1",
+              "value": "1 बार"
+            },
+            {
+              "prompt": "2",
+              "value": "2 बार"
+            },
+            {
+              "prompt": "3",
+              "value": "3 बार"
+            },
+            {
+              "prompt": "4",
+              "value": "4 बार"
+            }
+          ]
+        }
+      }
+    },
+    {
+      "id": "6909e3bd0a73c1795a9ee03e",
+      "type": "mcq",
+      "isNumerical": false,
+      "posMarks": 2,
+      "negMarks": 0.5,
+      "skipMarks": 0,
+      "section": 1,
+      "subsection": 0,
+      "questionNo": 16,
+      "languages": {
+        "en": {
+          "question": "A circular path of 3 m width runs around a circular park with radius 8 m. What is the area of the path?",
+          "options": [
+            {
+              "prompt": "1",
+              "value": "179 m²"
+            },
+            {
+              "prompt": "2",
+              "value": "131.09 m²"
+            },
+            {
+              "prompt": "3",
+              "value": "138.02 m²"
+            },
+            {
+              "prompt": "4",
+              "value": "144.05 m²"
+            }
+          ]
+        },
+        "hi": {
+          "question": "8 मीटर त्रिज्या वाले एक वृत्ताकार पार्क के चारों ओर 3 मीटर चौड़ा एक वृत्ताकार पथ बना हुआ है। पथ का क्षेत्रफल क्या है?",
+          "options": [
+            {
+              "prompt": "1",
+              "value": "179 मीटर²"
+            },
+            {
+              "prompt": "2",
+              "value": "131.09 <span style=\"color: rgb(33, 37, 41);\">मीटर</span>²"
+            },
+            {
+              "prompt": "3",
+              "value": "138.02 <span style=\"color: rgb(33, 37, 41);\">मीटर</span>²"
+            },
+            {
+              "prompt": "4",
+              "value": "144.05 <span style=\"color: rgb(33, 37, 41);\">मीटर</span>²"
+            }
+          ]
+        }
+      }
+    },
+    {
+      "id": "6909e3bead30b3fd94261919",
+      "type": "mcq",
+      "isNumerical": false,
+      "posMarks": 2,
+      "negMarks": 0.5,
+      "skipMarks": 0,
+      "section": 1,
+      "subsection": 0,
+      "questionNo": 17,
+      "languages": {
+        "en": {
+          "question": "Find the slope of the line perpendicular to <span class=\"math-tex\">\\(y = \\frac{1}{4}x + 7\\)</span>",
+          "options": [
+            {
+              "prompt": "1",
+              "value": "-4"
+            },
+            {
+              "prompt": "2",
+              "value": "4"
+            },
+            {
+              "prompt": "3",
+              "value": "<span class=\"math-tex\">\\(-\\frac{1}{4}\\)</span>"
+            },
+            {
+              "prompt": "4",
+              "value": "<span class=\"math-tex\">\\(\\frac{1}{4}\\)</span>"
+            }
+          ]
+        },
+        "hi": {
+          "question": "<span class=\"math-tex\">\\(y = \\frac{1}{4}x + 7\\)</span> पर लंबवत रेखा की प्रवणता ज्ञात कीजिए।",
+          "options": [
+            {
+              "prompt": "1",
+              "value": "-4"
+            },
+            {
+              "prompt": "2",
+              "value": "4"
+            },
+            {
+              "prompt": "3",
+              "value": "<span class=\"math-tex\">\\(-\\frac{1}{4}\\)</span>"
+            },
+            {
+              "prompt": "4",
+              "value": "<span class=\"math-tex\">\\(\\frac{1}{4}\\)</span>"
+            }
+          ]
+        }
+      }
+    },
+    {
+      "id": "6909e3beb7a1ac7c4e952274",
+      "type": "mcq",
+      "isNumerical": false,
+      "posMarks": 2,
+      "negMarks": 0.5,
+      "skipMarks": 0,
+      "section": 1,
+      "subsection": 0,
+      "questionNo": 18,
+      "languages": {
+        "en": {
+          "question": "Convert 2.5 radians to degrees.",
+          "options": [
+            {
+              "prompt": "1",
+              "value": "130°"
+            },
+            {
+              "prompt": "2",
+              "value": "143.24°"
+            },
+            {
+              "prompt": "3",
+              "value": "180°"
+            },
+            {
+              "prompt": "4",
+              "value": "200.56°"
+            }
+          ]
+        },
+        "hi": {
+          "question": "2.5 रेडियन को डिग्री में परिवर्तित कीजिए।",
+          "options": [
+            {
+              "prompt": "1",
+              "value": "130°"
+            },
+            {
+              "prompt": "2",
+              "value": "143.24°"
+            },
+            {
+              "prompt": "3",
+              "value": "180°"
+            },
+            {
+              "prompt": "4",
+              "value": "200.56°"
+            }
+          ]
+        }
+      }
+    },
+    {
+      "id": "6909e3be4ae2a067d12aa459",
+      "type": "mcq",
+      "isNumerical": false,
+      "posMarks": 2,
+      "negMarks": 0.5,
+      "skipMarks": 0,
+      "section": 1,
+      "subsection": 0,
+      "questionNo": 19,
+      "languages": {
+        "en": {
+          "question": "A sector of a circle having a radius of 10 cm and has a central angle of <span class=\"math-tex\">\\( \\frac{\\pi}{6}\\)</span> radians. What is the area of the sector?",
+          "options": [
+            {
+              "prompt": "1",
+              "value": "26.17 cm²"
+            },
+            {
+              "prompt": "2",
+              "value": "8.33 cm²"
+            },
+            {
+              "prompt": "3",
+              "value": "10.47 cm²"
+            },
+            {
+              "prompt": "4",
+              "value": "12.5 cm²"
+            }
+          ]
+        },
+        "hi": {
+          "question": "एक वृत्त का त्रिज्यखंड जिसकी त्रिज्या 10 सेमी है और जिसका केंद्रीय कोण <span class=\"math-tex\">\\( \\frac{\\pi}{6}\\)</span> रेडियन है। त्रिज्यखंड का क्षेत्रफल क्या है?",
+          "options": [
+            {
+              "prompt": "1",
+              "value": "26.17 सेमी²"
+            },
+            {
+              "prompt": "2",
+              "value": "8.33 सेमी²"
+            },
+            {
+              "prompt": "3",
+              "value": "10.47 सेमी²"
+            },
+            {
+              "prompt": "4",
+              "value": "12.5 सेमी²"
+            }
+          ]
+        }
+      }
+    },
+    {
+      "id": "6909e3bff579995fc0aa3c05",
+      "type": "mcq",
+      "isNumerical": false,
+      "posMarks": 2,
+      "negMarks": 0.5,
+      "skipMarks": 0,
+      "section": 1,
+      "subsection": 0,
+      "questionNo": 20,
+      "languages": {
+        "en": {
+          "question": "If tan A = cot(2A - 30°), then what is the value of A?",
+          "options": [
+            {
+              "prompt": "1",
+              "value": "30°"
+            },
+            {
+              "prompt": "2",
+              "value": "25°"
+            },
+            {
+              "prompt": "3",
+              "value": "18°"
+            },
+            {
+              "prompt": "4",
+              "value": "40°"
+            }
+          ]
+        },
+        "hi": {
+          "question": "यदि tan A = cot(2A - 30°) है, तो A का मान क्या है?",
+          "options": [
+            {
+              "prompt": "1",
+              "value": "30°"
+            },
+            {
+              "prompt": "2",
+              "value": "25°"
+            },
+            {
+              "prompt": "3",
+              "value": "18°"
+            },
+            {
+              "prompt": "4",
+              "value": "40°"
+            }
+          ]
+        }
+      }
+    },
+    {
+      "id": "6909e3bf13685a39edc391b7",
+      "type": "mcq",
+      "isNumerical": false,
+      "posMarks": 2,
+      "negMarks": 0.5,
+      "skipMarks": 0,
+      "section": 1,
+      "subsection": 0,
+      "questionNo": 21,
+      "languages": {
+        "en": {
+          "question": "In similar triangles, the ratio of corresponding altitudes is 2:5. What is the ratio of their areas?",
+          "options": [
+            {
+              "prompt": "1",
+              "value": "2:5"
+            },
+            {
+              "prompt": "2",
+              "value": "<span style=\"color: rgb(33, 37, 41);\">4:25</span>"
+            },
+            {
+              "prompt": "3",
+              "value": "<span style=\"color: rgb(33, 37, 41);\">2:25</span>"
+            },
+            {
+              "prompt": "4",
+              "value": "5:2"
+            }
+          ]
+        },
+        "hi": {
+          "question": "समरूप त्रिभुजों में, संगत शीर्षलंबों का अनुपात 2:5 है। उनके क्षेत्रफलों का अनुपात क्या है?",
+          "options": [
+            {
+              "prompt": "1",
+              "value": "2:5"
+            },
+            {
+              "prompt": "2",
+              "value": "<span style=\"color: rgb(33, 37, 41);\">4:25</span>"
+            },
+            {
+              "prompt": "3",
+              "value": "<span style=\"color: rgb(33, 37, 41);\">2:25</span>"
+            },
+            {
+              "prompt": "4",
+              "value": "5:2"
+            }
+          ]
+        }
+      }
+    },
+    {
+      "id": "6909e3bf03a111035ab2904e",
+      "type": "mcq",
+      "isNumerical": false,
+      "posMarks": 2,
+      "negMarks": 0.5,
+      "skipMarks": 0,
+      "section": 1,
+      "subsection": 0,
+      "questionNo": 22,
+      "languages": {
+        "en": {
+          "question": "Given, <span class=\"math-tex\">\\(a = \\sqrt{5}\\)</span>, what is <span class=\"math-tex\">\\((a + 1)^2 + (a - 1)^2\\)</span> ?",
+          "options": [
+            {
+              "prompt": "1",
+              "value": "13"
+            },
+            {
+              "prompt": "2",
+              "value": "12"
+            },
+            {
+              "prompt": "3",
+              "value": "14"
+            },
+            {
+              "prompt": "4",
+              "value": "15"
+            }
+          ]
+        },
+        "hi": {
+          "question": "यदि <span class=\"math-tex\">\\(a = \\sqrt{5}\\)</span> है, तो <span class=\"math-tex\">\\((a + 1)^2 + (a - 1)^2\\)</span> का मान क्या होगा?",
+          "options": [
+            {
+              "prompt": "1",
+              "value": "13"
+            },
+            {
+              "prompt": "2",
+              "value": "12"
+            },
+            {
+              "prompt": "3",
+              "value": "14"
+            },
+            {
+              "prompt": "4",
+              "value": "15"
+            }
+          ]
+        }
+      }
+    },
+    {
+      "id": "6909e3c04abbf384c68ebf85",
+      "type": "mcq",
+      "isNumerical": false,
+      "posMarks": 2,
+      "negMarks": 0.5,
+      "skipMarks": 0,
+      "section": 1,
+      "subsection": 0,
+      "questionNo": 23,
+      "languages": {
+        "en": {
+          "question": "Simplify: √50 + √18 - √8",
+          "options": [
+            {
+              "prompt": "1",
+              "value": "7√2"
+            },
+            {
+              "prompt": "2",
+              "value": "6√2"
+            },
+            {
+              "prompt": "3",
+              "value": "5√2"
+            },
+            {
+              "prompt": "4",
+              "value": "8√2"
+            }
+          ]
+        },
+        "hi": {
+          "question": "सरलीकृत कीजिए : √50 + √18 - √8",
+          "options": [
+            {
+              "prompt": "1",
+              "value": "7√2"
+            },
+            {
+              "prompt": "2",
+              "value": "6√2"
+            },
+            {
+              "prompt": "3",
+              "value": "5√2"
+            },
+            {
+              "prompt": "4",
+              "value": "8√2"
+            }
+          ]
+        },
+        "ta": {
+          "question": "சுருக்குக: √50 + √18 - √8",
+          "options": [
+            {
+              "prompt": "1",
+              "value": "7√2"
+            },
+            {
+              "prompt": "2",
+              "value": "6√2"
+            },
+            {
+              "prompt": "3",
+              "value": "5√2"
+            },
+            {
+              "prompt": "4",
+              "value": "8√2"
+            }
+          ]
+        }
+      }
+    },
+    {
+      "id": "6909e3c046afbbd01e8f1014",
+      "type": "mcq",
+      "isNumerical": false,
+      "posMarks": 2,
+      "negMarks": 0.5,
+      "skipMarks": 0,
+      "section": 1,
+      "subsection": 0,
+      "questionNo": 24,
+      "languages": {
+        "en": {
+          "question": "The diameter of a circle measures 25 cm. What is the maximum length of a chord in this circle?",
+          "options": [
+            {
+              "prompt": "1",
+              "value": "12 cm"
+            },
+            {
+              "prompt": "2",
+              "value": "25 cm"
+            },
+            {
+              "prompt": "3",
+              "value": "50 cm"
+            },
+            {
+              "prompt": "4",
+              "value": "100 cm"
+            }
+          ]
+        },
+        "hi": {
+          "question": "एक वृत्त का व्यास 25 सेमी है। इस वृत्त में जीवा की अधिकतम लंबाई कितनी है?",
+          "options": [
+            {
+              "prompt": "1",
+              "value": "12 सेमी"
+            },
+            {
+              "prompt": "2",
+              "value": "25 सेमी"
+            },
+            {
+              "prompt": "3",
+              "value": "50 सेमी"
+            },
+            {
+              "prompt": "4",
+              "value": "100 सेमी"
+            }
+          ]
+        }
+      }
+    },
+    {
+      "id": "6909e3c00a867837a1c51319",
+      "type": "mcq",
+      "isNumerical": false,
+      "posMarks": 2,
+      "negMarks": 0.5,
+      "skipMarks": 0,
+      "section": 1,
+      "subsection": 0,
+      "questionNo": 25,
+      "languages": {
+        "en": {
+          "question": "If sin A + cos A = √2 sin A, then what is the value of tanA?",
+          "options": [
+            {
+              "prompt": "1",
+              "value": "√2"
+            },
+            {
+              "prompt": "2",
+              "value": "1"
+            },
+            {
+              "prompt": "3",
+              "value": "√2 + 1"
+            },
+            {
+              "prompt": "4",
+              "value": "√2 - 1"
+            }
+          ]
+        },
+        "hi": {
+          "question": "यदि sin A + cos A = √2 sin A है, तो tanA का मान क्या है ?",
+          "options": [
+            {
+              "prompt": "1",
+              "value": "√2"
+            },
+            {
+              "prompt": "2",
+              "value": "1"
+            },
+            {
+              "prompt": "3",
+              "value": "√2 + 1"
+            },
+            {
+              "prompt": "4",
+              "value": "√2 - 1"
+            }
+          ]
+        }
+      }
+    }
+  ],
+  "answers": {
+    "6909e3b8335dea9be42ab90c": {
+      "correctOption": "3",
+      "multiCorrectOptions": null,
+      "range": {
+        "start": "",
+        "end": ""
+      },
+      "negMarks": 0.5,
+      "posMarks": 2,
+      "skipMarks": 0,
+      "partialM": {
+        "type": "",
+        "marks": 0
+      },
+      "isPartialMarking": false,
+      "sol": {
+        "en": {
+          "value": "$2e",
+          "type": "tb",
+          "videoSol": ""
+        },
+        "hn": {
+          "value": "$2f",
+          "type": "tb",
+          "videoSol": ""
+        },
+        "te": {
+          "value": "",
+          "type": "",
+          "videoSol": ""
+        },
+        "mr": {
+          "value": "",
+          "type": "",
+          "videoSol": ""
+        },
+        "bn": {
+          "value": "",
+          "type": "",
+          "videoSol": ""
+        },
+        "ml": {
+          "value": "",
+          "type": "",
+          "videoSol": ""
+        },
+        "gu": {
+          "value": "",
+          "type": "",
+          "videoSol": ""
+        },
+        "kn": {
+          "value": "",
+          "type": "",
+          "videoSol": ""
+        },
+        "ta": {
+          "value": "",
+          "type": "",
+          "videoSol": ""
+        },
+        "or": {
+          "value": "",
+          "type": "",
+          "videoSol": ""
+        },
+        "as": {
+          "value": "",
+          "type": "",
+          "videoSol": ""
+        },
+        "ks": {
+          "value": "",
+          "type": "",
+          "videoSol": ""
+        },
+        "kok": {
+          "value": "",
+          "type": "",
+          "videoSol": ""
+        },
+        "mni": {
+          "value": "",
+          "type": "",
+          "videoSol": ""
+        },
+        "ne": {
+          "value": "",
+          "type": "",
+          "videoSol": ""
+        },
+        "pa": {
+          "value": "",
+          "type": "",
+          "videoSol": ""
+        },
+        "sd": {
+          "value": "",
+          "type": "",
+          "videoSol": ""
+        },
+        "ur": {
+          "value": "",
+          "type": "",
+          "videoSol": ""
+        },
+        "sat": {
+          "value": "",
+          "type": "",
+          "videoSol": ""
+        },
+        "mai": {
+          "value": "",
+          "type": "",
+          "videoSol": ""
+        },
+        "brx": {
+          "value": "",
+          "type": "",
+          "videoSol": ""
+        },
+        "doi": {
+          "value": "",
+          "type": "",
+          "videoSol": ""
+        },
+        "sa": {
+          "value": "",
+          "type": "",
+          "videoSol": ""
+        },
+        "grt": {
+          "value": "",
+          "type": "",
+          "videoSol": ""
+        },
+        "kha": {
+          "value": "",
+          "type": "",
+          "videoSol": ""
+        },
+        "lus": {
+          "value": "",
+          "type": "",
+          "videoSol": ""
+        },
+        "bo": {
+          "value": "",
+          "type": "",
+          "videoSol": ""
+        },
+        "trp": {
+          "value": "",
+          "type": "",
+          "videoSol": ""
+        }
+      },
+      "tags": [
+        "Simplification"
+      ],
+      "globalConcept": [
+        {
+          "s": {
+            "id": "5eea6a1039140f30f369e7e7",
+            "title": "Quantitative Aptitude"
+          },
+          "c": {
+            "id": "5eea6a1039140f30f369e808",
+            "title": "Simplification"
+          },
+          "t": {
+            "id": "5eea6a1039140f30f369e80a",
+            "title": "Surds and Indices"
+          },
+          "st": {
+            "id": ""
+          },
+          "st1": {
+            "id": ""
+          },
+          "st2": {
+            "id": ""
+          },
+          "st3": {
+            "id": ""
+          },
+          "st4": {
+            "id": ""
+          }
+        }
+      ],
+      "stats": {
+        "totalStudents": 6345,
+        "bestTime": 0,
+        "averageTime": 28.352088258471223,
+        "attempts": {
+          "correct": 4583,
+          "incorrect": 901,
+          "partial": 0,
+          "skipped": 861,
+          "skipOptionSelected": 0
+        }
+      },
+      "votes": 0,
+      "SSNo": 1,
+      "SSSNo": 0,
+      "marksObtained": 0,
+      "studentResStatus": "",
+      "studentResponse": {
+        "time": 0,
+        "visits": null
+      }
+    },
+    "6909e3b913685a39edc39197": {
+      "correctOption": "2",
+      "multiCorrectOptions": null,
+      "range": {
+        "start": "",
+        "end": ""
+      },
+      "negMarks": 0.5,
+      "posMarks": 2,
+      "skipMarks": 0,
+      "partialM": {
+        "type": "",
+        "marks": 0
+      },
+      "isPartialMarking": false,
+      "sol": {
+        "en": {
+          "value": "$30",
+          "type": "tb",
+          "videoSol": ""
+        },
+        "hn": {
+          "value": "$31",
+          "type": "tb",
+          "videoSol": ""
+        },
+        "te": {
+          "value": "",
+          "type": "",
+          "videoSol": ""
+        },
+        "mr": {
+          "value": "",
+          "type": "",
+          "videoSol": ""
+        },
+        "bn": {
+          "value": "",
+          "type": "",
+          "videoSol": ""
+        },
+        "ml": {
+          "value": "",
+          "type": "",
+          "videoSol": ""
+        },
+        "gu": {
+          "value": "",
+          "type": "",
+          "videoSol": ""
+        },
+        "kn": {
+          "value": "",
+          "type": "",
+          "videoSol": ""
+        },
+        "ta": {
+          "value": "",
+          "type": "",
+          "videoSol": ""
+        },
+        "or": {
+          "value": "",
+          "type": "",
+          "videoSol": ""
+        },
+        "as": {
+          "value": "",
+          "type": "",
+          "videoSol": ""
+        },
+        "ks": {
+          "value": "",
+          "type": "",
+          "videoSol": ""
+        },
+        "kok": {
+          "value": "",
+          "type": "",
+          "videoSol": ""
+        },
+        "mni": {
+          "value": "",
+          "type": "",
+          "videoSol": ""
+        },
+        "ne": {
+          "value": "",
+          "type": "",
+          "videoSol": ""
+        },
+        "pa": {
+          "value": "",
+          "type": "",
+          "videoSol": ""
+        },
+        "sd": {
+          "value": "",
+          "type": "",
+          "videoSol": ""
+        },
+        "ur": {
+          "value": "",
+          "type": "",
+          "videoSol": ""
+        },
+        "sat": {
+          "value": "",
+          "type": "",
+          "videoSol": ""
+        },
+        "mai": {
+          "value": "",
+          "type": "",
+          "videoSol": ""
+        },
+        "brx": {
+          "value": "",
+          "type": "",
+          "videoSol": ""
+        },
+        "doi": {
+          "value": "",
+          "type": "",
+          "videoSol": ""
+        },
+        "sa": {
+          "value": "",
+          "type": "",
+          "videoSol": ""
+        },
+        "grt": {
+          "value": "",
+          "type": "",
+          "videoSol": ""
+        },
+        "kha": {
+          "value": "",
+          "type": "",
+          "videoSol": ""
+        },
+        "lus": {
+          "value": "",
+          "type": "",
+          "videoSol": ""
+        },
+        "bo": {
+          "value": "",
+          "type": "",
+          "videoSol": ""
+        },
+        "trp": {
+          "value": "",
+          "type": "",
+          "videoSol": ""
+        }
+      },
+      "tags": [
+        "Ratio and Proportion"
+      ],
+      "globalConcept": [
+        {
+          "s": {
+            "id": "5eea6a1039140f30f369e7e7",
+            "title": "Quantitative Aptitude"
+          },
+          "c": {
+            "id": "5eea6a1039140f30f369e7ff",
+            "title": "Ratio and Proportion"
+          },
+          "t": {
+            "id": "5eea6a1039140f30f369e807",
+            "title": "Simple Ratios"
+          },
+          "st": {
+            "id": ""
+          },
+          "st1": {
+            "id": ""
+          },
+          "st2": {
+            "id": ""
+          },
+          "st3": {
+            "id": ""
+          },
+          "st4": {
+            "id": ""
+          }
+        }
+      ],
+      "stats": {
+        "totalStudents": 6345,
+        "bestTime": 0,
+        "averageTime": 56.92025216706067,
+        "attempts": {
+          "correct": 2816,
+          "incorrect": 371,
+          "partial": 0,
+          "skipped": 3158,
+          "skipOptionSelected": 0
+        }
+      },
+      "votes": 0,
+      "SSNo": 1,
+      "SSSNo": 0,
+      "marksObtained": 0,
+      "studentResStatus": "",
+      "studentResponse": {
+        "time": 0,
+        "visits": null
+      }
+    },
+    "6909e3b9367763f7675479b1": {
+      "correctOption": "3",
+      "multiCorrectOptions": null,
+      "range": {
+        "start": "",
+        "end": ""
+      },
+      "negMarks": 0.5,
+      "posMarks": 2,
+      "skipMarks": 0,
+      "partialM": {
+        "type": "",
+        "marks": 0
+      },
+      "isPartialMarking": false,
+      "sol": {
+        "en": {
+          "value": "$32",
+          "type": "tb",
+          "videoSol": ""
+        },
+        "hn": {
+          "value": "$33",
+          "type": "tb",
+          "videoSol": ""
+        },
+        "te": {
+          "value": "",
+          "type": "",
+          "videoSol": ""
+        },
+        "mr": {
+          "value": "",
+          "type": "",
+          "videoSol": ""
+        },
+        "bn": {
+          "value": "",
+          "type": "",
+          "videoSol": ""
+        },
+        "ml": {
+          "value": "",
+          "type": "",
+          "videoSol": ""
+        },
+        "gu": {
+          "value": "",
+          "type": "",
+          "videoSol": ""
+        },
+        "kn": {
+          "value": "",
+          "type": "",
+          "videoSol": ""
+        },
+        "ta": {
+          "value": "",
+          "type": "",
+          "videoSol": ""
+        },
+        "or": {
+          "value": "",
+          "type": "",
+          "videoSol": ""
+        },
+        "as": {
+          "value": "",
+          "type": "",
+          "videoSol": ""
+        },
+        "ks": {
+          "value": "",
+          "type": "",
+          "videoSol": ""
+        },
+        "kok": {
+          "value": "",
+          "type": "",
+          "videoSol": ""
+        },
+        "mni": {
+          "value": "",
+          "type": "",
+          "videoSol": ""
+        },
+        "ne": {
+          "value": "",
+          "type": "",
+          "videoSol": ""
+        },
+        "pa": {
+          "value": "",
+          "type": "",
+          "videoSol": ""
+        },
+        "sd": {
+          "value": "",
+          "type": "",
+          "videoSol": ""
+        },
+        "ur": {
+          "value": "",
+          "type": "",
+          "videoSol": ""
+        },
+        "sat": {
+          "value": "",
+          "type": "",
+          "videoSol": ""
+        },
+        "mai": {
+          "value": "",
+          "type": "",
+          "videoSol": ""
+        },
+        "brx": {
+          "value": "",
+          "type": "",
+          "videoSol": ""
+        },
+        "doi": {
+          "value": "",
+          "type": "",
+          "videoSol": ""
+        },
+        "sa": {
+          "value": "",
+          "type": "",
+          "videoSol": ""
+        },
+        "grt": {
+          "value": "",
+          "type": "",
+          "videoSol": ""
+        },
+        "kha": {
+          "value": "",
+          "type": "",
+          "videoSol": ""
+        },
+        "lus": {
+          "value": "",
+          "type": "",
+          "videoSol": ""
+        },
+        "bo": {
+          "value": "",
+          "type": "",
+          "videoSol": ""
+        },
+        "trp": {
+          "value": "",
+          "type": "",
+          "videoSol": ""
+        }
+      },
+      "tags": [
+        "Profit and Loss"
+      ],
+      "globalConcept": [
+        {
+          "s": {
+            "id": "5eea6a1039140f30f369e7e7",
+            "title": "Quantitative Aptitude"
+          },
+          "c": {
+            "id": "5eea6a1039140f30f369e84e",
+            "title": "Profit and Loss"
+          },
+          "t": {
+            "id": "5eea6a1039140f30f369e853",
+            "title": "Partnership"
+          },
+          "st": {
+            "id": ""
+          },
+          "st1": {
+            "id": ""
+          },
+          "st2": {
+            "id": ""
+          },
+          "st3": {
+            "id": ""
+          },
+          "st4": {
+            "id": ""
+          }
+        }
+      ],
+      "stats": {
+        "totalStudents": 6345,
+        "bestTime": 0,
+        "averageTime": 23.144208037825113,
+        "attempts": {
+          "correct": 5961,
+          "incorrect": 124,
+          "partial": 0,
+          "skipped": 260,
+          "skipOptionSelected": 0
+        }
+      },
+      "votes": 0,
+      "SSNo": 1,
+      "SSSNo": 0,
+      "marksObtained": 0,
+      "studentResStatus": "",
+      "studentResponse": {
+        "time": 0,
+        "visits": null
+      }
+    },
+    "6909e3b97bcbac1695066a4d": {
+      "correctOption": "3",
+      "multiCorrectOptions": null,
+      "range": {
+        "start": "",
+        "end": ""
+      },
+      "negMarks": 0.5,
+      "posMarks": 2,
+      "skipMarks": 0,
+      "partialM": {
+        "type": "",
+        "marks": 0
+      },
+      "isPartialMarking": false,
+      "sol": {
+        "en": {
+          "value": "$34",
+          "type": "tb",
+          "videoSol": ""
+        },
+        "hn": {
+          "value": "$35",
+          "type": "tb",
+          "videoSol": ""
+        },
+        "te": {
+          "value": "",
+          "type": "",
+          "videoSol": ""
+        },
+        "mr": {
+          "value": "",
+          "type": "",
+          "videoSol": ""
+        },
+        "bn": {
+          "value": "",
+          "type": "",
+          "videoSol": ""
+        },
+        "ml": {
+          "value": "",
+          "type": "",
+          "videoSol": ""
+        },
+        "gu": {
+          "value": "",
+          "type": "",
+          "videoSol": ""
+        },
+        "kn": {
+          "value": "",
+          "type": "",
+          "videoSol": ""
+        },
+        "ta": {
+          "value": "$36",
+          "type": "tb",
+          "videoSol": ""
+        },
+        "or": {
+          "value": "",
+          "type": "",
+          "videoSol": ""
+        },
+        "as": {
+          "value": "",
+          "type": "",
+          "videoSol": ""
+        },
+        "ks": {
+          "value": "",
+          "type": "",
+          "videoSol": ""
+        },
+        "kok": {
+          "value": "",
+          "type": "",
+          "videoSol": ""
+        },
+        "mni": {
+          "value": "",
+          "type": "",
+          "videoSol": ""
+        },
+        "ne": {
+          "value": "",
+          "type": "",
+          "videoSol": ""
+        },
+        "pa": {
+          "value": "",
+          "type": "",
+          "videoSol": ""
+        },
+        "sd": {
+          "value": "",
+          "type": "",
+          "videoSol": ""
+        },
+        "ur": {
+          "value": "",
+          "type": "",
+          "videoSol": ""
+        },
+        "sat": {
+          "value": "",
+          "type": "",
+          "videoSol": ""
+        },
+        "mai": {
+          "value": "",
+          "type": "",
+          "videoSol": ""
+        },
+        "brx": {
+          "value": "",
+          "type": "",
+          "videoSol": ""
+        },
+        "doi": {
+          "value": "",
+          "type": "",
+          "videoSol": ""
+        },
+        "sa": {
+          "value": "",
+          "type": "",
+          "videoSol": ""
+        },
+        "grt": {
+          "value": "",
+          "type": "",
+          "videoSol": ""
+        },
+        "kha": {
+          "value": "",
+          "type": "",
+          "videoSol": ""
+        },
+        "lus": {
+          "value": "",
+          "type": "",
+          "videoSol": ""
+        },
+        "bo": {
+          "value": "",
+          "type": "",
+          "videoSol": ""
+        },
+        "trp": {
+          "value": "",
+          "type": "",
+          "videoSol": ""
+        }
+      },
+      "tags": [
+        "Simplification"
+      ],
+      "globalConcept": [
+        {
+          "s": {
+            "id": "5eea6a1039140f30f369e7e7",
+            "title": "Quantitative Aptitude"
+          },
+          "c": {
+            "id": "5eea6a1039140f30f369e808",
+            "title": "Simplification"
+          },
+          "t": {
+            "id": "5eea6a1039140f30f369e80e",
+            "title": "Bodmas Rule"
+          },
+          "st": {
+            "id": ""
+          },
+          "st1": {
+            "id": ""
+          },
+          "st2": {
+            "id": ""
+          },
+          "st3": {
+            "id": ""
+          },
+          "st4": {
+            "id": ""
+          }
+        }
+      ],
+      "stats": {
+        "totalStudents": 6345,
+        "bestTime": 0,
+        "averageTime": 39.902915681638994,
+        "attempts": {
+          "correct": 5749,
+          "incorrect": 214,
+          "partial": 0,
+          "skipped": 382,
+          "skipOptionSelected": 0
+        }
+      },
+      "votes": 0,
+      "SSNo": 1,
+      "SSSNo": 0,
+      "marksObtained": 0,
+      "studentResStatus": "",
+      "studentResponse": {
+        "time": 0,
+        "visits": null
+      }
+    },
+    "6909e3ba335dea9be42ab915": {
+      "correctOption": "2",
+      "multiCorrectOptions": null,
+      "range": {
+        "start": "",
+        "end": ""
+      },
+      "negMarks": 0.5,
+      "posMarks": 2,
+      "skipMarks": 0,
+      "partialM": {
+        "type": "",
+        "marks": 0
+      },
+      "isPartialMarking": false,
+      "sol": {
+        "en": {
+          "value": "$37",
+          "type": "tb",
+          "videoSol": ""
+        },
+        "hn": {
+          "value": "$38",
+          "type": "tb",
+          "videoSol": ""
+        },
+        "te": {
+          "value": "",
+          "type": "",
+          "videoSol": ""
+        },
+        "mr": {
+          "value": "",
+          "type": "",
+          "videoSol": ""
+        },
+        "bn": {
+          "value": "",
+          "type": "",
+          "videoSol": ""
+        },
+        "ml": {
+          "value": "",
+          "type": "",
+          "videoSol": ""
+        },
+        "gu": {
+          "value": "",
+          "type": "",
+          "videoSol": ""
+        },
+        "kn": {
+          "value": "",
+          "type": "",
+          "videoSol": ""
+        },
+        "ta": {
+          "value": "",
+          "type": "",
+          "videoSol": ""
+        },
+        "or": {
+          "value": "",
+          "type": "",
+          "videoSol": ""
+        },
+        "as": {
+          "value": "",
+          "type": "",
+          "videoSol": ""
+        },
+        "ks": {
+          "value": "",
+          "type": "",
+          "videoSol": ""
+        },
+        "kok": {
+          "value": "",
+          "type": "",
+          "videoSol": ""
+        },
+        "mni": {
+          "value": "",
+          "type": "",
+          "videoSol": ""
+        },
+        "ne": {
+          "value": "",
+          "type": "",
+          "videoSol": ""
+        },
+        "pa": {
+          "value": "",
+          "type": "",
+          "videoSol": ""
+        },
+        "sd": {
+          "value": "",
+          "type": "",
+          "videoSol": ""
+        },
+        "ur": {
+          "value": "",
+          "type": "",
+          "videoSol": ""
+        },
+        "sat": {
+          "value": "",
+          "type": "",
+          "videoSol": ""
+        },
+        "mai": {
+          "value": "",
+          "type": "",
+          "videoSol": ""
+        },
+        "brx": {
+          "value": "",
+          "type": "",
+          "videoSol": ""
+        },
+        "doi": {
+          "value": "",
+          "type": "",
+          "videoSol": ""
+        },
+        "sa": {
+          "value": "",
+          "type": "",
+          "videoSol": ""
+        },
+        "grt": {
+          "value": "",
+          "type": "",
+          "videoSol": ""
+        },
+        "kha": {
+          "value": "",
+          "type": "",
+          "videoSol": ""
+        },
+        "lus": {
+          "value": "",
+          "type": "",
+          "videoSol": ""
+        },
+        "bo": {
+          "value": "",
+          "type": "",
+          "videoSol": ""
+        },
+        "trp": {
+          "value": "",
+          "type": "",
+          "videoSol": ""
+        }
+      },
+      "tags": [
+        "Average"
+      ],
+      "globalConcept": [
+        {
+          "s": {
+            "id": "5eea6a1039140f30f369e7e7",
+            "title": "Quantitative Aptitude"
+          },
+          "c": {
+            "id": "5eea6a1039140f30f369e7e8",
+            "title": "Average"
+          },
+          "t": {
+            "id": ""
+          },
+          "st": {
+            "id": ""
+          },
+          "st1": {
+            "id": ""
+          },
+          "st2": {
+            "id": ""
+          },
+          "st3": {
+            "id": ""
+          },
+          "st4": {
+            "id": ""
+          }
+        }
+      ],
+      "stats": {
+        "totalStudents": 6345,
+        "bestTime": 0,
+        "averageTime": 54.23782505910165,
+        "attempts": {
+          "correct": 3899,
+          "incorrect": 335,
+          "partial": 0,
+          "skipped": 2111,
+          "skipOptionSelected": 0
+        }
+      },
+      "votes": 0,
+      "SSNo": 1,
+      "SSSNo": 0,
+      "marksObtained": 0,
+      "studentResStatus": "",
+      "studentResponse": {
+        "time": 0,
+        "visits": null
+      }
+    },
+    "6909e3baa403e0dfbd77d693": {
+      "correctOption": "1",
+      "multiCorrectOptions": null,
+      "range": {
+        "start": "",
+        "end": ""
+      },
+      "negMarks": 0.5,
+      "posMarks": 2,
+      "skipMarks": 0,
+      "partialM": {
+        "type": "",
+        "marks": 0
+      },
+      "isPartialMarking": false,
+      "sol": {
+        "en": {
+          "value": "$39",
+          "type": "tb",
+          "videoSol": ""
+        },
+        "hn": {
+          "value": "$3a",
+          "type": "tb",
+          "videoSol": ""
+        },
+        "te": {
+          "value": "",
+          "type": "",
+          "videoSol": ""
+        },
+        "mr": {
+          "value": "",
+          "type": "",
+          "videoSol": ""
+        },
+        "bn": {
+          "value": "",
+          "type": "",
+          "videoSol": ""
+        },
+        "ml": {
+          "value": "",
+          "type": "",
+          "videoSol": ""
+        },
+        "gu": {
+          "value": "",
+          "type": "",
+          "videoSol": ""
+        },
+        "kn": {
+          "value": "",
+          "type": "",
+          "videoSol": ""
+        },
+        "ta": {
+          "value": "",
+          "type": "",
+          "videoSol": ""
+        },
+        "or": {
+          "value": "",
+          "type": "",
+          "videoSol": ""
+        },
+        "as": {
+          "value": "",
+          "type": "",
+          "videoSol": ""
+        },
+        "ks": {
+          "value": "",
+          "type": "",
+          "videoSol": ""
+        },
+        "kok": {
+          "value": "",
+          "type": "",
+          "videoSol": ""
+        },
+        "mni": {
+          "value": "",
+          "type": "",
+          "videoSol": ""
+        },
+        "ne": {
+          "value": "",
+          "type": "",
+          "videoSol": ""
+        },
+        "pa": {
+          "value": "",
+          "type": "",
+          "videoSol": ""
+        },
+        "sd": {
+          "value": "",
+          "type": "",
+          "videoSol": ""
+        },
+        "ur": {
+          "value": "",
+          "type": "",
+          "videoSol": ""
+        },
+        "sat": {
+          "value": "",
+          "type": "",
+          "videoSol": ""
+        },
+        "mai": {
+          "value": "",
+          "type": "",
+          "videoSol": ""
+        },
+        "brx": {
+          "value": "",
+          "type": "",
+          "videoSol": ""
+        },
+        "doi": {
+          "value": "",
+          "type": "",
+          "videoSol": ""
+        },
+        "sa": {
+          "value": "",
+          "type": "",
+          "videoSol": ""
+        },
+        "grt": {
+          "value": "",
+          "type": "",
+          "videoSol": ""
+        },
+        "kha": {
+          "value": "",
+          "type": "",
+          "videoSol": ""
+        },
+        "lus": {
+          "value": "",
+          "type": "",
+          "videoSol": ""
+        },
+        "bo": {
+          "value": "",
+          "type": "",
+          "videoSol": ""
+        },
+        "trp": {
+          "value": "",
+          "type": "",
+          "videoSol": ""
+        }
+      },
+      "tags": [
+        "Profit and Loss"
+      ],
+      "globalConcept": [
+        {
+          "s": {
+            "id": "5eea6a1039140f30f369e7e7",
+            "title": "Quantitative Aptitude"
+          },
+          "c": {
+            "id": "5eea6a1039140f30f369e84e",
+            "title": "Profit and Loss"
+          },
+          "t": {
+            "id": "5eea6a1039140f30f369e853",
+            "title": "Partnership"
+          },
+          "st": {
+            "id": ""
+          },
+          "st1": {
+            "id": ""
+          },
+          "st2": {
+            "id": ""
+          },
+          "st3": {
+            "id": ""
+          },
+          "st4": {
+            "id": ""
+          }
+        }
+      ],
+      "stats": {
+        "totalStudents": 6345,
+        "bestTime": 0,
+        "averageTime": 52.916469661150515,
+        "attempts": {
+          "correct": 4080,
+          "incorrect": 201,
+          "partial": 0,
+          "skipped": 2064,
+          "skipOptionSelected": 0
+        }
+      },
+      "votes": 0,
+      "SSNo": 1,
+      "SSSNo": 0,
+      "marksObtained": 0,
+      "studentResStatus": "",
+      "studentResponse": {
+        "time": 0,
+        "visits": null
+      }
+    },
+    "6909e3bad6628571318a6949": {
+      "correctOption": "3",
+      "multiCorrectOptions": null,
+      "range": {
+        "start": "",
+        "end": ""
+      },
+      "negMarks": 0.5,
+      "posMarks": 2,
+      "skipMarks": 0,
+      "partialM": {
+        "type": "",
+        "marks": 0
+      },
+      "isPartialMarking": false,
+      "sol": {
+        "en": {
+          "value": "$3b",
+          "type": "tb",
+          "videoSol": ""
+        },
+        "hn": {
+          "value": "$3c",
+          "type": "tb",
+          "videoSol": ""
+        },
+        "te": {
+          "value": "",
+          "type": "",
+          "videoSol": ""
+        },
+        "mr": {
+          "value": "",
+          "type": "",
+          "videoSol": ""
+        },
+        "bn": {
+          "value": "",
+          "type": "",
+          "videoSol": ""
+        },
+        "ml": {
+          "value": "",
+          "type": "",
+          "videoSol": ""
+        },
+        "gu": {
+          "value": "",
+          "type": "",
+          "videoSol": ""
+        },
+        "kn": {
+          "value": "",
+          "type": "",
+          "videoSol": ""
+        },
+        "ta": {
+          "value": "",
+          "type": "",
+          "videoSol": ""
+        },
+        "or": {
+          "value": "",
+          "type": "",
+          "videoSol": ""
+        },
+        "as": {
+          "value": "",
+          "type": "",
+          "videoSol": ""
+        },
+        "ks": {
+          "value": "",
+          "type": "",
+          "videoSol": ""
+        },
+        "kok": {
+          "value": "",
+          "type": "",
+          "videoSol": ""
+        },
+        "mni": {
+          "value": "",
+          "type": "",
+          "videoSol": ""
+        },
+        "ne": {
+          "value": "",
+          "type": "",
+          "videoSol": ""
+        },
+        "pa": {
+          "value": "",
+          "type": "",
+          "videoSol": ""
+        },
+        "sd": {
+          "value": "",
+          "type": "",
+          "videoSol": ""
+        },
+        "ur": {
+          "value": "",
+          "type": "",
+          "videoSol": ""
+        },
+        "sat": {
+          "value": "",
+          "type": "",
+          "videoSol": ""
+        },
+        "mai": {
+          "value": "",
+          "type": "",
+          "videoSol": ""
+        },
+        "brx": {
+          "value": "",
+          "type": "",
+          "videoSol": ""
+        },
+        "doi": {
+          "value": "",
+          "type": "",
+          "videoSol": ""
+        },
+        "sa": {
+          "value": "",
+          "type": "",
+          "videoSol": ""
+        },
+        "grt": {
+          "value": "",
+          "type": "",
+          "videoSol": ""
+        },
+        "kha": {
+          "value": "",
+          "type": "",
+          "videoSol": ""
+        },
+        "lus": {
+          "value": "",
+          "type": "",
+          "videoSol": ""
+        },
+        "bo": {
+          "value": "",
+          "type": "",
+          "videoSol": ""
+        },
+        "trp": {
+          "value": "",
+          "type": "",
+          "videoSol": ""
+        }
+      },
+      "tags": [
+        "Mixture Problems"
+      ],
+      "globalConcept": [
+        {
+          "s": {
+            "id": "5eea6a1039140f30f369e7e7",
+            "title": "Quantitative Aptitude"
+          },
+          "c": {
+            "id": "5eea6a1039140f30f369e840",
+            "title": "Mixture Problems"
+          },
+          "t": {
+            "id": ""
+          },
+          "st": {
+            "id": ""
+          },
+          "st1": {
+            "id": ""
+          },
+          "st2": {
+            "id": ""
+          },
+          "st3": {
+            "id": ""
+          },
+          "st4": {
+            "id": ""
+          }
+        }
+      ],
+      "stats": {
+        "totalStudents": 6345,
+        "bestTime": 0,
+        "averageTime": 38.873286052009384,
+        "attempts": {
+          "correct": 3377,
+          "incorrect": 817,
+          "partial": 0,
+          "skipped": 2151,
+          "skipOptionSelected": 0
+        }
+      },
+      "votes": 0,
+      "SSNo": 1,
+      "SSSNo": 0,
+      "marksObtained": 0,
+      "studentResStatus": "",
+      "studentResponse": {
+        "time": 0,
+        "visits": null
+      }
+    },
+    "6909e3bb64b6a011f3e0bd31": {
+      "correctOption": "2",
+      "multiCorrectOptions": null,
+      "range": {
+        "start": "",
+        "end": ""
+      },
+      "negMarks": 0.5,
+      "posMarks": 2,
+      "skipMarks": 0,
+      "partialM": {
+        "type": "",
+        "marks": 0
+      },
+      "isPartialMarking": false,
+      "sol": {
+        "en": {
+          "value": "$3d",
+          "type": "tb",
+          "videoSol": ""
+        },
+        "hn": {
+          "value": "$3e",
+          "type": "tb",
+          "videoSol": ""
+        },
+        "te": {
+          "value": "",
+          "type": "",
+          "videoSol": ""
+        },
+        "mr": {
+          "value": "",
+          "type": "",
+          "videoSol": ""
+        },
+        "bn": {
+          "value": "",
+          "type": "",
+          "videoSol": ""
+        },
+        "ml": {
+          "value": "",
+          "type": "",
+          "videoSol": ""
+        },
+        "gu": {
+          "value": "",
+          "type": "",
+          "videoSol": ""
+        },
+        "kn": {
+          "value": "",
+          "type": "",
+          "videoSol": ""
+        },
+        "ta": {
+          "value": "",
+          "type": "",
+          "videoSol": ""
+        },
+        "or": {
+          "value": "",
+          "type": "",
+          "videoSol": ""
+        },
+        "as": {
+          "value": "",
+          "type": "",
+          "videoSol": ""
+        },
+        "ks": {
+          "value": "",
+          "type": "",
+          "videoSol": ""
+        },
+        "kok": {
+          "value": "",
+          "type": "",
+          "videoSol": ""
+        },
+        "mni": {
+          "value": "",
+          "type": "",
+          "videoSol": ""
+        },
+        "ne": {
+          "value": "",
+          "type": "",
+          "videoSol": ""
+        },
+        "pa": {
+          "value": "",
+          "type": "",
+          "videoSol": ""
+        },
+        "sd": {
+          "value": "",
+          "type": "",
+          "videoSol": ""
+        },
+        "ur": {
+          "value": "",
+          "type": "",
+          "videoSol": ""
+        },
+        "sat": {
+          "value": "",
+          "type": "",
+          "videoSol": ""
+        },
+        "mai": {
+          "value": "",
+          "type": "",
+          "videoSol": ""
+        },
+        "brx": {
+          "value": "",
+          "type": "",
+          "videoSol": ""
+        },
+        "doi": {
+          "value": "",
+          "type": "",
+          "videoSol": ""
+        },
+        "sa": {
+          "value": "",
+          "type": "",
+          "videoSol": ""
+        },
+        "grt": {
+          "value": "",
+          "type": "",
+          "videoSol": ""
+        },
+        "kha": {
+          "value": "",
+          "type": "",
+          "videoSol": ""
+        },
+        "lus": {
+          "value": "",
+          "type": "",
+          "videoSol": ""
+        },
+        "bo": {
+          "value": "",
+          "type": "",
+          "videoSol": ""
+        },
+        "trp": {
+          "value": "",
+          "type": "",
+          "videoSol": ""
+        }
+      },
+      "tags": [
+        "Ratio and Proportion"
+      ],
+      "globalConcept": [
+        {
+          "s": {
+            "id": "5eea6a1039140f30f369e7e7",
+            "title": "Quantitative Aptitude"
+          },
+          "c": {
+            "id": "5eea6a1039140f30f369e7ff",
+            "title": "Ratio and Proportion"
+          },
+          "t": {
+            "id": "5eea6a1039140f30f369e807",
+            "title": "Simple Ratios"
+          },
+          "st": {
+            "id": ""
+          },
+          "st1": {
+            "id": ""
+          },
+          "st2": {
+            "id": ""
+          },
+          "st3": {
+            "id": ""
+          },
+          "st4": {
+            "id": ""
+          }
+        }
+      ],
+      "stats": {
+        "totalStudents": 6345,
+        "bestTime": 0,
+        "averageTime": 27.97572892040976,
+        "attempts": {
+          "correct": 1711,
+          "incorrect": 231,
+          "partial": 0,
+          "skipped": 4403,
+          "skipOptionSelected": 0
+        }
+      },
+      "votes": 0,
+      "SSNo": 1,
+      "SSSNo": 0,
+      "marksObtained": 0,
+      "studentResStatus": "",
+      "studentResponse": {
+        "time": 0,
+        "visits": null
+      }
+    },
+    "6909e3bbd9de8466e62c0b57": {
+      "correctOption": "4",
+      "multiCorrectOptions": null,
+      "range": {
+        "start": "",
+        "end": ""
+      },
+      "negMarks": 0.5,
+      "posMarks": 2,
+      "skipMarks": 0,
+      "partialM": {
+        "type": "",
+        "marks": 0
+      },
+      "isPartialMarking": false,
+      "sol": {
+        "en": {
+          "value": "$3f",
+          "type": "tb",
+          "videoSol": ""
+        },
+        "hn": {
+          "value": "$40",
+          "type": "tb",
+          "videoSol": ""
+        },
+        "te": {
+          "value": "",
+          "type": "",
+          "videoSol": ""
+        },
+        "mr": {
+          "value": "",
+          "type": "",
+          "videoSol": ""
+        },
+        "bn": {
+          "value": "",
+          "type": "",
+          "videoSol": ""
+        },
+        "ml": {
+          "value": "",
+          "type": "",
+          "videoSol": ""
+        },
+        "gu": {
+          "value": "",
+          "type": "",
+          "videoSol": ""
+        },
+        "kn": {
+          "value": "",
+          "type": "",
+          "videoSol": ""
+        },
+        "ta": {
+          "value": "",
+          "type": "",
+          "videoSol": ""
+        },
+        "or": {
+          "value": "",
+          "type": "",
+          "videoSol": ""
+        },
+        "as": {
+          "value": "",
+          "type": "",
+          "videoSol": ""
+        },
+        "ks": {
+          "value": "",
+          "type": "",
+          "videoSol": ""
+        },
+        "kok": {
+          "value": "",
+          "type": "",
+          "videoSol": ""
+        },
+        "mni": {
+          "value": "",
+          "type": "",
+          "videoSol": ""
+        },
+        "ne": {
+          "value": "",
+          "type": "",
+          "videoSol": ""
+        },
+        "pa": {
+          "value": "",
+          "type": "",
+          "videoSol": ""
+        },
+        "sd": {
+          "value": "",
+          "type": "",
+          "videoSol": ""
+        },
+        "ur": {
+          "value": "",
+          "type": "",
+          "videoSol": ""
+        },
+        "sat": {
+          "value": "",
+          "type": "",
+          "videoSol": ""
+        },
+        "mai": {
+          "value": "",
+          "type": "",
+          "videoSol": ""
+        },
+        "brx": {
+          "value": "",
+          "type": "",
+          "videoSol": ""
+        },
+        "doi": {
+          "value": "",
+          "type": "",
+          "videoSol": ""
+        },
+        "sa": {
+          "value": "",
+          "type": "",
+          "videoSol": ""
+        },
+        "grt": {
+          "value": "",
+          "type": "",
+          "videoSol": ""
+        },
+        "kha": {
+          "value": "",
+          "type": "",
+          "videoSol": ""
+        },
+        "lus": {
+          "value": "",
+          "type": "",
+          "videoSol": ""
+        },
+        "bo": {
+          "value": "",
+          "type": "",
+          "videoSol": ""
+        },
+        "trp": {
+          "value": "",
+          "type": "",
+          "videoSol": ""
+        }
+      },
+      "tags": [
+        "Profit and Loss"
+      ],
+      "globalConcept": [
+        {
+          "s": {
+            "id": "5eea6a1039140f30f369e7e7",
+            "title": "Quantitative Aptitude"
+          },
+          "c": {
+            "id": "5eea6a1039140f30f369e84e",
+            "title": "Profit and Loss"
+          },
+          "t": {
+            "id": "5eea6a1039140f30f369e851",
+            "title": "Successive Selling"
+          },
+          "st": {
+            "id": ""
+          },
+          "st1": {
+            "id": ""
+          },
+          "st2": {
+            "id": ""
+          },
+          "st3": {
+            "id": ""
+          },
+          "st4": {
+            "id": ""
+          }
+        }
+      ],
+      "stats": {
+        "totalStudents": 6345,
+        "bestTime": 0,
+        "averageTime": 30.405831363278157,
+        "attempts": {
+          "correct": 2143,
+          "incorrect": 430,
+          "partial": 0,
+          "skipped": 3772,
+          "skipOptionSelected": 0
+        }
+      },
+      "votes": 0,
+      "SSNo": 1,
+      "SSSNo": 0,
+      "marksObtained": 0,
+      "studentResStatus": "",
+      "studentResponse": {
+        "time": 0,
+        "visits": null
+      }
+    },
+    "6909e3bbe2777a335c2e4517": {
+      "correctOption": "3",
+      "multiCorrectOptions": null,
+      "range": {
+        "start": "",
+        "end": ""
+      },
+      "negMarks": 0.5,
+      "posMarks": 2,
+      "skipMarks": 0,
+      "partialM": {
+        "type": "",
+        "marks": 0
+      },
+      "isPartialMarking": false,
+      "sol": {
+        "en": {
+          "value": "$41",
+          "type": "tb",
+          "videoSol": ""
+        },
+        "hn": {
+          "value": "$42",
+          "type": "tb",
+          "videoSol": ""
+        },
+        "te": {
+          "value": "",
+          "type": "",
+          "videoSol": ""
+        },
+        "mr": {
+          "value": "",
+          "type": "",
+          "videoSol": ""
+        },
+        "bn": {
+          "value": "",
+          "type": "",
+          "videoSol": ""
+        },
+        "ml": {
+          "value": "",
+          "type": "",
+          "videoSol": ""
+        },
+        "gu": {
+          "value": "",
+          "type": "",
+          "videoSol": ""
+        },
+        "kn": {
+          "value": "",
+          "type": "",
+          "videoSol": ""
+        },
+        "ta": {
+          "value": "",
+          "type": "",
+          "videoSol": ""
+        },
+        "or": {
+          "value": "",
+          "type": "",
+          "videoSol": ""
+        },
+        "as": {
+          "value": "",
+          "type": "",
+          "videoSol": ""
+        },
+        "ks": {
+          "value": "",
+          "type": "",
+          "videoSol": ""
+        },
+        "kok": {
+          "value": "",
+          "type": "",
+          "videoSol": ""
+        },
+        "mni": {
+          "value": "",
+          "type": "",
+          "videoSol": ""
+        },
+        "ne": {
+          "value": "",
+          "type": "",
+          "videoSol": ""
+        },
+        "pa": {
+          "value": "",
+          "type": "",
+          "videoSol": ""
+        },
+        "sd": {
+          "value": "",
+          "type": "",
+          "videoSol": ""
+        },
+        "ur": {
+          "value": "",
+          "type": "",
+          "videoSol": ""
+        },
+        "sat": {
+          "value": "",
+          "type": "",
+          "videoSol": ""
+        },
+        "mai": {
+          "value": "",
+          "type": "",
+          "videoSol": ""
+        },
+        "brx": {
+          "value": "",
+          "type": "",
+          "videoSol": ""
+        },
+        "doi": {
+          "value": "",
+          "type": "",
+          "videoSol": ""
+        },
+        "sa": {
+          "value": "",
+          "type": "",
+          "videoSol": ""
+        },
+        "grt": {
+          "value": "",
+          "type": "",
+          "videoSol": ""
+        },
+        "kha": {
+          "value": "",
+          "type": "",
+          "videoSol": ""
+        },
+        "lus": {
+          "value": "",
+          "type": "",
+          "videoSol": ""
+        },
+        "bo": {
+          "value": "",
+          "type": "",
+          "videoSol": ""
+        },
+        "trp": {
+          "value": "",
+          "type": "",
+          "videoSol": ""
+        }
+      },
+      "tags": [
+        "Profit and Loss"
+      ],
+      "globalConcept": [
+        {
+          "s": {
+            "id": "5eea6a1039140f30f369e7e7",
+            "title": "Quantitative Aptitude"
+          },
+          "c": {
+            "id": "5eea6a1039140f30f369e84e",
+            "title": "Profit and Loss"
+          },
+          "t": {
+            "id": "67c00464925ac0af0faffebd",
+            "title": "Absolute Profit and Loss"
+          },
+          "st": {
+            "id": ""
+          },
+          "st1": {
+            "id": ""
+          },
+          "st2": {
+            "id": ""
+          },
+          "st3": {
+            "id": ""
+          },
+          "st4": {
+            "id": ""
+          }
+        }
+      ],
+      "stats": {
+        "totalStudents": 6345,
+        "bestTime": 0,
+        "averageTime": 54.99133175728919,
+        "attempts": {
+          "correct": 3833,
+          "incorrect": 549,
+          "partial": 0,
+          "skipped": 1963,
+          "skipOptionSelected": 0
+        }
+      },
+      "votes": 0,
+      "SSNo": 1,
+      "SSSNo": 0,
+      "marksObtained": 0,
+      "studentResStatus": "",
+      "studentResponse": {
+        "time": 0,
+        "visits": null
+      }
+    },
+    "6909e3bc03a111035ab29018": {
+      "correctOption": "1",
+      "multiCorrectOptions": null,
+      "range": {
+        "start": "",
+        "end": ""
+      },
+      "negMarks": 0.5,
+      "posMarks": 2,
+      "skipMarks": 0,
+      "partialM": {
+        "type": "",
+        "marks": 0
+      },
+      "isPartialMarking": false,
+      "sol": {
+        "en": {
+          "value": "$43",
+          "type": "tb",
+          "videoSol": ""
+        },
+        "hn": {
+          "value": "$44",
+          "type": "tb",
+          "videoSol": ""
+        },
+        "te": {
+          "value": "",
+          "type": "",
+          "videoSol": ""
+        },
+        "mr": {
+          "value": "",
+          "type": "",
+          "videoSol": ""
+        },
+        "bn": {
+          "value": "",
+          "type": "",
+          "videoSol": ""
+        },
+        "ml": {
+          "value": "",
+          "type": "",
+          "videoSol": ""
+        },
+        "gu": {
+          "value": "",
+          "type": "",
+          "videoSol": ""
+        },
+        "kn": {
+          "value": "",
+          "type": "",
+          "videoSol": ""
+        },
+        "ta": {
+          "value": "",
+          "type": "",
+          "videoSol": ""
+        },
+        "or": {
+          "value": "",
+          "type": "",
+          "videoSol": ""
+        },
+        "as": {
+          "value": "",
+          "type": "",
+          "videoSol": ""
+        },
+        "ks": {
+          "value": "",
+          "type": "",
+          "videoSol": ""
+        },
+        "kok": {
+          "value": "",
+          "type": "",
+          "videoSol": ""
+        },
+        "mni": {
+          "value": "",
+          "type": "",
+          "videoSol": ""
+        },
+        "ne": {
+          "value": "",
+          "type": "",
+          "videoSol": ""
+        },
+        "pa": {
+          "value": "",
+          "type": "",
+          "videoSol": ""
+        },
+        "sd": {
+          "value": "",
+          "type": "",
+          "videoSol": ""
+        },
+        "ur": {
+          "value": "",
+          "type": "",
+          "videoSol": ""
+        },
+        "sat": {
+          "value": "",
+          "type": "",
+          "videoSol": ""
+        },
+        "mai": {
+          "value": "",
+          "type": "",
+          "videoSol": ""
+        },
+        "brx": {
+          "value": "",
+          "type": "",
+          "videoSol": ""
+        },
+        "doi": {
+          "value": "",
+          "type": "",
+          "videoSol": ""
+        },
+        "sa": {
+          "value": "",
+          "type": "",
+          "videoSol": ""
+        },
+        "grt": {
+          "value": "",
+          "type": "",
+          "videoSol": ""
+        },
+        "kha": {
+          "value": "",
+          "type": "",
+          "videoSol": ""
+        },
+        "lus": {
+          "value": "",
+          "type": "",
+          "videoSol": ""
+        },
+        "bo": {
+          "value": "",
+          "type": "",
+          "videoSol": ""
+        },
+        "trp": {
+          "value": "",
+          "type": "",
+          "videoSol": ""
+        }
+      },
+      "tags": [
+        "Mixture Problems"
+      ],
+      "globalConcept": [
+        {
+          "s": {
+            "id": "5eea6a1039140f30f369e7e7",
+            "title": "Quantitative Aptitude"
+          },
+          "c": {
+            "id": "5eea6a1039140f30f369e840",
+            "title": "Mixture Problems"
+          },
+          "t": {
+            "id": ""
+          },
+          "st": {
+            "id": ""
+          },
+          "st1": {
+            "id": ""
+          },
+          "st2": {
+            "id": ""
+          },
+          "st3": {
+            "id": ""
+          },
+          "st4": {
+            "id": ""
+          }
+        }
+      ],
+      "stats": {
+        "totalStudents": 6345,
+        "bestTime": 0,
+        "averageTime": 20.289834515366405,
+        "attempts": {
+          "correct": 659,
+          "incorrect": 165,
+          "partial": 0,
+          "skipped": 5521,
+          "skipOptionSelected": 0
+        }
+      },
+      "votes": 0,
+      "SSNo": 1,
+      "SSSNo": 0,
+      "marksObtained": 0,
+      "studentResStatus": "",
+      "studentResponse": {
+        "time": 0,
+        "visits": null
+      }
+    },
+    "6909e3bc4abbf384c68ebf37": {
+      "correctOption": "1",
+      "multiCorrectOptions": null,
+      "range": {
+        "start": "",
+        "end": ""
+      },
+      "negMarks": 0.5,
+      "posMarks": 2,
+      "skipMarks": 0,
+      "partialM": {
+        "type": "",
+        "marks": 0
+      },
+      "isPartialMarking": false,
+      "sol": {
+        "en": {
+          "value": "$45",
+          "type": "tb",
+          "videoSol": ""
+        },
+        "hn": {
+          "value": "$46",
+          "type": "tb",
+          "videoSol": ""
+        },
+        "te": {
+          "value": "",
+          "type": "",
+          "videoSol": ""
+        },
+        "mr": {
+          "value": "",
+          "type": "",
+          "videoSol": ""
+        },
+        "bn": {
+          "value": "",
+          "type": "",
+          "videoSol": ""
+        },
+        "ml": {
+          "value": "",
+          "type": "",
+          "videoSol": ""
+        },
+        "gu": {
+          "value": "",
+          "type": "",
+          "videoSol": ""
+        },
+        "kn": {
+          "value": "",
+          "type": "",
+          "videoSol": ""
+        },
+        "ta": {
+          "value": "",
+          "type": "",
+          "videoSol": ""
+        },
+        "or": {
+          "value": "",
+          "type": "",
+          "videoSol": ""
+        },
+        "as": {
+          "value": "",
+          "type": "",
+          "videoSol": ""
+        },
+        "ks": {
+          "value": "",
+          "type": "",
+          "videoSol": ""
+        },
+        "kok": {
+          "value": "",
+          "type": "",
+          "videoSol": ""
+        },
+        "mni": {
+          "value": "",
+          "type": "",
+          "videoSol": ""
+        },
+        "ne": {
+          "value": "",
+          "type": "",
+          "videoSol": ""
+        },
+        "pa": {
+          "value": "",
+          "type": "",
+          "videoSol": ""
+        },
+        "sd": {
+          "value": "",
+          "type": "",
+          "videoSol": ""
+        },
+        "ur": {
+          "value": "",
+          "type": "",
+          "videoSol": ""
+        },
+        "sat": {
+          "value": "",
+          "type": "",
+          "videoSol": ""
+        },
+        "mai": {
+          "value": "",
+          "type": "",
+          "videoSol": ""
+        },
+        "brx": {
+          "value": "",
+          "type": "",
+          "videoSol": ""
+        },
+        "doi": {
+          "value": "",
+          "type": "",
+          "videoSol": ""
+        },
+        "sa": {
+          "value": "",
+          "type": "",
+          "videoSol": ""
+        },
+        "grt": {
+          "value": "",
+          "type": "",
+          "videoSol": ""
+        },
+        "kha": {
+          "value": "",
+          "type": "",
+          "videoSol": ""
+        },
+        "lus": {
+          "value": "",
+          "type": "",
+          "videoSol": ""
+        },
+        "bo": {
+          "value": "",
+          "type": "",
+          "videoSol": ""
+        },
+        "trp": {
+          "value": "",
+          "type": "",
+          "videoSol": ""
+        }
+      },
+      "tags": [
+        "Time and Work"
+      ],
+      "globalConcept": [
+        {
+          "s": {
+            "id": "5eea6a1039140f30f369e7e7",
+            "title": "Quantitative Aptitude"
+          },
+          "c": {
+            "id": "5eea6a1039140f30f369e855",
+            "title": "Time and Work"
+          },
+          "t": {
+            "id": "5eea6a1039140f30f369e857",
+            "title": "Work and Wages"
+          },
+          "st": {
+            "id": ""
+          },
+          "st1": {
+            "id": ""
+          },
+          "st2": {
+            "id": ""
+          },
+          "st3": {
+            "id": ""
+          },
+          "st4": {
+            "id": ""
+          }
+        }
+      ],
+      "stats": {
+        "totalStudents": 6345,
+        "bestTime": 0,
+        "averageTime": 65.77147360126094,
+        "attempts": {
+          "correct": 4105,
+          "incorrect": 464,
+          "partial": 0,
+          "skipped": 1776,
+          "skipOptionSelected": 0
+        }
+      },
+      "votes": 0,
+      "SSNo": 1,
+      "SSSNo": 0,
+      "marksObtained": 0,
+      "studentResStatus": "",
+      "studentResponse": {
+        "time": 0,
+        "visits": null
+      }
+    },
+    "6909e3bc621842063c1c5bed": {
+      "correctOption": "1",
+      "multiCorrectOptions": null,
+      "range": {
+        "start": "",
+        "end": ""
+      },
+      "negMarks": 0.5,
+      "posMarks": 2,
+      "skipMarks": 0,
+      "partialM": {
+        "type": "",
+        "marks": 0
+      },
+      "isPartialMarking": false,
+      "sol": {
+        "en": {
+          "value": "$47",
+          "type": "tb",
+          "videoSol": ""
+        },
+        "hn": {
+          "value": "$48",
+          "type": "tb",
+          "videoSol": ""
+        },
+        "te": {
+          "value": "",
+          "type": "",
+          "videoSol": ""
+        },
+        "mr": {
+          "value": "",
+          "type": "",
+          "videoSol": ""
+        },
+        "bn": {
+          "value": "",
+          "type": "",
+          "videoSol": ""
+        },
+        "ml": {
+          "value": "",
+          "type": "",
+          "videoSol": ""
+        },
+        "gu": {
+          "value": "",
+          "type": "",
+          "videoSol": ""
+        },
+        "kn": {
+          "value": "",
+          "type": "",
+          "videoSol": ""
+        },
+        "ta": {
+          "value": "",
+          "type": "",
+          "videoSol": ""
+        },
+        "or": {
+          "value": "",
+          "type": "",
+          "videoSol": ""
+        },
+        "as": {
+          "value": "",
+          "type": "",
+          "videoSol": ""
+        },
+        "ks": {
+          "value": "",
+          "type": "",
+          "videoSol": ""
+        },
+        "kok": {
+          "value": "",
+          "type": "",
+          "videoSol": ""
+        },
+        "mni": {
+          "value": "",
+          "type": "",
+          "videoSol": ""
+        },
+        "ne": {
+          "value": "",
+          "type": "",
+          "videoSol": ""
+        },
+        "pa": {
+          "value": "",
+          "type": "",
+          "videoSol": ""
+        },
+        "sd": {
+          "value": "",
+          "type": "",
+          "videoSol": ""
+        },
+        "ur": {
+          "value": "",
+          "type": "",
+          "videoSol": ""
+        },
+        "sat": {
+          "value": "",
+          "type": "",
+          "videoSol": ""
+        },
+        "mai": {
+          "value": "",
+          "type": "",
+          "videoSol": ""
+        },
+        "brx": {
+          "value": "",
+          "type": "",
+          "videoSol": ""
+        },
+        "doi": {
+          "value": "",
+          "type": "",
+          "videoSol": ""
+        },
+        "sa": {
+          "value": "",
+          "type": "",
+          "videoSol": ""
+        },
+        "grt": {
+          "value": "",
+          "type": "",
+          "videoSol": ""
+        },
+        "kha": {
+          "value": "",
+          "type": "",
+          "videoSol": ""
+        },
+        "lus": {
+          "value": "",
+          "type": "",
+          "videoSol": ""
+        },
+        "bo": {
+          "value": "",
+          "type": "",
+          "videoSol": ""
+        },
+        "trp": {
+          "value": "",
+          "type": "",
+          "videoSol": ""
+        }
+      },
+      "tags": [
+        "Ratio and Proportion"
+      ],
+      "globalConcept": [
+        {
+          "s": {
+            "id": "5eea6a1039140f30f369e7e7",
+            "title": "Quantitative Aptitude"
+          },
+          "c": {
+            "id": "5eea6a1039140f30f369e7ff",
+            "title": "Ratio and Proportion"
+          },
+          "t": {
+            "id": "5eea6a1039140f30f369e807",
+            "title": "Simple Ratios"
+          },
+          "st": {
+            "id": ""
+          },
+          "st1": {
+            "id": ""
+          },
+          "st2": {
+            "id": ""
+          },
+          "st3": {
+            "id": ""
+          },
+          "st4": {
+            "id": ""
+          }
+        }
+      ],
+      "stats": {
+        "totalStudents": 6345,
+        "bestTime": 0,
+        "averageTime": 28.775098502758095,
+        "attempts": {
+          "correct": 5706,
+          "incorrect": 144,
+          "partial": 0,
+          "skipped": 495,
+          "skipOptionSelected": 0
+        }
+      },
+      "votes": 0,
+      "SSNo": 1,
+      "SSSNo": 0,
+      "marksObtained": 0,
+      "studentResStatus": "",
+      "studentResponse": {
+        "time": 0,
+        "visits": null
+      }
+    },
+    "6909e3bd0a73c1795a9ee03e": {
+      "correctOption": "1",
+      "multiCorrectOptions": null,
+      "range": {
+        "start": "",
+        "end": ""
+      },
+      "negMarks": 0.5,
+      "posMarks": 2,
+      "skipMarks": 0,
+      "partialM": {
+        "type": "",
+        "marks": 0
+      },
+      "isPartialMarking": false,
+      "sol": {
+        "en": {
+          "value": "$49",
+          "type": "tb",
+          "videoSol": ""
+        },
+        "hn": {
+          "value": "$4a",
+          "type": "tb",
+          "videoSol": ""
+        },
+        "te": {
+          "value": "",
+          "type": "",
+          "videoSol": ""
+        },
+        "mr": {
+          "value": "",
+          "type": "",
+          "videoSol": ""
+        },
+        "bn": {
+          "value": "",
+          "type": "",
+          "videoSol": ""
+        },
+        "ml": {
+          "value": "",
+          "type": "",
+          "videoSol": ""
+        },
+        "gu": {
+          "value": "",
+          "type": "",
+          "videoSol": ""
+        },
+        "kn": {
+          "value": "",
+          "type": "",
+          "videoSol": ""
+        },
+        "ta": {
+          "value": "",
+          "type": "",
+          "videoSol": ""
+        },
+        "or": {
+          "value": "",
+          "type": "",
+          "videoSol": ""
+        },
+        "as": {
+          "value": "",
+          "type": "",
+          "videoSol": ""
+        },
+        "ks": {
+          "value": "",
+          "type": "",
+          "videoSol": ""
+        },
+        "kok": {
+          "value": "",
+          "type": "",
+          "videoSol": ""
+        },
+        "mni": {
+          "value": "",
+          "type": "",
+          "videoSol": ""
+        },
+        "ne": {
+          "value": "",
+          "type": "",
+          "videoSol": ""
+        },
+        "pa": {
+          "value": "",
+          "type": "",
+          "videoSol": ""
+        },
+        "sd": {
+          "value": "",
+          "type": "",
+          "videoSol": ""
+        },
+        "ur": {
+          "value": "",
+          "type": "",
+          "videoSol": ""
+        },
+        "sat": {
+          "value": "",
+          "type": "",
+          "videoSol": ""
+        },
+        "mai": {
+          "value": "",
+          "type": "",
+          "videoSol": ""
+        },
+        "brx": {
+          "value": "",
+          "type": "",
+          "videoSol": ""
+        },
+        "doi": {
+          "value": "",
+          "type": "",
+          "videoSol": ""
+        },
+        "sa": {
+          "value": "",
+          "type": "",
+          "videoSol": ""
+        },
+        "grt": {
+          "value": "",
+          "type": "",
+          "videoSol": ""
+        },
+        "kha": {
+          "value": "",
+          "type": "",
+          "videoSol": ""
+        },
+        "lus": {
+          "value": "",
+          "type": "",
+          "videoSol": ""
+        },
+        "bo": {
+          "value": "",
+          "type": "",
+          "videoSol": ""
+        },
+        "trp": {
+          "value": "",
+          "type": "",
+          "videoSol": ""
+        }
+      },
+      "tags": [
+        "Mensuration"
+      ],
+      "globalConcept": [
+        {
+          "s": {
+            "id": "5eea6a1039140f30f369e7e7",
+            "title": "Quantitative Aptitude"
+          },
+          "c": {
+            "id": "5eea6a1039140f30f369e829",
+            "title": "Mensuration"
+          },
+          "t": {
+            "id": "5eea6a1039140f30f369e837",
+            "title": "Plane Figures"
+          },
+          "st": {
+            "id": "5eea6a1039140f30f369e83d",
+            "title": "Circle or Semi Circle"
+          },
+          "st1": {
+            "id": ""
+          },
+          "st2": {
+            "id": ""
+          },
+          "st3": {
+            "id": ""
+          },
+          "st4": {
+            "id": ""
+          }
+        }
+      ],
+      "stats": {
+        "totalStudents": 6345,
+        "bestTime": 0,
+        "averageTime": 52.92592592592589,
+        "attempts": {
+          "correct": 4165,
+          "incorrect": 450,
+          "partial": 0,
+          "skipped": 1730,
+          "skipOptionSelected": 0
+        }
+      },
+      "votes": 0,
+      "SSNo": 1,
+      "SSSNo": 0,
+      "marksObtained": 0,
+      "studentResStatus": "",
+      "studentResponse": {
+        "time": 0,
+        "visits": null
+      }
+    },
+    "6909e3bd621842063c1c5bf4": {
+      "correctOption": "2",
+      "multiCorrectOptions": null,
+      "range": {
+        "start": "",
+        "end": ""
+      },
+      "negMarks": 0.5,
+      "posMarks": 2,
+      "skipMarks": 0,
+      "partialM": {
+        "type": "",
+        "marks": 0
+      },
+      "isPartialMarking": false,
+      "sol": {
+        "en": {
+          "value": "$4b",
+          "type": "tb",
+          "videoSol": ""
+        },
+        "hn": {
+          "value": "$4c",
+          "type": "tb",
+          "videoSol": ""
+        },
+        "te": {
+          "value": "",
+          "type": "",
+          "videoSol": ""
+        },
+        "mr": {
+          "value": "",
+          "type": "",
+          "videoSol": ""
+        },
+        "bn": {
+          "value": "",
+          "type": "",
+          "videoSol": ""
+        },
+        "ml": {
+          "value": "",
+          "type": "",
+          "videoSol": ""
+        },
+        "gu": {
+          "value": "",
+          "type": "",
+          "videoSol": ""
+        },
+        "kn": {
+          "value": "",
+          "type": "",
+          "videoSol": ""
+        },
+        "ta": {
+          "value": "",
+          "type": "",
+          "videoSol": ""
+        },
+        "or": {
+          "value": "",
+          "type": "",
+          "videoSol": ""
+        },
+        "as": {
+          "value": "",
+          "type": "",
+          "videoSol": ""
+        },
+        "ks": {
+          "value": "",
+          "type": "",
+          "videoSol": ""
+        },
+        "kok": {
+          "value": "",
+          "type": "",
+          "videoSol": ""
+        },
+        "mni": {
+          "value": "",
+          "type": "",
+          "videoSol": ""
+        },
+        "ne": {
+          "value": "",
+          "type": "",
+          "videoSol": ""
+        },
+        "pa": {
+          "value": "",
+          "type": "",
+          "videoSol": ""
+        },
+        "sd": {
+          "value": "",
+          "type": "",
+          "videoSol": ""
+        },
+        "ur": {
+          "value": "",
+          "type": "",
+          "videoSol": ""
+        },
+        "sat": {
+          "value": "",
+          "type": "",
+          "videoSol": ""
+        },
+        "mai": {
+          "value": "",
+          "type": "",
+          "videoSol": ""
+        },
+        "brx": {
+          "value": "",
+          "type": "",
+          "videoSol": ""
+        },
+        "doi": {
+          "value": "",
+          "type": "",
+          "videoSol": ""
+        },
+        "sa": {
+          "value": "",
+          "type": "",
+          "videoSol": ""
+        },
+        "grt": {
+          "value": "",
+          "type": "",
+          "videoSol": ""
+        },
+        "kha": {
+          "value": "",
+          "type": "",
+          "videoSol": ""
+        },
+        "lus": {
+          "value": "",
+          "type": "",
+          "videoSol": ""
+        },
+        "bo": {
+          "value": "",
+          "type": "",
+          "videoSol": ""
+        },
+        "trp": {
+          "value": "",
+          "type": "",
+          "videoSol": ""
+        }
+      },
+      "tags": [
+        "Speed Time and Distance"
+      ],
+      "globalConcept": [
+        {
+          "s": {
+            "id": "5eea6a1039140f30f369e7e7",
+            "title": "Quantitative Aptitude"
+          },
+          "c": {
+            "id": "5eea6a1039140f30f369e861",
+            "title": "Speed Time and Distance"
+          },
+          "t": {
+            "id": "67bf1c83f3c94420631bc19c",
+            "title": "Basic Calculation"
+          },
+          "st": {
+            "id": ""
+          },
+          "st1": {
+            "id": ""
+          },
+          "st2": {
+            "id": ""
+          },
+          "st3": {
+            "id": ""
+          },
+          "st4": {
+            "id": ""
+          }
+        }
+      ],
+      "stats": {
+        "totalStudents": 6345,
+        "bestTime": 0,
+        "averageTime": 24.893932230102426,
+        "attempts": {
+          "correct": 520,
+          "incorrect": 1098,
+          "partial": 0,
+          "skipped": 4727,
+          "skipOptionSelected": 0
+        }
+      },
+      "votes": 0,
+      "SSNo": 1,
+      "SSSNo": 0,
+      "marksObtained": 0,
+      "studentResStatus": "",
+      "studentResponse": {
+        "time": 0,
+        "visits": null
+      }
+    },
+    "6909e3bdd9de8466e62c0b5d": {
+      "correctOption": "2",
+      "multiCorrectOptions": null,
+      "range": {
+        "start": "",
+        "end": ""
+      },
+      "negMarks": 0.5,
+      "posMarks": 2,
+      "skipMarks": 0,
+      "partialM": {
+        "type": "",
+        "marks": 0
+      },
+      "isPartialMarking": false,
+      "sol": {
+        "en": {
+          "value": "$4d",
+          "type": "tb",
+          "videoSol": ""
+        },
+        "hn": {
+          "value": "$4e",
+          "type": "tb",
+          "videoSol": ""
+        },
+        "te": {
+          "value": "",
+          "type": "",
+          "videoSol": ""
+        },
+        "mr": {
+          "value": "",
+          "type": "",
+          "videoSol": ""
+        },
+        "bn": {
+          "value": "",
+          "type": "",
+          "videoSol": ""
+        },
+        "ml": {
+          "value": "",
+          "type": "",
+          "videoSol": ""
+        },
+        "gu": {
+          "value": "",
+          "type": "",
+          "videoSol": ""
+        },
+        "kn": {
+          "value": "",
+          "type": "",
+          "videoSol": ""
+        },
+        "ta": {
+          "value": "",
+          "type": "",
+          "videoSol": ""
+        },
+        "or": {
+          "value": "",
+          "type": "",
+          "videoSol": ""
+        },
+        "as": {
+          "value": "",
+          "type": "",
+          "videoSol": ""
+        },
+        "ks": {
+          "value": "",
+          "type": "",
+          "videoSol": ""
+        },
+        "kok": {
+          "value": "",
+          "type": "",
+          "videoSol": ""
+        },
+        "mni": {
+          "value": "",
+          "type": "",
+          "videoSol": ""
+        },
+        "ne": {
+          "value": "",
+          "type": "",
+          "videoSol": ""
+        },
+        "pa": {
+          "value": "",
+          "type": "",
+          "videoSol": ""
+        },
+        "sd": {
+          "value": "",
+          "type": "",
+          "videoSol": ""
+        },
+        "ur": {
+          "value": "",
+          "type": "",
+          "videoSol": ""
+        },
+        "sat": {
+          "value": "",
+          "type": "",
+          "videoSol": ""
+        },
+        "mai": {
+          "value": "",
+          "type": "",
+          "videoSol": ""
+        },
+        "brx": {
+          "value": "",
+          "type": "",
+          "videoSol": ""
+        },
+        "doi": {
+          "value": "",
+          "type": "",
+          "videoSol": ""
+        },
+        "sa": {
+          "value": "",
+          "type": "",
+          "videoSol": ""
+        },
+        "grt": {
+          "value": "",
+          "type": "",
+          "videoSol": ""
+        },
+        "kha": {
+          "value": "",
+          "type": "",
+          "videoSol": ""
+        },
+        "lus": {
+          "value": "",
+          "type": "",
+          "videoSol": ""
+        },
+        "bo": {
+          "value": "",
+          "type": "",
+          "videoSol": ""
+        },
+        "trp": {
+          "value": "",
+          "type": "",
+          "videoSol": ""
+        }
+      },
+      "tags": [
+        "Time and Work"
+      ],
+      "globalConcept": [
+        {
+          "s": {
+            "id": "5eea6a1039140f30f369e7e7",
+            "title": "Quantitative Aptitude"
+          },
+          "c": {
+            "id": "5eea6a1039140f30f369e855",
+            "title": "Time and Work"
+          },
+          "t": {
+            "id": "5eea6a1039140f30f369e856",
+            "title": "Work Efficiency"
+          },
+          "st": {
+            "id": ""
+          },
+          "st1": {
+            "id": ""
+          },
+          "st2": {
+            "id": ""
+          },
+          "st3": {
+            "id": ""
+          },
+          "st4": {
+            "id": ""
+          }
+        }
+      ],
+      "stats": {
+        "totalStudents": 6345,
+        "bestTime": 0,
+        "averageTime": 42.084633569740184,
+        "attempts": {
+          "correct": 4783,
+          "incorrect": 540,
+          "partial": 0,
+          "skipped": 1022,
+          "skipOptionSelected": 0
+        }
+      },
+      "votes": 0,
+      "SSNo": 1,
+      "SSSNo": 0,
+      "marksObtained": 0,
+      "studentResStatus": "",
+      "studentResponse": {
+        "time": 0,
+        "visits": null
+      }
+    },
+    "6909e3be4ae2a067d12aa459": {
+      "correctOption": "1",
+      "multiCorrectOptions": null,
+      "range": {
+        "start": "",
+        "end": ""
+      },
+      "negMarks": 0.5,
+      "posMarks": 2,
+      "skipMarks": 0,
+      "partialM": {
+        "type": "",
+        "marks": 0
+      },
+      "isPartialMarking": false,
+      "sol": {
+        "en": {
+          "value": "$4f",
+          "type": "tb",
+          "videoSol": ""
+        },
+        "hn": {
+          "value": "$50",
+          "type": "tb",
+          "videoSol": ""
+        },
+        "te": {
+          "value": "",
+          "type": "",
+          "videoSol": ""
+        },
+        "mr": {
+          "value": "",
+          "type": "",
+          "videoSol": ""
+        },
+        "bn": {
+          "value": "",
+          "type": "",
+          "videoSol": ""
+        },
+        "ml": {
+          "value": "",
+          "type": "",
+          "videoSol": ""
+        },
+        "gu": {
+          "value": "",
+          "type": "",
+          "videoSol": ""
+        },
+        "kn": {
+          "value": "",
+          "type": "",
+          "videoSol": ""
+        },
+        "ta": {
+          "value": "",
+          "type": "",
+          "videoSol": ""
+        },
+        "or": {
+          "value": "",
+          "type": "",
+          "videoSol": ""
+        },
+        "as": {
+          "value": "",
+          "type": "",
+          "videoSol": ""
+        },
+        "ks": {
+          "value": "",
+          "type": "",
+          "videoSol": ""
+        },
+        "kok": {
+          "value": "",
+          "type": "",
+          "videoSol": ""
+        },
+        "mni": {
+          "value": "",
+          "type": "",
+          "videoSol": ""
+        },
+        "ne": {
+          "value": "",
+          "type": "",
+          "videoSol": ""
+        },
+        "pa": {
+          "value": "",
+          "type": "",
+          "videoSol": ""
+        },
+        "sd": {
+          "value": "",
+          "type": "",
+          "videoSol": ""
+        },
+        "ur": {
+          "value": "",
+          "type": "",
+          "videoSol": ""
+        },
+        "sat": {
+          "value": "",
+          "type": "",
+          "videoSol": ""
+        },
+        "mai": {
+          "value": "",
+          "type": "",
+          "videoSol": ""
+        },
+        "brx": {
+          "value": "",
+          "type": "",
+          "videoSol": ""
+        },
+        "doi": {
+          "value": "",
+          "type": "",
+          "videoSol": ""
+        },
+        "sa": {
+          "value": "",
+          "type": "",
+          "videoSol": ""
+        },
+        "grt": {
+          "value": "",
+          "type": "",
+          "videoSol": ""
+        },
+        "kha": {
+          "value": "",
+          "type": "",
+          "videoSol": ""
+        },
+        "lus": {
+          "value": "",
+          "type": "",
+          "videoSol": ""
+        },
+        "bo": {
+          "value": "",
+          "type": "",
+          "videoSol": ""
+        },
+        "trp": {
+          "value": "",
+          "type": "",
+          "videoSol": ""
+        }
+      },
+      "tags": [
+        "Geometry"
+      ],
+      "globalConcept": [
+        {
+          "s": {
+            "id": "5eea6a1039140f30f369e7e7",
+            "title": "Quantitative Aptitude"
+          },
+          "c": {
+            "id": "5eea6a1039140f30f369e7e9",
+            "title": "Geometry"
+          },
+          "t": {
+            "id": "67c000798aaa08d725318135",
+            "title": "Circle"
+          },
+          "st": {
+            "id": "67c000923a65da215018aba9",
+            "title": "Chord, Arc and Sector"
+          },
+          "st1": {
+            "id": ""
+          },
+          "st2": {
+            "id": ""
+          },
+          "st3": {
+            "id": ""
+          },
+          "st4": {
+            "id": ""
+          }
+        }
+      ],
+      "stats": {
+        "totalStudents": 6345,
+        "bestTime": 0,
+        "averageTime": 41.40315208825838,
+        "attempts": {
+          "correct": 4202,
+          "incorrect": 491,
+          "partial": 0,
+          "skipped": 1652,
+          "skipOptionSelected": 0
+        }
+      },
+      "votes": 0,
+      "SSNo": 1,
+      "SSSNo": 0,
+      "marksObtained": 0,
+      "studentResStatus": "",
+      "studentResponse": {
+        "time": 0,
+        "visits": null
+      }
+    },
+    "6909e3bead30b3fd94261919": {
+      "correctOption": "1",
+      "multiCorrectOptions": null,
+      "range": {
+        "start": "",
+        "end": ""
+      },
+      "negMarks": 0.5,
+      "posMarks": 2,
+      "skipMarks": 0,
+      "partialM": {
+        "type": "",
+        "marks": 0
+      },
+      "isPartialMarking": false,
+      "sol": {
+        "en": {
+          "value": "$51",
+          "type": "tb",
+          "videoSol": ""
+        },
+        "hn": {
+          "value": "$52",
+          "type": "tb",
+          "videoSol": ""
+        },
+        "te": {
+          "value": "",
+          "type": "",
+          "videoSol": ""
+        },
+        "mr": {
+          "value": "",
+          "type": "",
+          "videoSol": ""
+        },
+        "bn": {
+          "value": "",
+          "type": "",
+          "videoSol": ""
+        },
+        "ml": {
+          "value": "",
+          "type": "",
+          "videoSol": ""
+        },
+        "gu": {
+          "value": "",
+          "type": "",
+          "videoSol": ""
+        },
+        "kn": {
+          "value": "",
+          "type": "",
+          "videoSol": ""
+        },
+        "ta": {
+          "value": "",
+          "type": "",
+          "videoSol": ""
+        },
+        "or": {
+          "value": "",
+          "type": "",
+          "videoSol": ""
+        },
+        "as": {
+          "value": "",
+          "type": "",
+          "videoSol": ""
+        },
+        "ks": {
+          "value": "",
+          "type": "",
+          "videoSol": ""
+        },
+        "kok": {
+          "value": "",
+          "type": "",
+          "videoSol": ""
+        },
+        "mni": {
+          "value": "",
+          "type": "",
+          "videoSol": ""
+        },
+        "ne": {
+          "value": "",
+          "type": "",
+          "videoSol": ""
+        },
+        "pa": {
+          "value": "",
+          "type": "",
+          "videoSol": ""
+        },
+        "sd": {
+          "value": "",
+          "type": "",
+          "videoSol": ""
+        },
+        "ur": {
+          "value": "",
+          "type": "",
+          "videoSol": ""
+        },
+        "sat": {
+          "value": "",
+          "type": "",
+          "videoSol": ""
+        },
+        "mai": {
+          "value": "",
+          "type": "",
+          "videoSol": ""
+        },
+        "brx": {
+          "value": "",
+          "type": "",
+          "videoSol": ""
+        },
+        "doi": {
+          "value": "",
+          "type": "",
+          "videoSol": ""
+        },
+        "sa": {
+          "value": "",
+          "type": "",
+          "videoSol": ""
+        },
+        "grt": {
+          "value": "",
+          "type": "",
+          "videoSol": ""
+        },
+        "kha": {
+          "value": "",
+          "type": "",
+          "videoSol": ""
+        },
+        "lus": {
+          "value": "",
+          "type": "",
+          "videoSol": ""
+        },
+        "bo": {
+          "value": "",
+          "type": "",
+          "videoSol": ""
+        },
+        "trp": {
+          "value": "",
+          "type": "",
+          "videoSol": ""
+        }
+      },
+      "tags": [
+        "Geometry"
+      ],
+      "globalConcept": [
+        {
+          "s": {
+            "id": "5eea6a1039140f30f369e7e7",
+            "title": "Quantitative Aptitude"
+          },
+          "c": {
+            "id": "5eea6a1039140f30f369e7e9",
+            "title": "Geometry"
+          },
+          "t": {
+            "id": "5eea6a1039140f30f369e7fb",
+            "title": "Co-ordinate Geometry"
+          },
+          "st": {
+            "id": ""
+          },
+          "st1": {
+            "id": ""
+          },
+          "st2": {
+            "id": ""
+          },
+          "st3": {
+            "id": ""
+          },
+          "st4": {
+            "id": ""
+          }
+        }
+      ],
+      "stats": {
+        "totalStudents": 6345,
+        "bestTime": 0,
+        "averageTime": 14.674389282899917,
+        "attempts": {
+          "correct": 2230,
+          "incorrect": 2572,
+          "partial": 0,
+          "skipped": 1543,
+          "skipOptionSelected": 0
+        }
+      },
+      "votes": 0,
+      "SSNo": 1,
+      "SSSNo": 0,
+      "marksObtained": 0,
+      "studentResStatus": "",
+      "studentResponse": {
+        "time": 0,
+        "visits": null
+      }
+    },
+    "6909e3beb7a1ac7c4e952274": {
+      "correctOption": "2",
+      "multiCorrectOptions": null,
+      "range": {
+        "start": "",
+        "end": ""
+      },
+      "negMarks": 0.5,
+      "posMarks": 2,
+      "skipMarks": 0,
+      "partialM": {
+        "type": "",
+        "marks": 0
+      },
+      "isPartialMarking": false,
+      "sol": {
+        "en": {
+          "value": "$53",
+          "type": "tb",
+          "videoSol": ""
+        },
+        "hn": {
+          "value": "$54",
+          "type": "tb",
+          "videoSol": ""
+        },
+        "te": {
+          "value": "",
+          "type": "",
+          "videoSol": ""
+        },
+        "mr": {
+          "value": "",
+          "type": "",
+          "videoSol": ""
+        },
+        "bn": {
+          "value": "",
+          "type": "",
+          "videoSol": ""
+        },
+        "ml": {
+          "value": "",
+          "type": "",
+          "videoSol": ""
+        },
+        "gu": {
+          "value": "",
+          "type": "",
+          "videoSol": ""
+        },
+        "kn": {
+          "value": "",
+          "type": "",
+          "videoSol": ""
+        },
+        "ta": {
+          "value": "",
+          "type": "",
+          "videoSol": ""
+        },
+        "or": {
+          "value": "",
+          "type": "",
+          "videoSol": ""
+        },
+        "as": {
+          "value": "",
+          "type": "",
+          "videoSol": ""
+        },
+        "ks": {
+          "value": "",
+          "type": "",
+          "videoSol": ""
+        },
+        "kok": {
+          "value": "",
+          "type": "",
+          "videoSol": ""
+        },
+        "mni": {
+          "value": "",
+          "type": "",
+          "videoSol": ""
+        },
+        "ne": {
+          "value": "",
+          "type": "",
+          "videoSol": ""
+        },
+        "pa": {
+          "value": "",
+          "type": "",
+          "videoSol": ""
+        },
+        "sd": {
+          "value": "",
+          "type": "",
+          "videoSol": ""
+        },
+        "ur": {
+          "value": "",
+          "type": "",
+          "videoSol": ""
+        },
+        "sat": {
+          "value": "",
+          "type": "",
+          "videoSol": ""
+        },
+        "mai": {
+          "value": "",
+          "type": "",
+          "videoSol": ""
+        },
+        "brx": {
+          "value": "",
+          "type": "",
+          "videoSol": ""
+        },
+        "doi": {
+          "value": "",
+          "type": "",
+          "videoSol": ""
+        },
+        "sa": {
+          "value": "",
+          "type": "",
+          "videoSol": ""
+        },
+        "grt": {
+          "value": "",
+          "type": "",
+          "videoSol": ""
+        },
+        "kha": {
+          "value": "",
+          "type": "",
+          "videoSol": ""
+        },
+        "lus": {
+          "value": "",
+          "type": "",
+          "videoSol": ""
+        },
+        "bo": {
+          "value": "",
+          "type": "",
+          "videoSol": ""
+        },
+        "trp": {
+          "value": "",
+          "type": "",
+          "videoSol": ""
+        }
+      },
+      "tags": [
+        "Trigonometry"
+      ],
+      "globalConcept": [
+        {
+          "s": {
+            "id": "5eea6a1039140f30f369e7e7",
+            "title": "Quantitative Aptitude"
+          },
+          "c": {
+            "id": "5eea6a1039140f30f369e859",
+            "title": "Trigonometry"
+          },
+          "t": {
+            "id": "5eea6a1039140f30f369e85d",
+            "title": "Circular Measure of Angles"
+          },
+          "st": {
+            "id": "67bf0e07de9d4ad7fd88cab6",
+            "title": "Trigonometric Values"
+          },
+          "st1": {
+            "id": "67bf0e84a16077cce0d40271",
+            "title": "Angle Measurement (Radian)"
+          },
+          "st2": {
+            "id": ""
+          },
+          "st3": {
+            "id": ""
+          },
+          "st4": {
+            "id": ""
+          }
+        }
+      ],
+      "stats": {
+        "totalStudents": 6345,
+        "bestTime": 0,
+        "averageTime": 38.8362490149724,
+        "attempts": {
+          "correct": 3013,
+          "incorrect": 473,
+          "partial": 0,
+          "skipped": 2859,
+          "skipOptionSelected": 0
+        }
+      },
+      "votes": 0,
+      "SSNo": 1,
+      "SSSNo": 0,
+      "marksObtained": 0,
+      "studentResStatus": "",
+      "studentResponse": {
+        "time": 0,
+        "visits": null
+      }
+    },
+    "6909e3bf03a111035ab2904e": {
+      "correctOption": "2",
+      "multiCorrectOptions": null,
+      "range": {
+        "start": "",
+        "end": ""
+      },
+      "negMarks": 0.5,
+      "posMarks": 2,
+      "skipMarks": 0,
+      "partialM": {
+        "type": "",
+        "marks": 0
+      },
+      "isPartialMarking": false,
+      "sol": {
+        "en": {
+          "value": "$55",
+          "type": "tb",
+          "videoSol": ""
+        },
+        "hn": {
+          "value": "$56",
+          "type": "tb",
+          "videoSol": ""
+        },
+        "te": {
+          "value": "",
+          "type": "",
+          "videoSol": ""
+        },
+        "mr": {
+          "value": "",
+          "type": "",
+          "videoSol": ""
+        },
+        "bn": {
+          "value": "",
+          "type": "",
+          "videoSol": ""
+        },
+        "ml": {
+          "value": "",
+          "type": "",
+          "videoSol": ""
+        },
+        "gu": {
+          "value": "",
+          "type": "",
+          "videoSol": ""
+        },
+        "kn": {
+          "value": "",
+          "type": "",
+          "videoSol": ""
+        },
+        "ta": {
+          "value": "",
+          "type": "",
+          "videoSol": ""
+        },
+        "or": {
+          "value": "",
+          "type": "",
+          "videoSol": ""
+        },
+        "as": {
+          "value": "",
+          "type": "",
+          "videoSol": ""
+        },
+        "ks": {
+          "value": "",
+          "type": "",
+          "videoSol": ""
+        },
+        "kok": {
+          "value": "",
+          "type": "",
+          "videoSol": ""
+        },
+        "mni": {
+          "value": "",
+          "type": "",
+          "videoSol": ""
+        },
+        "ne": {
+          "value": "",
+          "type": "",
+          "videoSol": ""
+        },
+        "pa": {
+          "value": "",
+          "type": "",
+          "videoSol": ""
+        },
+        "sd": {
+          "value": "",
+          "type": "",
+          "videoSol": ""
+        },
+        "ur": {
+          "value": "",
+          "type": "",
+          "videoSol": ""
+        },
+        "sat": {
+          "value": "",
+          "type": "",
+          "videoSol": ""
+        },
+        "mai": {
+          "value": "",
+          "type": "",
+          "videoSol": ""
+        },
+        "brx": {
+          "value": "",
+          "type": "",
+          "videoSol": ""
+        },
+        "doi": {
+          "value": "",
+          "type": "",
+          "videoSol": ""
+        },
+        "sa": {
+          "value": "",
+          "type": "",
+          "videoSol": ""
+        },
+        "grt": {
+          "value": "",
+          "type": "",
+          "videoSol": ""
+        },
+        "kha": {
+          "value": "",
+          "type": "",
+          "videoSol": ""
+        },
+        "lus": {
+          "value": "",
+          "type": "",
+          "videoSol": ""
+        },
+        "bo": {
+          "value": "",
+          "type": "",
+          "videoSol": ""
+        },
+        "trp": {
+          "value": "",
+          "type": "",
+          "videoSol": ""
+        }
+      },
+      "tags": [
+        "Algebra"
+      ],
+      "globalConcept": [
+        {
+          "s": {
+            "id": "5eea6a1039140f30f369e7e7",
+            "title": "Quantitative Aptitude"
+          },
+          "c": {
+            "id": "5eea6a1039140f30f369e810",
+            "title": "Algebra"
+          },
+          "t": {
+            "id": "5eea6a1039140f30f369e81a",
+            "title": "Identities"
+          },
+          "st": {
+            "id": ""
+          },
+          "st1": {
+            "id": ""
+          },
+          "st2": {
+            "id": ""
+          },
+          "st3": {
+            "id": ""
+          },
+          "st4": {
+            "id": ""
+          }
+        }
+      ],
+      "stats": {
+        "totalStudents": 6345,
+        "bestTime": 0,
+        "averageTime": 18.199369582348314,
+        "attempts": {
+          "correct": 4853,
+          "incorrect": 89,
+          "partial": 0,
+          "skipped": 1403,
+          "skipOptionSelected": 0
+        }
+      },
+      "votes": 0,
+      "SSNo": 1,
+      "SSSNo": 0,
+      "marksObtained": 0,
+      "studentResStatus": "",
+      "studentResponse": {
+        "time": 0,
+        "visits": null
+      }
+    },
+    "6909e3bf13685a39edc391b7": {
+      "correctOption": "2",
+      "multiCorrectOptions": null,
+      "range": {
+        "start": "",
+        "end": ""
+      },
+      "negMarks": 0.5,
+      "posMarks": 2,
+      "skipMarks": 0,
+      "partialM": {
+        "type": "",
+        "marks": 0
+      },
+      "isPartialMarking": false,
+      "sol": {
+        "en": {
+          "value": "$57",
+          "type": "tb",
+          "videoSol": ""
+        },
+        "hn": {
+          "value": "$58",
+          "type": "tb",
+          "videoSol": ""
+        },
+        "te": {
+          "value": "",
+          "type": "",
+          "videoSol": ""
+        },
+        "mr": {
+          "value": "",
+          "type": "",
+          "videoSol": ""
+        },
+        "bn": {
+          "value": "",
+          "type": "",
+          "videoSol": ""
+        },
+        "ml": {
+          "value": "",
+          "type": "",
+          "videoSol": ""
+        },
+        "gu": {
+          "value": "",
+          "type": "",
+          "videoSol": ""
+        },
+        "kn": {
+          "value": "",
+          "type": "",
+          "videoSol": ""
+        },
+        "ta": {
+          "value": "",
+          "type": "",
+          "videoSol": ""
+        },
+        "or": {
+          "value": "",
+          "type": "",
+          "videoSol": ""
+        },
+        "as": {
+          "value": "",
+          "type": "",
+          "videoSol": ""
+        },
+        "ks": {
+          "value": "",
+          "type": "",
+          "videoSol": ""
+        },
+        "kok": {
+          "value": "",
+          "type": "",
+          "videoSol": ""
+        },
+        "mni": {
+          "value": "",
+          "type": "",
+          "videoSol": ""
+        },
+        "ne": {
+          "value": "",
+          "type": "",
+          "videoSol": ""
+        },
+        "pa": {
+          "value": "",
+          "type": "",
+          "videoSol": ""
+        },
+        "sd": {
+          "value": "",
+          "type": "",
+          "videoSol": ""
+        },
+        "ur": {
+          "value": "",
+          "type": "",
+          "videoSol": ""
+        },
+        "sat": {
+          "value": "",
+          "type": "",
+          "videoSol": ""
+        },
+        "mai": {
+          "value": "",
+          "type": "",
+          "videoSol": ""
+        },
+        "brx": {
+          "value": "",
+          "type": "",
+          "videoSol": ""
+        },
+        "doi": {
+          "value": "",
+          "type": "",
+          "videoSol": ""
+        },
+        "sa": {
+          "value": "",
+          "type": "",
+          "videoSol": ""
+        },
+        "grt": {
+          "value": "",
+          "type": "",
+          "videoSol": ""
+        },
+        "kha": {
+          "value": "",
+          "type": "",
+          "videoSol": ""
+        },
+        "lus": {
+          "value": "",
+          "type": "",
+          "videoSol": ""
+        },
+        "bo": {
+          "value": "",
+          "type": "",
+          "videoSol": ""
+        },
+        "trp": {
+          "value": "",
+          "type": "",
+          "videoSol": ""
+        }
+      },
+      "tags": [
+        "Geometry"
+      ],
+      "globalConcept": [
+        {
+          "s": {
+            "id": "5eea6a1039140f30f369e7e7",
+            "title": "Quantitative Aptitude"
+          },
+          "c": {
+            "id": "5eea6a1039140f30f369e7e9",
+            "title": "Geometry"
+          },
+          "t": {
+            "id": "621f7d35ebb79d463793c63b",
+            "title": "Triangles"
+          },
+          "st": {
+            "id": ""
+          },
+          "st1": {
+            "id": ""
+          },
+          "st2": {
+            "id": ""
+          },
+          "st3": {
+            "id": ""
+          },
+          "st4": {
+            "id": ""
+          }
+        }
+      ],
+      "stats": {
+        "totalStudents": 6345,
+        "bestTime": 0,
+        "averageTime": 7.482427107959025,
+        "attempts": {
+          "correct": 5074,
+          "incorrect": 161,
+          "partial": 0,
+          "skipped": 1110,
+          "skipOptionSelected": 0
+        }
+      },
+      "votes": 0,
+      "SSNo": 1,
+      "SSSNo": 0,
+      "marksObtained": 0,
+      "studentResStatus": "",
+      "studentResponse": {
+        "time": 0,
+        "visits": null
+      }
+    },
+    "6909e3bff579995fc0aa3c05": {
+      "correctOption": "4",
+      "multiCorrectOptions": null,
+      "range": {
+        "start": "",
+        "end": ""
+      },
+      "negMarks": 0.5,
+      "posMarks": 2,
+      "skipMarks": 0,
+      "partialM": {
+        "type": "",
+        "marks": 0
+      },
+      "isPartialMarking": false,
+      "sol": {
+        "en": {
+          "value": "$59",
+          "type": "tb",
+          "videoSol": ""
+        },
+        "hn": {
+          "value": "$5a",
+          "type": "tb",
+          "videoSol": ""
+        },
+        "te": {
+          "value": "",
+          "type": "",
+          "videoSol": ""
+        },
+        "mr": {
+          "value": "",
+          "type": "",
+          "videoSol": ""
+        },
+        "bn": {
+          "value": "",
+          "type": "",
+          "videoSol": ""
+        },
+        "ml": {
+          "value": "",
+          "type": "",
+          "videoSol": ""
+        },
+        "gu": {
+          "value": "",
+          "type": "",
+          "videoSol": ""
+        },
+        "kn": {
+          "value": "",
+          "type": "",
+          "videoSol": ""
+        },
+        "ta": {
+          "value": "",
+          "type": "",
+          "videoSol": ""
+        },
+        "or": {
+          "value": "",
+          "type": "",
+          "videoSol": ""
+        },
+        "as": {
+          "value": "",
+          "type": "",
+          "videoSol": ""
+        },
+        "ks": {
+          "value": "",
+          "type": "",
+          "videoSol": ""
+        },
+        "kok": {
+          "value": "",
+          "type": "",
+          "videoSol": ""
+        },
+        "mni": {
+          "value": "",
+          "type": "",
+          "videoSol": ""
+        },
+        "ne": {
+          "value": "",
+          "type": "",
+          "videoSol": ""
+        },
+        "pa": {
+          "value": "",
+          "type": "",
+          "videoSol": ""
+        },
+        "sd": {
+          "value": "",
+          "type": "",
+          "videoSol": ""
+        },
+        "ur": {
+          "value": "",
+          "type": "",
+          "videoSol": ""
+        },
+        "sat": {
+          "value": "",
+          "type": "",
+          "videoSol": ""
+        },
+        "mai": {
+          "value": "",
+          "type": "",
+          "videoSol": ""
+        },
+        "brx": {
+          "value": "",
+          "type": "",
+          "videoSol": ""
+        },
+        "doi": {
+          "value": "",
+          "type": "",
+          "videoSol": ""
+        },
+        "sa": {
+          "value": "",
+          "type": "",
+          "videoSol": ""
+        },
+        "grt": {
+          "value": "",
+          "type": "",
+          "videoSol": ""
+        },
+        "kha": {
+          "value": "",
+          "type": "",
+          "videoSol": ""
+        },
+        "lus": {
+          "value": "",
+          "type": "",
+          "videoSol": ""
+        },
+        "bo": {
+          "value": "",
+          "type": "",
+          "videoSol": ""
+        },
+        "trp": {
+          "value": "",
+          "type": "",
+          "videoSol": ""
+        }
+      },
+      "tags": [
+        "Trigonometry"
+      ],
+      "globalConcept": [
+        {
+          "s": {
+            "id": "5eea6a1039140f30f369e7e7",
+            "title": "Quantitative Aptitude"
+          },
+          "c": {
+            "id": "5eea6a1039140f30f369e859",
+            "title": "Trigonometry"
+          },
+          "t": {
+            "id": "5eea6a1039140f30f369e85a",
+            "title": "Trigonometric Ratios and Identities"
+          },
+          "st": {
+            "id": ""
+          },
+          "st1": {
+            "id": ""
+          },
+          "st2": {
+            "id": ""
+          },
+          "st3": {
+            "id": ""
+          },
+          "st4": {
+            "id": ""
+          }
+        }
+      ],
+      "stats": {
+        "totalStudents": 6345,
+        "bestTime": 0,
+        "averageTime": 19.478486997635937,
+        "attempts": {
+          "correct": 3817,
+          "incorrect": 916,
+          "partial": 0,
+          "skipped": 1612,
+          "skipOptionSelected": 0
+        }
+      },
+      "votes": 0,
+      "SSNo": 1,
+      "SSSNo": 0,
+      "marksObtained": 0,
+      "studentResStatus": "",
+      "studentResponse": {
+        "time": 0,
+        "visits": null
+      }
+    },
+    "6909e3c00a867837a1c51319": {
+      "correctOption": "3",
+      "multiCorrectOptions": null,
+      "range": {
+        "start": "",
+        "end": ""
+      },
+      "negMarks": 0.5,
+      "posMarks": 2,
+      "skipMarks": 0,
+      "partialM": {
+        "type": "",
+        "marks": 0
+      },
+      "isPartialMarking": false,
+      "sol": {
+        "en": {
+          "value": "$5b",
+          "type": "tb",
+          "videoSol": ""
+        },
+        "hn": {
+          "value": "$5c",
+          "type": "tb",
+          "videoSol": ""
+        },
+        "te": {
+          "value": "",
+          "type": "",
+          "videoSol": ""
+        },
+        "mr": {
+          "value": "",
+          "type": "",
+          "videoSol": ""
+        },
+        "bn": {
+          "value": "",
+          "type": "",
+          "videoSol": ""
+        },
+        "ml": {
+          "value": "",
+          "type": "",
+          "videoSol": ""
+        },
+        "gu": {
+          "value": "",
+          "type": "",
+          "videoSol": ""
+        },
+        "kn": {
+          "value": "",
+          "type": "",
+          "videoSol": ""
+        },
+        "ta": {
+          "value": "",
+          "type": "",
+          "videoSol": ""
+        },
+        "or": {
+          "value": "",
+          "type": "",
+          "videoSol": ""
+        },
+        "as": {
+          "value": "",
+          "type": "",
+          "videoSol": ""
+        },
+        "ks": {
+          "value": "",
+          "type": "",
+          "videoSol": ""
+        },
+        "kok": {
+          "value": "",
+          "type": "",
+          "videoSol": ""
+        },
+        "mni": {
+          "value": "",
+          "type": "",
+          "videoSol": ""
+        },
+        "ne": {
+          "value": "",
+          "type": "",
+          "videoSol": ""
+        },
+        "pa": {
+          "value": "",
+          "type": "",
+          "videoSol": ""
+        },
+        "sd": {
+          "value": "",
+          "type": "",
+          "videoSol": ""
+        },
+        "ur": {
+          "value": "",
+          "type": "",
+          "videoSol": ""
+        },
+        "sat": {
+          "value": "",
+          "type": "",
+          "videoSol": ""
+        },
+        "mai": {
+          "value": "",
+          "type": "",
+          "videoSol": ""
+        },
+        "brx": {
+          "value": "",
+          "type": "",
+          "videoSol": ""
+        },
+        "doi": {
+          "value": "",
+          "type": "",
+          "videoSol": ""
+        },
+        "sa": {
+          "value": "",
+          "type": "",
+          "videoSol": ""
+        },
+        "grt": {
+          "value": "",
+          "type": "",
+          "videoSol": ""
+        },
+        "kha": {
+          "value": "",
+          "type": "",
+          "videoSol": ""
+        },
+        "lus": {
+          "value": "",
+          "type": "",
+          "videoSol": ""
+        },
+        "bo": {
+          "value": "",
+          "type": "",
+          "videoSol": ""
+        },
+        "trp": {
+          "value": "",
+          "type": "",
+          "videoSol": ""
+        }
+      },
+      "tags": [
+        "Trigonometry"
+      ],
+      "globalConcept": [
+        {
+          "s": {
+            "id": "5eea6a1039140f30f369e7e7",
+            "title": "Quantitative Aptitude"
+          },
+          "c": {
+            "id": "5eea6a1439140f30f369f1c5",
+            "title": "Trigonometry"
+          },
+          "t": {
+            "id": "5eea6a1039140f30f369e85a",
+            "title": "Trigonometric Ratios and Identities"
+          },
+          "st": {
+            "id": ""
+          },
+          "st1": {
+            "id": ""
+          },
+          "st2": {
+            "id": ""
+          },
+          "st3": {
+            "id": ""
+          },
+          "st4": {
+            "id": ""
+          }
+        }
+      ],
+      "stats": {
+        "totalStudents": 6345,
+        "bestTime": 0,
+        "averageTime": 26.38423955870763,
+        "attempts": {
+          "correct": 2639,
+          "incorrect": 746,
+          "partial": 0,
+          "skipped": 2960,
+          "skipOptionSelected": 0
+        }
+      },
+      "votes": 0,
+      "SSNo": 1,
+      "SSSNo": 0,
+      "marksObtained": 0,
+      "studentResStatus": "",
+      "studentResponse": {
+        "time": 0,
+        "visits": null
+      }
+    },
+    "6909e3c046afbbd01e8f1014": {
+      "correctOption": "2",
+      "multiCorrectOptions": null,
+      "range": {
+        "start": "",
+        "end": ""
+      },
+      "negMarks": 0.5,
+      "posMarks": 2,
+      "skipMarks": 0,
+      "partialM": {
+        "type": "",
+        "marks": 0
+      },
+      "isPartialMarking": false,
+      "sol": {
+        "en": {
+          "value": "$5d",
+          "type": "tb",
+          "videoSol": ""
+        },
+        "hn": {
+          "value": "$5e",
+          "type": "tb",
+          "videoSol": ""
+        },
+        "te": {
+          "value": "",
+          "type": "",
+          "videoSol": ""
+        },
+        "mr": {
+          "value": "",
+          "type": "",
+          "videoSol": ""
+        },
+        "bn": {
+          "value": "",
+          "type": "",
+          "videoSol": ""
+        },
+        "ml": {
+          "value": "",
+          "type": "",
+          "videoSol": ""
+        },
+        "gu": {
+          "value": "",
+          "type": "",
+          "videoSol": ""
+        },
+        "kn": {
+          "value": "",
+          "type": "",
+          "videoSol": ""
+        },
+        "ta": {
+          "value": "",
+          "type": "",
+          "videoSol": ""
+        },
+        "or": {
+          "value": "",
+          "type": "",
+          "videoSol": ""
+        },
+        "as": {
+          "value": "",
+          "type": "",
+          "videoSol": ""
+        },
+        "ks": {
+          "value": "",
+          "type": "",
+          "videoSol": ""
+        },
+        "kok": {
+          "value": "",
+          "type": "",
+          "videoSol": ""
+        },
+        "mni": {
+          "value": "",
+          "type": "",
+          "videoSol": ""
+        },
+        "ne": {
+          "value": "",
+          "type": "",
+          "videoSol": ""
+        },
+        "pa": {
+          "value": "",
+          "type": "",
+          "videoSol": ""
+        },
+        "sd": {
+          "value": "",
+          "type": "",
+          "videoSol": ""
+        },
+        "ur": {
+          "value": "",
+          "type": "",
+          "videoSol": ""
+        },
+        "sat": {
+          "value": "",
+          "type": "",
+          "videoSol": ""
+        },
+        "mai": {
+          "value": "",
+          "type": "",
+          "videoSol": ""
+        },
+        "brx": {
+          "value": "",
+          "type": "",
+          "videoSol": ""
+        },
+        "doi": {
+          "value": "",
+          "type": "",
+          "videoSol": ""
+        },
+        "sa": {
+          "value": "",
+          "type": "",
+          "videoSol": ""
+        },
+        "grt": {
+          "value": "",
+          "type": "",
+          "videoSol": ""
+        },
+        "kha": {
+          "value": "",
+          "type": "",
+          "videoSol": ""
+        },
+        "lus": {
+          "value": "",
+          "type": "",
+          "videoSol": ""
+        },
+        "bo": {
+          "value": "",
+          "type": "",
+          "videoSol": ""
+        },
+        "trp": {
+          "value": "",
+          "type": "",
+          "videoSol": ""
+        }
+      },
+      "tags": [
+        "Geometry"
+      ],
+      "globalConcept": [
+        {
+          "s": {
+            "id": "5eea6a1039140f30f369e7e7",
+            "title": "Quantitative Aptitude"
+          },
+          "c": {
+            "id": "5eea6a1039140f30f369e7e9",
+            "title": "Geometry"
+          },
+          "t": {
+            "id": "5eea6a1039140f30f369e7ea",
+            "title": "Circles, Chords and Tangents"
+          },
+          "st": {
+            "id": "5eea6a1039140f30f369e7ed",
+            "title": "Theorem on Chords"
+          },
+          "st1": {
+            "id": ""
+          },
+          "st2": {
+            "id": ""
+          },
+          "st3": {
+            "id": ""
+          },
+          "st4": {
+            "id": ""
+          }
+        }
+      ],
+      "stats": {
+        "totalStudents": 6345,
+        "bestTime": 0,
+        "averageTime": 9.388967691095335,
+        "attempts": {
+          "correct": 4384,
+          "incorrect": 276,
+          "partial": 0,
+          "skipped": 1685,
+          "skipOptionSelected": 0
+        }
+      },
+      "votes": 0,
+      "SSNo": 1,
+      "SSSNo": 0,
+      "marksObtained": 0,
+      "studentResStatus": "",
+      "studentResponse": {
+        "time": 0,
+        "visits": null
+      }
+    },
+    "6909e3c04abbf384c68ebf85": {
+      "correctOption": "2",
+      "multiCorrectOptions": null,
+      "range": {
+        "start": "",
+        "end": ""
+      },
+      "negMarks": 0.5,
+      "posMarks": 2,
+      "skipMarks": 0,
+      "partialM": {
+        "type": "",
+        "marks": 0
+      },
+      "isPartialMarking": false,
+      "sol": {
+        "en": {
+          "value": "$5f",
+          "type": "tb",
+          "videoSol": ""
+        },
+        "hn": {
+          "value": "$60",
+          "type": "tb",
+          "videoSol": ""
+        },
+        "te": {
+          "value": "",
+          "type": "",
+          "videoSol": ""
+        },
+        "mr": {
+          "value": "",
+          "type": "",
+          "videoSol": ""
+        },
+        "bn": {
+          "value": "",
+          "type": "",
+          "videoSol": ""
+        },
+        "ml": {
+          "value": "",
+          "type": "",
+          "videoSol": ""
+        },
+        "gu": {
+          "value": "",
+          "type": "",
+          "videoSol": ""
+        },
+        "kn": {
+          "value": "",
+          "type": "",
+          "videoSol": ""
+        },
+        "ta": {
+          "value": "$61",
+          "type": "tb",
+          "videoSol": ""
+        },
+        "or": {
+          "value": "",
+          "type": "",
+          "videoSol": ""
+        },
+        "as": {
+          "value": "",
+          "type": "",
+          "videoSol": ""
+        },
+        "ks": {
+          "value": "",
+          "type": "",
+          "videoSol": ""
+        },
+        "kok": {
+          "value": "",
+          "type": "",
+          "videoSol": ""
+        },
+        "mni": {
+          "value": "",
+          "type": "",
+          "videoSol": ""
+        },
+        "ne": {
+          "value": "",
+          "type": "",
+          "videoSol": ""
+        },
+        "pa": {
+          "value": "",
+          "type": "",
+          "videoSol": ""
+        },
+        "sd": {
+          "value": "",
+          "type": "",
+          "videoSol": ""
+        },
+        "ur": {
+          "value": "",
+          "type": "",
+          "videoSol": ""
+        },
+        "sat": {
+          "value": "",
+          "type": "",
+          "videoSol": ""
+        },
+        "mai": {
+          "value": "",
+          "type": "",
+          "videoSol": ""
+        },
+        "brx": {
+          "value": "",
+          "type": "",
+          "videoSol": ""
+        },
+        "doi": {
+          "value": "",
+          "type": "",
+          "videoSol": ""
+        },
+        "sa": {
+          "value": "",
+          "type": "",
+          "videoSol": ""
+        },
+        "grt": {
+          "value": "",
+          "type": "",
+          "videoSol": ""
+        },
+        "kha": {
+          "value": "",
+          "type": "",
+          "videoSol": ""
+        },
+        "lus": {
+          "value": "",
+          "type": "",
+          "videoSol": ""
+        },
+        "bo": {
+          "value": "",
+          "type": "",
+          "videoSol": ""
+        },
+        "trp": {
+          "value": "",
+          "type": "",
+          "videoSol": ""
+        }
+      },
+      "tags": [
+        "Simplification"
+      ],
+      "globalConcept": [
+        {
+          "s": {
+            "id": "5eea6a1039140f30f369e7e7",
+            "title": "Quantitative Aptitude"
+          },
+          "c": {
+            "id": "5eea6a1039140f30f369e808",
+            "title": "Simplification"
+          },
+          "t": {
+            "id": "5eea6a1039140f30f369e80a",
+            "title": "Surds and Indices"
+          },
+          "st": {
+            "id": ""
+          },
+          "st1": {
+            "id": ""
+          },
+          "st2": {
+            "id": ""
+          },
+          "st3": {
+            "id": ""
+          },
+          "st4": {
+            "id": ""
+          }
+        }
+      ],
+      "stats": {
+        "totalStudents": 6345,
+        "bestTime": 0,
+        "averageTime": 17.696926713948063,
+        "attempts": {
+          "correct": 4409,
+          "incorrect": 303,
+          "partial": 0,
+          "skipped": 1633,
+          "skipOptionSelected": 0
+        }
+      },
+      "votes": 0,
+      "SSNo": 1,
+      "SSSNo": 0,
+      "marksObtained": 0,
+      "studentResStatus": "",
+      "studentResponse": {
+        "time": 0,
+        "visits": null
+      }
+    }
+  },
+  "analysis": {
+    "analysis": {
+      "title": "PYST 9: SSC CGL 2025 - Quantitative Aptitude (Held On: 14th_September_2025_Shift_3)",
+      "maxMarks": 50,
+      "avgMarks": 28.192641033721994,
+      "totalStudents": 6346,
+      "rankMarksData": [
+        {
+          "marks": 50,
+          "count": 20,
+          "per": 100,
+          "rank": 1
+        },
+        {
+          "marks": 48,
+          "count": 25,
+          "per": 99.68484084462654,
+          "rank": 21
+        },
+        {
+          "marks": 47.5,
+          "count": 48,
+          "per": 99.2908919004097,
+          "rank": 46
+        },
+        {
+          "marks": 46,
+          "count": 49,
+          "per": 98.5345099275134,
+          "rank": 94
+        },
+        {
+          "marks": 45.5,
+          "count": 45,
+          "per": 97.7623699968484,
+          "rank": 143
+        },
+        {
+          "marks": 45,
+          "count": 37,
+          "per": 97.05326189725811,
+          "rank": 188
+        },
+        {
+          "marks": 44,
+          "count": 54,
+          "per": 96.4702174598172,
+          "rank": 225
+        },
+        {
+          "marks": 43.5,
+          "count": 86,
+          "per": 95.61928774030886,
+          "rank": 279
+        },
+        {
+          "marks": 43,
+          "count": 49,
+          "per": 94.26410337220297,
+          "rank": 365
+        },
+        {
+          "marks": 42.5,
+          "count": 18,
+          "per": 93.49196344153798,
+          "rank": 414
+        },
+        {
+          "marks": 42,
+          "count": 94,
+          "per": 93.20832020170185,
+          "rank": 432
+        },
+        {
+          "marks": 41.5,
+          "count": 117,
+          "per": 91.72707217144658,
+          "rank": 526
+        },
+        {
+          "marks": 41,
+          "count": 66,
+          "per": 89.88339111251182,
+          "rank": 643
+        },
+        {
+          "marks": 40.5,
+          "count": 38,
+          "per": 88.84336589977939,
+          "rank": 709
+        },
+        {
+          "marks": 40,
+          "count": 84,
+          "per": 88.24456350456981,
+          "rank": 747
+        },
+        {
+          "marks": 39.5,
+          "count": 114,
+          "per": 86.92089505200126,
+          "rank": 831
+        },
+        {
+          "marks": 39,
+          "count": 87,
+          "per": 85.12448786637252,
+          "rank": 945
+        },
+        {
+          "marks": 38.5,
+          "count": 42,
+          "per": 83.75354554049795,
+          "rank": 1032
+        },
+        {
+          "marks": 38,
+          "count": 76,
+          "per": 83.09171131421368,
+          "rank": 1074
+        },
+        {
+          "marks": 37.5,
+          "count": 170,
+          "per": 81.89410652379452,
+          "rank": 1150
+        },
+        {
+          "marks": 37,
+          "count": 123,
+          "per": 79.21525370312008,
+          "rank": 1320
+        },
+        {
+          "marks": 36.5,
+          "count": 82,
+          "per": 77.27702489757327,
+          "rank": 1443
+        },
+        {
+          "marks": 36,
+          "count": 110,
+          "per": 75.98487236054208,
+          "rank": 1525
+        },
+        {
+          "marks": 35.5,
+          "count": 151,
+          "per": 74.25149700598803,
+          "rank": 1635
+        },
+        {
+          "marks": 35,
+          "count": 142,
+          "per": 71.87204538291839,
+          "rank": 1786
+        },
+        {
+          "marks": 34.5,
+          "count": 66,
+          "per": 69.63441537976678,
+          "rank": 1928
+        },
+        {
+          "marks": 34,
+          "count": 100,
+          "per": 68.59439016703435,
+          "rank": 1994
+        },
+        {
+          "marks": 33.5,
+          "count": 139,
+          "per": 67.01859439016704,
+          "rank": 2094
+        },
+        {
+          "marks": 33,
+          "count": 144,
+          "per": 64.82823826032147,
+          "rank": 2233
+        },
+        {
+          "marks": 32.5,
+          "count": 90,
+          "per": 62.55909234163253,
+          "rank": 2377
+        },
+        {
+          "marks": 32,
+          "count": 99,
+          "per": 61.14087614245194,
+          "rank": 2467
+        },
+        {
+          "marks": 31.5,
+          "count": 135,
+          "per": 59.58083832335329,
+          "rank": 2566
+        },
+        {
+          "marks": 31,
+          "count": 160,
+          "per": 57.45351402458241,
+          "rank": 2701
+        },
+        {
+          "marks": 30.5,
+          "count": 110,
+          "per": 54.93224078159471,
+          "rank": 2861
+        },
+        {
+          "marks": 30,
+          "count": 113,
+          "per": 53.19886542704065,
+          "rank": 2971
+        },
+        {
+          "marks": 29.5,
+          "count": 127,
+          "per": 51.41821619918059,
+          "rank": 3084
+        },
+        {
+          "marks": 29,
+          "count": 131,
+          "per": 49.416955562559096,
+          "rank": 3211
+        },
+        {
+          "marks": 28.5,
+          "count": 83,
+          "per": 47.352663094862905,
+          "rank": 3342
+        },
+        {
+          "marks": 28,
+          "count": 87,
+          "per": 46.044752600063035,
+          "rank": 3425
+        },
+        {
+          "marks": 27.5,
+          "count": 149,
+          "per": 44.67381027418846,
+          "rank": 3512
+        },
+        {
+          "marks": 27,
+          "count": 103,
+          "per": 42.32587456665616,
+          "rank": 3661
+        },
+        {
+          "marks": 26.5,
+          "count": 93,
+          "per": 40.702804916482826,
+          "rank": 3764
+        },
+        {
+          "marks": 26,
+          "count": 106,
+          "per": 39.23731484399622,
+          "rank": 3857
+        },
+        {
+          "marks": 25.5,
+          "count": 99,
+          "per": 37.56697132051686,
+          "rank": 3963
+        },
+        {
+          "marks": 25,
+          "count": 107,
+          "per": 36.00693350141822,
+          "rank": 4062
+        },
+        {
+          "marks": 24.5,
+          "count": 71,
+          "per": 34.32083202017019,
+          "rank": 4169
+        },
+        {
+          "marks": 24,
+          "count": 86,
+          "per": 33.20201701859439,
+          "rank": 4240
+        },
+        {
+          "marks": 23.5,
+          "count": 112,
+          "per": 31.846832650488498,
+          "rank": 4326
+        },
+        {
+          "marks": 23,
+          "count": 111,
+          "per": 30.081941380397105,
+          "rank": 4438
+        },
+        {
+          "marks": 22.5,
+          "count": 74,
+          "per": 28.332808068074378,
+          "rank": 4549
+        },
+        {
+          "marks": 22,
+          "count": 89,
+          "per": 27.166719193192566,
+          "rank": 4623
+        },
+        {
+          "marks": 21.5,
+          "count": 100,
+          "per": 25.76426095178065,
+          "rank": 4712
+        },
+        {
+          "marks": 21,
+          "count": 93,
+          "per": 24.188465174913333,
+          "rank": 4812
+        },
+        {
+          "marks": 20.5,
+          "count": 62,
+          "per": 22.722975102426723,
+          "rank": 4905
+        },
+        {
+          "marks": 20,
+          "count": 80,
+          "per": 21.74598172076899,
+          "rank": 4967
+        },
+        {
+          "marks": 19.5,
+          "count": 81,
+          "per": 20.485345099275133,
+          "rank": 5047
+        },
+        {
+          "marks": 19,
+          "count": 70,
+          "per": 19.208950520012603,
+          "rank": 5128
+        },
+        {
+          "marks": 18.5,
+          "count": 44,
+          "per": 18.10589347620548,
+          "rank": 5198
+        },
+        {
+          "marks": 18,
+          "count": 68,
+          "per": 17.41254333438387,
+          "rank": 5242
+        },
+        {
+          "marks": 17.5,
+          "count": 74,
+          "per": 16.341002206114087,
+          "rank": 5310
+        },
+        {
+          "marks": 17,
+          "count": 60,
+          "per": 15.174913331232275,
+          "rank": 5384
+        },
+        {
+          "marks": 16.5,
+          "count": 41,
+          "per": 14.229435865111883,
+          "rank": 5444
+        },
+        {
+          "marks": 16,
+          "count": 53,
+          "per": 13.583359596596278,
+          "rank": 5485
+        },
+        {
+          "marks": 15.5,
+          "count": 63,
+          "per": 12.748187834856605,
+          "rank": 5538
+        },
+        {
+          "marks": 15,
+          "count": 41,
+          "per": 11.755436495430194,
+          "rank": 5601
+        },
+        {
+          "marks": 14.5,
+          "count": 40,
+          "per": 11.109360226914589,
+          "rank": 5642
+        },
+        {
+          "marks": 14,
+          "count": 46,
+          "per": 10.479041916167663,
+          "rank": 5682
+        },
+        {
+          "marks": 13.5,
+          "count": 42,
+          "per": 9.7541758588087,
+          "rank": 5728
+        },
+        {
+          "marks": 13,
+          "count": 31,
+          "per": 9.092341632524425,
+          "rank": 5770
+        },
+        {
+          "marks": 12.5,
+          "count": 26,
+          "per": 8.60384494169556,
+          "rank": 5801
+        },
+        {
+          "marks": 12,
+          "count": 45,
+          "per": 8.194138039710053,
+          "rank": 5827
+        },
+        {
+          "marks": 11.5,
+          "count": 30,
+          "per": 7.485029940119759,
+          "rank": 5872
+        },
+        {
+          "marks": 11,
+          "count": 32,
+          "per": 7.012291207059562,
+          "rank": 5902
+        },
+        {
+          "marks": 10.5,
+          "count": 29,
+          "per": 6.508036558462027,
+          "rank": 5934
+        },
+        {
+          "marks": 10,
+          "count": 29,
+          "per": 6.051055783170501,
+          "rank": 5963
+        },
+        {
+          "marks": 9.5,
+          "count": 23,
+          "per": 5.594075007878974,
+          "rank": 5992
+        },
+        {
+          "marks": 9,
+          "count": 21,
+          "per": 5.231641979199497,
+          "rank": 6015
+        },
+        {
+          "marks": 8.5,
+          "count": 10,
+          "per": 4.9007248660573595,
+          "rank": 6036
+        },
+        {
+          "marks": 8,
+          "count": 30,
+          "per": 4.7431452883706315,
+          "rank": 6046
+        },
+        {
+          "marks": 7.5,
+          "count": 19,
+          "per": 4.270406555310435,
+          "rank": 6076
+        },
+        {
+          "marks": 7,
+          "count": 11,
+          "per": 3.971005357705637,
+          "rank": 6095
+        },
+        {
+          "marks": 6.5,
+          "count": 8,
+          "per": 3.797667822250239,
+          "rank": 6106
+        },
+        {
+          "marks": 6,
+          "count": 22,
+          "per": 3.67160416010085,
+          "rank": 6114
+        },
+        {
+          "marks": 5.5,
+          "count": 11,
+          "per": 3.324929089190043,
+          "rank": 6136
+        },
+        {
+          "marks": 5,
+          "count": 3,
+          "per": 3.151591553734634,
+          "rank": 6147
+        },
+        {
+          "marks": 4.5,
+          "count": 5,
+          "per": 3.1043176804286143,
+          "rank": 6150
+        },
+        {
+          "marks": 4,
+          "count": 10,
+          "per": 3.0255278915852557,
+          "rank": 6155
+        },
+        {
+          "marks": 3.5,
+          "count": 9,
+          "per": 2.8679483138985162,
+          "rank": 6165
+        },
+        {
+          "marks": 3,
+          "count": 3,
+          "per": 2.7261266939804574,
+          "rank": 6174
+        },
+        {
+          "marks": 2.5,
+          "count": 7,
+          "per": 2.6788528206744378,
+          "rank": 6177
+        },
+        {
+          "marks": 2,
+          "count": 14,
+          "per": 2.568547116293729,
+          "rank": 6184
+        },
+        {
+          "marks": 1.5,
+          "count": 7,
+          "per": 2.3479357075323004,
+          "rank": 6198
+        },
+        {
+          "marks": 1,
+          "count": 2,
+          "per": 2.2376300031515917,
+          "rank": 6205
+        },
+        {
+          "marks": 0.5,
+          "count": 2,
+          "per": 2.2061140876142415,
+          "rank": 6207
+        },
+        {
+          "marks": 0,
+          "count": 128,
+          "per": 2.1745981720769025,
+          "rank": 6209
+        },
+        {
+          "marks": -0.5,
+          "count": 6,
+          "per": 0.15757957768672837,
+          "rank": 6337
+        },
+        {
+          "marks": -1,
+          "count": 1,
+          "per": 0.06303183107468913,
+          "rank": 6343
+        },
+        {
+          "marks": -1.5,
+          "count": 1,
+          "per": 0.04727387330601962,
+          "rank": 6344
+        },
+        {
+          "marks": -3,
+          "count": 1,
+          "per": 0.031515915537350114,
+          "rank": 6345
+        },
+        {
+          "marks": -5,
+          "count": 1,
+          "per": 0.015757957768669506,
+          "rank": 6346
+        }
+      ],
+      "marksDistData": {
+        "size": -5,
+        "data": [
+          {
+            "marks": 50,
+            "count": 187,
+            "per": 0,
+            "rank": 0
+          },
+          {
+            "marks": 45,
+            "count": 559,
+            "per": 0,
+            "rank": 0
+          },
+          {
+            "marks": 40,
+            "count": 1039,
+            "per": 0,
+            "rank": 0
+          },
+          {
+            "marks": 35,
+            "count": 1185,
+            "per": 0,
+            "rank": 0
+          },
+          {
+            "marks": 30,
+            "count": 1091,
+            "per": 0,
+            "rank": 0
+          },
+          {
+            "marks": 25,
+            "count": 905,
+            "per": 0,
+            "rank": 0
+          },
+          {
+            "marks": 20,
+            "count": 634,
+            "per": 0,
+            "rank": 0
+          },
+          {
+            "marks": 15,
+            "count": 362,
+            "per": 0,
+            "rank": 0
+          },
+          {
+            "marks": 10,
+            "count": 184,
+            "per": 0,
+            "rank": 0
+          },
+          {
+            "marks": 5,
+            "count": 62,
+            "per": 0,
+            "rank": 0
+          }
+        ]
+      },
+      "sectionalAnalysis": [
+        {
+          "secId": "69f0944e34a326423f2cd8f7",
+          "average": {
+            "marks": 28.192641033721994,
+            "totalStudents": 6346,
+            "time": {
+              "correct": 569.4866057358972,
+              "incorrect": 88.6711314213676,
+              "partial": 0,
+              "skipped": 177.65427040655504,
+              "skipOptionSelected": 0
+            },
+            "questions": {
+              "correct": 14.610778443113773,
+              "incorrect": 2.057831705011027,
+              "partial": 0,
+              "skipped": 8.331389851875223,
+              "skipOptionSelected": 0
+            }
+          }
+        }
+      ]
+    },
+    "ts": {
+      "marks": 0,
+      "accuracy": 0,
+      "rank": 6209,
+      "percentile": 2.1745981720769025
+    }
+  },
+  "has_answers": true,
+  "has_analysis": true
+}

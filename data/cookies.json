@@ -1,0 +1,36 @@
+{
+  "cookies": [
+    {
+      "name": "accessToken",
+      "value": "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VySWQiOiI2YTk2MzM2OTA1YTgyZjBmYTBjODM4ZjciLCJlbWFpbCI6InBvbGlyb25pNEBnbWFpbC5jb20iLCJpYXQiOjE3ODgyMzA1NzIsImV4cCI6MTc4ODIzMTQ3Mn0.f8cZM3O7Nu5Fbz3DIwXiy9kWWjQNL4IkFX8sgadxTxQ",
+      "domain": ".repeatermock.com",
+      "path": "/"
+    },
+    {
+      "name": "refreshToken",
+      "value": "608124335b520fb4ead238159af0d357c0445de683f6c6a6669c6dd60e9fcef07cf9222cfe5aef1b617500270232703fef2b592b549829dac9400161ba0a2cb4",
+      "domain": ".repeatermock.com",
+      "path": "/"
+    },
+    {
+      "name": "totpVerified",
+      "value": "1",
+      "domain": ".repeatermock.com",
+      "path": "/"
+    },
+    {
+      "name": "rm_fe",
+      "value": "2f6631856d3362ec",
+      "domain": "repeatermock.com",
+      "path": "/"
+    }
+  ],
+  "simple": {
+    "accessToken": "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VySWQiOiI2YTk2MzM2OTA1YTgyZjBmYTBjODM4ZjciLCJlbWFpbCI6InBvbGlyb25pNEBnbWFpbC5jb20iLCJpYXQiOjE3ODgyMzA1NzIsImV4cCI6MTc4ODIzMTQ3Mn0.f8cZM3O7Nu5Fbz3DIwXiy9kWWjQNL4IkFX8sgadxTxQ",
+    "refreshToken": "608124335b520fb4ead238159af0d357c0445de683f6c6a6669c6dd60e9fcef07cf9222cfe5aef1b617500270232703fef2b592b549829dac9400161ba0a2cb4",
+    "totpVerified": "1",
+    "rm_fe": "2f6631856d3362ec"
+  },
+  "saved_at": 1788231090.5706327,
+  "saved_at_human": "2026-09-01 02:51:30 UTC"
+}

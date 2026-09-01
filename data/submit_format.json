@@ -1,0 +1,9 @@
+{
+  "name": "empty_answers",
+  "payload": {
+    "answers": [],
+    "timeTaken": 1,
+    "language": "en",
+    "interface": "classic"
+  }
+}
