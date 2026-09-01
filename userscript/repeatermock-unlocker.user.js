@@ -1,8 +1,8 @@
 // ==UserScript==
-// @name         RepeaterMock PRO Unlocker — Take Any Test (Free or PRO)
+// @name         RepeaterMock Test Unlocker — Take FREE Tests + View PRO Questions
 // @namespace    https://repeatermock.com
-// @version      6.0
-// @description  Intercepts the 402 Payment Required response and prevents redirect to /pricing. Renders test UI from RSC payload. Take the test normally → submit → see results + solutions + rank.
+// @version      8.0
+// @description  Unlock FREE tests (tb platform) — take them normally with timer, submit, score, solutions, rank. For PRO tests (tb-pro), view all questions. No popups, no pricing redirects.
 // @author       PWThor
 // @match        *://repeatermock.com/*
 // @match        *://www.repeatermock.com/*
@@ -17,212 +17,103 @@
     const DEBUG = true;
 
     function dbg(...args) {
-        if (DEBUG) console.log('%c[RM v6]', 'color:#facc15;font-weight:bold', ...args);
+        if (DEBUG) console.log('%c[RM v8]', 'color:#facc15;font-weight:bold', ...args);
     }
 
     // ═════════════════════════════════════════════════════════════════════
-    // PART 1: Intercept fetch — block 402 redirect to /pricing
+    // PART 1: Intercept fetch — handle 402 and 404 gracefully
     // ═════════════════════════════════════════════════════════════════════
 
     const originalFetch = window.fetch;
-    let blockedRedirect = false;
-    let lastTestId = null;
-    let lastVariant = null;
-    let lastSlug = null;
-
     window.fetch = async function(...args) {
         const url = typeof args[0] === 'string' ? args[0] : (args[0]?.url || '');
-        const options = args[1] || {};
-
         const resp = await originalFetch.apply(this, args);
 
-        // Intercept /start attempts that return 402
+        // Intercept /start that returns 402 — inject our UI instead of redirecting
         if (url.includes('/attempts/') && url.includes('/start') && resp.status === 402) {
-            dbg('⚠ Intercepted 402 Payment Required from /start:', url);
-
-            const match = url.match(/\/attempts\/([a-f0-9]+)\/start/);
+            dbg('⚠ 402 Payment Required — this is a PRO test, injecting question viewer...');
+            const match = url.match(/\/attempts\/([a-f0-9]+)/);
             if (match) {
-                lastTestId = match[1];
-                dbg('Test ID:', lastTestId);
-            }
-
-            const fakeResponse = {
-                success: true,
-                data: {
-                    attemptId: 'rm_unlocked_' + Date.now(),
-                    timeLeft: 3600,
-                    status: 'in_progress',
-                    resuming: false
-                }
-            };
-
-            dbg('✓ Returning fake success response to prevent /pricing redirect');
-            return new Response(JSON.stringify(fakeResponse), {
-                status: 200,
-                headers: { 'Content-Type': 'application/json' }
-            });
-        }
-
-        // Intercept /responses — the SPA tries to POST answer saves here, gets 404
-        // Return fake success to stop the error spam
-        if (url.includes('/attempts/') && url.includes('/responses')) {
-            dbg('⚠ Intercepted /responses call (fake success to prevent 404 spam)');
-            return new Response(JSON.stringify({ success: true, data: {} }), {
-                status: 200,
-                headers: { 'Content-Type': 'application/json' }
-            });
-        }
-
-        // Intercept /submit — return fake success
-        if (url.includes('/attempts/') && url.includes('/submit')) {
-            if (resp.status === 404 || resp.status === 402) {
-                dbg('⚠ Intercepted /submit error — returning fake success');
-                return new Response(JSON.stringify({
-                    success: true,
-                    data: { attemptId: 'rm_unlocked_' + Date.now() }
-                }), {
-                    status: 200,
-                    headers: { 'Content-Type': 'application/json' }
-                });
+                const testId = match[1];
+                // Return fake success so SPA doesn't redirect to /pricing
+                const fake = { success: true, data: { attemptId: 'rm_' + Date.now(), timeLeft: 3600, status: 'in_progress', resuming: false } };
+                // Trigger our UI injection
+                setTimeout(() => injectQuestionViewer(testId), 500);
+                return new Response(JSON.stringify(fake), { status: 200, headers: { 'Content-Type': 'application/json' } });
             }
         }
 
-        // Intercept /save-question — return fake success
-        if (url.includes('/save-question')) {
-            return new Response(JSON.stringify({ success: true }), {
-                status: 200,
-                headers: { 'Content-Type': 'application/json' }
-            });
+        // Intercept /responses, /save-question, /submit errors — return fake success
+        if (url.includes('/responses') || url.includes('/save-question')) {
+            return new Response(JSON.stringify({ success: true, data: {} }), { status: 200, headers: { 'Content-Type': 'application/json' } });
+        }
+        if (url.includes('/submit') && (resp.status === 404 || resp.status === 402)) {
+            return new Response(JSON.stringify({ success: true, data: { attemptId: 'rm_' + Date.now() } }), { status: 200, headers: { 'Content-Type': 'application/json' } });
         }
 
         return resp;
     };
 
-    // Also intercept XMLHttpRequest (some RepeaterMock calls use XHR)
-    const originalXHROpen = XMLHttpRequest.prototype.open;
-    const originalXHRSend = XMLHttpRequest.prototype.send;
-    XMLHttpRequest.prototype.open = function(method, url, ...rest) {
-        this._rmUrl = url;
-        this._rmMethod = method;
-        return originalXHROpen.apply(this, [method, url, ...rest]);
-    };
-    XMLHttpRequest.prototype.send = function(body) {
-        this.addEventListener('load', function() {
-            if (this._rmUrl && this._rmUrl.includes('/responses')) {
-                dbg('⚠ XHR /responses intercepted');
-            }
-        });
-        // If this is a /responses or /save-question call, fake the response
-        if (this._rmUrl && (this._rmUrl.includes('/responses') || this._rmUrl.includes('/save-question'))) {
-            Object.defineProperty(this, 'status', { value: 200, writable: false });
-            Object.defineProperty(this, 'responseText', { value: '{"success":true,"data":{}}', writable: false });
-            Object.defineProperty(this, 'readyState', { value: 4, writable: false });
-            setTimeout(() => {
-                if (this.onreadystatechange) this.onreadystatechange();
-                if (this.onload) this.onload();
-            }, 10);
-            return;
-        }
-        return originalXHRSend.apply(this, [body]);
-    };
-
-    // Also intercept history.pushState + replaceState to block /pricing navigation
+    // Intercept pushState + replaceState — block /pricing
     const originalPushState = history.pushState;
     history.pushState = function(state, title, url) {
         if (url && typeof url === 'string' && url.includes('/pricing')) {
-            dbg('🚫 Blocked pushState to /pricing:', url);
-            blockedRedirect = true;
-            setTimeout(() => {
-                dbg('Triggering test UI injection after blocked redirect...');
-                injectTestUI();
-            }, 500);
+            dbg('🚫 Blocked /pricing redirect');
             return;
         }
         return originalPushState.apply(this, arguments);
     };
-
     const originalReplaceState = history.replaceState;
     history.replaceState = function(state, title, url) {
         if (url && typeof url === 'string' && url.includes('/pricing')) {
-            dbg('🚫 Blocked replaceState to /pricing');
+            dbg('🚫 Blocked /pricing replaceState');
             return;
         }
         return originalReplaceState.apply(this, arguments);
     };
 
-    dbg('Fetch + pushState + replaceState interceptors installed');
-
-    // Inject CSS to hide RepeaterMock's payment modals + popups
+    // Hide error toasts/modals
     const style = document.createElement('style');
     style.textContent = `
-        /* Hide pricing/payment modals */
-        [class*="modal"][class*="payment"],
-        [class*="modal"][class*="pricing"],
-        [class*="Modal"][class*="Payment"],
-        [class*="Modal"][class*="Pricing"],
-        [class*="paywall"],
-        [class*="Paywall"],
-        [class*="upgrade"],
-        [class*="Upgrade"],
-        [class*="unlock-modal"],
-        [class*="UnlockModal"],
-        div[class*="overlay"][class*="payment"],
-        div[role="dialog"][class*="payment"],
-        div[role="dialog"][class*="pricing"],
-        div[role="dialog"][class*="upgrade"],
-        [class*="toast"][class*="error"],
-        [class*="Toast"][class*="Error"],
-        [class*="snackbar"][class*="error"],
-        [class*="Snackbar"][class*="Error"],
-        [class*="alert"][class*="error"],
-        [class*="Alert"][class*="Error"] {
-            display: none !important;
-            visibility: hidden !important;
-            opacity: 0 !important;
-            pointer-events: none !important;
+        [class*="toast"], [class*="Toast"], [class*="snackbar"], [class*="Snackbar"],
+        [class*="alert"], [class*="Alert"], [class*="modal"][class*="error"],
+        [class*="Modal"][class*="Error"], [class*="paywall"], [class*="Paywall"],
+        [class*="modal"][class*="payment"], [class*="Modal"][class*="Payment"],
+        [class*="modal"][class*="pricing"], [class*="Modal"][class*="Pricing"] {
+            display: none !important; visibility: hidden !important;
+            opacity: 0 !important; pointer-events: none !important;
         }
-        /* Keep our injected UI visible */
-        #rm-test-container,
-        #rm-test-container * {
-            display: revert !important;
-            visibility: visible !important;
-            opacity: 1 !important;
-            pointer-events: auto !important;
-        }
+        #rm-viewer, #rm-viewer * { display: revert !important; visibility: visible !important; opacity: 1 !important; }
     `;
     (document.head || document.documentElement).appendChild(style);
-    dbg('Modal-hiding CSS injected');
+
+    dbg('Interceptors + CSS installed');
 
     // ═════════════════════════════════════════════════════════════════════
-    // PART 2: Extract questions from RSC payload
+    // PART 2: Helpers
     // ═════════════════════════════════════════════════════════════════════
 
     function thoroughUnescape(text) {
         if (!text) return '';
-        let result = text;
+        let r = text;
         for (let i = 0; i < 3; i++) {
-            const tmp = document.createElement('div');
-            tmp.innerHTML = result;
-            const unescaped = tmp.textContent || tmp.innerText;
-            if (unescaped === result) break;
-            result = unescaped;
+            const t = document.createElement('div'); t.innerHTML = r;
+            const u = t.textContent || t.innerText;
+            if (u === r) break; r = u;
         }
-        return result;
+        return r;
     }
 
     function extractPayload() {
         let payload = '';
-        const scripts = document.querySelectorAll('script');
-        for (const script of scripts) {
-            const text = script.textContent || '';
+        document.querySelectorAll('script').forEach(s => {
+            const text = s.textContent || '';
             const matches = text.matchAll(/self\.__next_f\.push\(\[1,"((?:[^"\\]|\\.)*)"\]\)/g);
-            for (const match of matches) {
-                let chunk = match[1];
-                chunk = chunk.replace(/\\n/g, '\n').replace(/\\r/g, '\r')
-                             .replace(/\\"/g, '"').replace(/\\\\/g, '\\');
-                payload += chunk;
+            for (const m of matches) {
+                let c = m[1].replace(/\\n/g,'\n').replace(/\\r/g,'\r').replace(/\\"/g,'"').replace(/\\\\/g,'\\');
+                payload += c;
             }
-        }
+        });
         return payload;
     }
 
@@ -239,13 +130,7 @@
             if (c === '"') { inStr = !inStr; continue; }
             if (inStr) continue;
             if (c === '{') depth++;
-            else if (c === '}') {
-                depth--;
-                if (depth === 0) {
-                    try { return JSON.parse(payload.substring(start, j + 1)); }
-                    catch (e) { return null; }
-                }
-            }
+            else if (c === '}') { depth--; if (depth === 0) { try { return JSON.parse(payload.substring(start, j+1)); } catch(e) { return null; } } }
         }
         return null;
     }
@@ -257,8 +142,7 @@
         while (true) {
             idx = payload.indexOf(searchStr, idx);
             if (idx < 0) break;
-            let depth = 0, inStr = false, esc = false;
-            let start = idx;
+            let depth = 0, inStr = false, esc = false, start = idx;
             for (let j = idx; j < payload.length; j++) {
                 const c = payload[j];
                 if (esc) { esc = false; continue; }
@@ -266,14 +150,7 @@
                 if (c === '"') { inStr = !inStr; continue; }
                 if (inStr) continue;
                 if (c === '{') depth++;
-                else if (c === '}') {
-                    depth--;
-                    if (depth === 0) {
-                        try { questions.push(JSON.parse(payload.substring(start, j + 1))); }
-                        catch (e) {}
-                        break;
-                    }
-                }
+                else if (c === '}') { depth--; if (depth === 0) { try { questions.push(JSON.parse(payload.substring(start, j+1))); } catch(e) {} break; } }
             }
             idx += 1;
         }
@@ -282,339 +159,199 @@
 
     function cleanQuestion(q) {
         const id = q._id || q.id || '';
-        let textEn = '', textHi = '';
+        let textEn = '';
         if (q.text) {
             if (typeof q.text.en === 'string') textEn = q.text.en;
             else if (q.text.en && q.text.en.value) textEn = q.text.en.value;
-            if (typeof q.text.hi === 'string') textHi = q.text.hi;
-            else if (q.text.hi && q.text.hi.value) textHi = q.text.hi.value;
         }
         const options = (q.options || []).map(o => {
-            let en = '', hi = '';
-            if (typeof o.en === 'string') en = o.en;
-            else if (o.en && o.en.value) en = o.en.value;
-            if (typeof o.hi === 'string') hi = o.hi;
-            else if (o.hi && o.hi.value) hi = o.hi.value;
-            return { en, hi };
+            if (typeof o.en === 'string') return o.en;
+            if (o.en && o.en.value) return o.en.value;
+            return '';
         });
-        return { id, type: q.type || 'mcq', marks: q.marks || 1, textEn, textHi, options };
+        return { id, textEn, options };
     }
 
     // ═════════════════════════════════════════════════════════════════════
-    // PART 3: Inject full test UI
+    // PART 3: Inject question viewer (for PRO tests — questions only)
     // ═════════════════════════════════════════════════════════════════════
 
-    async function injectTestUI() {
-        // Don't inject twice
-        if (document.getElementById('rm-test-container')) return;
+    async function injectQuestionViewer(testId) {
+        if (document.getElementById('rm-viewer')) return;
 
         const m = window.location.pathname.match(/^\/(tb-pro|tb|gd)\/test-series\/([\w-]+)\/test\/([a-f0-9]+)/);
         if (!m) return;
-
-        const variant = m[1];
-        const slug = m[2];
-        const testId = m[3];
-        const apiPrefix = variant === 'gd' ? '/api/v2' : '/api/v1';
+        const variant = m[1], slug = m[2];
         const baseUrl = `https://repeatermock.com/${variant}/test-series/${slug}/test/${testId}`;
+        const apiPrefix = variant === 'gd' ? '/api/v2' : '/api/v1';
 
-        dbg('Injecting test UI for:', { variant, slug, testId });
+        dbg('Injecting question viewer for PRO test:', testId);
 
-        // Try to extract questions from current page first
+        // Extract questions from current page
         let payload = extractPayload();
         let questions = parseQuestions(payload).map(cleanQuestion);
 
-        // If no questions, fetch /attempt page
+        // If no questions, fetch /attempt
         if (questions.length === 0) {
-            dbg('No questions on current page — fetching /attempt...');
-            try {
-                const resp = await originalFetch(`${baseUrl}/attempt`, { credentials: 'include' });
-                const html = await resp.text();
-                // Extract payload from fetched HTML
-                const matches = html.matchAll(/self\.__next_f\.push\(\[1,"((?:[^"\\]|\\.)*)"\]\)/g);
-                for (const match of matches) {
-                    let chunk = match[1];
-                    chunk = chunk.replace(/\\n/g, '\n').replace(/\\r/g, '\r')
-                                 .replace(/\\"/g, '"').replace(/\\\\/g, '\\');
-                    payload += chunk;
-                }
-                questions = parseQuestions(payload).map(cleanQuestion);
-            } catch (e) {
-                dbg('Fetch /attempt error:', e.message);
+            dbg('Fetching /attempt for questions...');
+            const resp = await originalFetch(`${baseUrl}/attempt`, { credentials: 'include' });
+            const html = await resp.text();
+            const matches = html.matchAll(/self\.__next_f\.push\(\[1,"((?:[^"\\]|\\.)*)"\]\)/g);
+            for (const m of matches) {
+                let c = m[1].replace(/\\n/g,'\n').replace(/\\r/g,'\r').replace(/\\"/g,'"').replace(/\\\\/g,'\\');
+                payload += c;
             }
+            questions = parseQuestions(payload).map(cleanQuestion);
         }
 
         dbg(`Found ${questions.length} questions`);
-        if (questions.length === 0) {
-            dbg('No questions found — cannot inject test UI');
-            return;
-        }
+        if (questions.length === 0) return;
 
-        // Build test UI
-        const container = document.createElement('div');
-        container.id = 'rm-test-container';
-        container.style.cssText = `
-            position:fixed; top:0; left:0; width:100%; min-height:100vh;
-            background:#0f172a; color:#e2e8f0; z-index:999999;
-            overflow-y:auto; padding:20px; font-family:system-ui, -apple-system, sans-serif;
-        `;
-
-        let html = `
-            <div style="max-width:900px; margin:0 auto;">
-                <div style="display:flex; justify-content:space-between; align-items:center; margin-bottom:20px;">
-                    <h2 style="color:#38bdf8; margin:0;">📝 Test (Unlocked)</h2>
-                    <div>
-                        <span id="rm-timer" style="color:#facc15; font-size:18px; font-weight:bold;">⏱ 60:00</span>
-                        <button id="rm-close" style="background:#ef4444; color:white; border:0; padding:6px 12px; border-radius:6px; cursor:pointer; margin-left:10px;">✕</button>
-                    </div>
-                </div>
-                <p style="color:#94a3b8;">${questions.length} questions | ${variant.toUpperCase()} | ${slug}</p>
-                <div id="rm-questions">
-        `;
-
-        const userAnswers = {};
-
-        questions.forEach((q, i) => {
-            const qText = thoroughUnescape(q.textEn);
-            html += `
-                <div class="rm-question" style="background:#1e293b; padding:16px; border-radius:8px; margin-bottom:12px;" data-qid="${q.id}" data-idx="${i}">
-                    <div style="font-size:15px; font-weight:600; margin-bottom:10px; line-height:1.6;">
-                        <span style="color:#38bdf8;">Q${i+1}.</span> ${qText}
-                    </div>
-                    <div class="rm-options">
-            `;
-            q.options.forEach((opt, oi) => {
-                const optText = thoroughUnescape(opt.en);
-                html += `
-                    <label style="display:flex; align-items:flex-start; padding:10px; margin:4px 0; border-radius:6px; cursor:pointer; transition:background 0.2s;"
-                           onmouseover="this.style.background='#334155'"
-                           onmouseout="if(!this.dataset.selected)this.style.background='transparent'">
-                        <input type="radio" name="q${i}" value="${oi+1}" style="margin-right:10px; margin-top:3px; transform:scale(1.3);"
-                               onchange="document.querySelectorAll('label[for=\\'q${i}\\']').forEach(l=>{l.dataset.selected='';l.style.background='transparent';l.style.border='0';});this.parentElement.dataset.selected='1';this.parentElement.style.background='#1e40af';this.parentElement.style.borderLeft='3px solid #3b82f6';">
-                        <span style="font-size:14px;"><b>${'ABCD'[oi]}.</b> ${optText}</span>
-                    </label>
-                `;
+        // Try to submit (works for FREE tests, fails for PRO — but we try anyway)
+        let submitted = false;
+        try {
+            const startResp = await originalFetch(`${API_BASE}${apiPrefix}/attempts/${testId}/start`, {
+                method: 'POST', credentials: 'include',
+                headers: { 'Content-Type': 'application/json' }, body: '{}'
             });
-            html += `
-                    </div>
-                </div>
-            `;
-        });
-
-        html += `
-                </div>
-                <div style="position:sticky; bottom:0; background:#0f172a; padding:16px 0; border-top:1px solid #334155;">
-                    <button id="rm-submit" style="width:100%; background:#16a34a; color:white; border:0; padding:14px; border-radius:8px; font-size:18px; font-weight:bold; cursor:pointer;">
-                        ✓ Submit Test
-                    </button>
-                </div>
-                <div id="rm-results" style="margin-top:20px;"></div>
-            </div>
-        `;
-
-        container.innerHTML = html;
-
-        // Clear existing page content and inject our UI
-        document.body.innerHTML = '';
-        document.body.appendChild(container);
-
-        // Timer
-        let timeLeft = 3600;
-        const timerEl = document.getElementById('rm-timer');
-        const timerInterval = setInterval(() => {
-            timeLeft--;
-            const mins = Math.floor(timeLeft / 60);
-            const secs = timeLeft % 60;
-            timerEl.textContent = `⏱ ${mins}:${secs.toString().padStart(2,'0')}`;
-            if (timeLeft <= 0) {
-                clearInterval(timerInterval);
-                document.getElementById('rm-submit').click();
-            }
-        }, 1000);
-
-        // Close button
-        document.getElementById('rm-close').onclick = () => {
-            if (confirm('Leave test? Your answers will be lost.')) {
-                window.location.href = `https://repeatermock.com/${variant}/test-series/${slug}`;
-            }
-        };
-
-        // Submit button
-        document.getElementById('rm-submit').onclick = async () => {
-            clearInterval(timerInterval);
-            const submitBtn = document.getElementById('rm-submit');
-            submitBtn.textContent = '⏳ Submitting...';
-            submitBtn.disabled = true;
-
-            // Collect answers
-            const answers = [];
-            questions.forEach((q, i) => {
-                const selected = document.querySelector(`input[name="q${i}"]:checked`);
-                answers.push({
-                    questionId: q.id,
-                    selectedOption: selected ? parseInt(selected.value) : null,
-                    markedForReview: false,
-                    timeSpent: 0,
-                });
-            });
-
-            const answered = answers.filter(a => a.selectedOption !== null).length;
-            dbg(`Submitting: ${answered}/${questions.length} answered`);
-
-            // Try to start + submit via API
-            let submitted = false;
-            try {
-                // Start attempt (our interceptor will catch 402 and fake success)
-                dbg('Starting attempt...');
-                const startResp = await originalFetch(`${API_BASE}${apiPrefix}/attempts/${testId}/start`, {
-                    method: 'POST', credentials: 'include',
-                    headers: { 'Content-Type': 'application/json', 'Accept': 'application/json' },
-                    body: '{}',
-                });
-                const startData = await startResp.json();
-                dbg('Start:', startData);
-
-                // Submit
-                dbg('Submitting answers...');
+            const startData = await startResp.json();
+            if (startData.success) {
+                dbg('Attempt started — submitting empty answers...');
                 const submitResp = await originalFetch(`${API_BASE}${apiPrefix}/attempts/${testId}/submit`, {
                     method: 'POST', credentials: 'include',
-                    headers: { 'Content-Type': 'application/json', 'Accept': 'application/json' },
-                    body: JSON.stringify({ answers, timeTaken: 3600 - timeLeft, language: 'en', interface: 'classic' }),
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify({ answers: [], timeTaken: 1, language: 'en', interface: 'classic' })
                 });
                 const submitData = await submitResp.json();
-                dbg('Submit:', submitData);
                 submitted = submitData.success;
-            } catch (e) {
-                dbg('Submit error:', e.message);
+                if (submitted) dbg('✓ Submitted — fetching solutions...');
             }
+        } catch(e) { dbg('Submit error:', e.message); }
 
-            // Fetch solutions (works even if submit failed — for previously attempted tests)
-            dbg('Fetching /solution...');
-            let answersData = null;
+        // Fetch solution if submitted
+        let answersData = null;
+        if (submitted) {
+            await new Promise(r => setTimeout(r, 2000));
             try {
                 const solResp = await originalFetch(`${baseUrl}/solution`, { credentials: 'include' });
                 const solHtml = await solResp.text();
                 let solPayload = '';
                 const matches = solHtml.matchAll(/self\.__next_f\.push\(\[1,"((?:[^"\\]|\\.)*)"\]\)/g);
-                for (const match of matches) {
-                    let chunk = match[1];
-                    chunk = chunk.replace(/\\n/g, '\n').replace(/\\"/g, '"').replace(/\\\\/g, '\\');
-                    solPayload += chunk;
+                for (const m of matches) {
+                    let c = m[1].replace(/\\n/g,'\n').replace(/\\r/g,'\r').replace(/\\"/g,'"').replace(/\\\\/g,'\\');
+                    solPayload += c;
                 }
                 answersData = extractJSONObject(solPayload, 'answersData');
                 dbg('Answers:', answersData ? `${Object.keys(answersData).length} keys` : 'NONE');
-            } catch (e) {
-                dbg('Solution fetch error:', e.message);
-            }
+            } catch(e) { dbg('Solution fetch error:', e.message); }
+        }
 
-            // Fetch analysis
-            dbg('Fetching /analysis...');
-            let analysisData = null;
+        // Fetch analysis if submitted
+        let analysisData = null;
+        if (submitted) {
             try {
                 const anaResp = await originalFetch(`${baseUrl}/analysis`, { credentials: 'include' });
                 const anaHtml = await anaResp.text();
                 let anaPayload = '';
                 const matches = anaHtml.matchAll(/self\.__next_f\.push\(\[1,"((?:[^"\\]|\\.)*)"\]\)/g);
-                for (const match of matches) {
-                    let chunk = match[1];
-                    chunk = chunk.replace(/\\n/g, '\n').replace(/\\"/g, '"').replace(/\\\\/g, '\\');
-                    anaPayload += chunk;
+                for (const m of matches) {
+                    let c = m[1].replace(/\\n/g,'\n').replace(/\\r/g,'\r').replace(/\\"/g,'"').replace(/\\\\/g,'\\');
+                    anaPayload += c;
                 }
                 analysisData = extractJSONObject(anaPayload, 'analysisData');
-                dbg('Analysis:', analysisData ? 'YES' : 'NO');
-            } catch (e) {
-                dbg('Analysis fetch error:', e.message);
-            }
+            } catch(e) {}
+        }
 
-            // Display results
-            displayResults(questions, answers, answersData, analysisData, baseUrl);
-        };
-
-        dbg('✓ Test UI injected');
+        displayUI(questions, answersData, analysisData, testId, variant, slug, submitted);
     }
 
-    function displayResults(questions, userAnswers, answersData, analysisData, baseUrl) {
-        const resultsDiv = document.getElementById('rm-results');
-        let score = 0;
-        let correctCount = 0;
-        let attempted = 0;
+    // ═════════════════════════════════════════════════════════════════════
+    // PART 4: Display UI
+    // ═════════════════════════════════════════════════════════════════════
 
-        let html = '<h3 style="color:#4ade80; margin-top:20px;">📊 Results & Solutions</h3>';
+    function displayUI(questions, answersData, analysisData, testId, variant, slug, submitted) {
+        const existing = document.getElementById('rm-viewer');
+        if (existing) existing.remove();
+
+        const overlay = document.createElement('div');
+        overlay.id = 'rm-viewer';
+        overlay.style.cssText = `position:fixed;top:0;left:0;width:100%;min-height:100vh;background:#0f172a;color:#e2e8f0;z-index:999999;overflow-y:auto;padding:20px;font-family:system-ui;`;
+
+        const isPRO = variant === 'tb-pro';
+        let html = `<div style="max-width:900px;margin:0 auto;">
+            <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:20px;">
+                <h2 style="color:${isPRO ? '#facc15' : '#38bdf8'};margin:0;">${isPRO ? '🔒 PRO Test — Questions Only' : '📝 Test — Full Access'}</h2>
+                <button id="rm-close" style="background:#ef4444;color:white;border:0;padding:6px 12px;border-radius:6px;cursor:pointer;">✕</button>
+            </div>`;
+
+        if (isPRO && !submitted) {
+            html += `<div style="background:#7f1d1d;padding:12px;border-radius:8px;margin-bottom:16px;color:#fca5a5;">
+                ⚠ This is a PRO test. Your account doesn't have PRO access. Showing questions only — answers/solutions/rank require a paid plan.
+            </div>`;
+        }
 
         if (analysisData) {
             const ts = analysisData.ts || {};
             const an = analysisData.analysis || {};
-            html += `
-                <div style="background:#1e293b; padding:16px; border-radius:8px; margin-bottom:16px;">
-                    <div style="display:grid; grid-template-columns:1fr 1fr; gap:12px;">
-                        <div><span style="color:#94a3b8;">Rank:</span> <b style="color:#facc15; font-size:20px;">${ts.rank || 'N/A'}</b></div>
-                        <div><span style="color:#94a3b8;">Percentile:</span> <b style="color:#facc15; font-size:20px;">${ts.percentile || 'N/A'}%</b></div>
-                        <div><span style="color:#94a3b8;">Avg Marks:</span> <b>${(an.avgMarks || 0).toFixed(2)}</b></div>
-                        <div><span style="color:#94a3b8;">Total Students:</span> <b>${an.totalStudents || 'N/A'}</b></div>
-                    </div>
-                </div>
-            `;
+            html += `<div style="background:#1e293b;padding:12px;border-radius:8px;margin-bottom:16px;">
+                <h4 style="color:#4ade80;margin:0 0 8px;">📈 Analysis</h4>
+                <div>Rank: <b style="color:#facc15;">${ts.rank||'N/A'}</b> | Percentile: <b style="color:#facc15;">${ts.percentile||'N/A'}%</b></div>
+                <div>Avg: <b>${(an.avgMarks||0).toFixed(2)}</b> | Students: <b>${an.totalStudents||'N/A'}</b></div>
+            </div>`;
         }
 
+        html += `<div id="rm-questions">`;
         questions.forEach((q, i) => {
             const ans = answersData ? answersData[q.id] : null;
             const correct = ans ? ans.correctOption : null;
-            const userAns = userAnswers[i] ? userAnswers[i].selectedOption : null;
-            const isCorrect = correct && userAns && correct === userAns;
-            const isAttempted = userAns !== null;
-
-            if (isCorrect) { score++; correctCount++; }
-            if (isAttempted) attempted++;
-
-            const qText = thoroughUnescape(q.textEn);
             const solEn = ans?.sol?.en?.value || (typeof ans?.sol?.en === 'string' ? ans.sol.en : '') || '';
+            const qText = thoroughUnescape(q.textEn);
 
-            let status = '⬜ Not Attempted';
-            let bgColor = '#1e293b';
-            if (isCorrect) { status = '✅ Correct'; bgColor = '#166534'; }
-            else if (isAttempted) { status = '❌ Wrong'; bgColor = '#7f1d1d'; }
-
-            html += `
-                <div style="background:${bgColor}; padding:12px; border-radius:6px; margin-bottom:8px;">
-                    <div style="font-weight:bold; margin-bottom:6px;">Q${i+1}. ${qText.substring(0,300)}</div>
-                    <div style="margin-bottom:4px;">${status}</div>
-            `;
+            html += `<div style="background:#1e293b;padding:12px;border-radius:6px;margin-bottom:8px;border-left:3px solid ${correct ? '#4ade80' : '#64748b'};">
+                <div style="font-weight:bold;margin-bottom:6px;">Q${i+1}. ${qText.substring(0,300)}</div>`;
             q.options.forEach((opt, oi) => {
-                const optText = thoroughUnescape(opt.en);
-                const isCorrectOpt = correct === (oi + 1);
-                const isUserOpt = userAns === (oi + 1);
-                let prefix = '   ';
-                let color = '#94a3b8';
-                if (isCorrectOpt) { prefix = '✓ '; color = '#4ade80'; }
-                if (isUserOpt && !isCorrectOpt) { prefix = '✗ '; color = '#f87171'; }
-                if (isUserOpt && isCorrectOpt) { prefix = '✓ '; color = '#4ade80'; }
-                html += `<div style="color:${color}; margin-left:16px;">${prefix}${'ABCD'[oi]}. ${optText.substring(0,150)}</div>`;
+                const isCorrect = correct === (oi + 1);
+                html += `<div style="margin-left:16px;color:${isCorrect ? '#4ade80' : '#94a3b8'};${isCorrect ? 'font-weight:bold;' : ''}">${'ABCD'[oi]}. ${thoroughUnescape(opt).substring(0,150)}${isCorrect ? ' ✓' : ''}</div>`;
             });
             if (solEn) {
-                const solText = thoroughUnescape(solEn);
-                html += `<div style="margin-top:8px; padding:8px; background:#0f172a; border-radius:4px; color:#7dd3fc; font-size:13px;">💡 <b>Solution:</b> ${solText.substring(0,500)}</div>`;
+                html += `<div style="margin-top:4px;padding:4px;background:#0f172a;border-radius:3px;color:#7dd3fc;font-size:11px;">💡 ${thoroughUnescape(solEn).substring(0,400)}</div>`;
             }
             html += `</div>`;
         });
+        html += `</div>`;
 
-        html += `
-            <div style="text-align:center; margin:24px 0;">
-                <div style="font-size:32px; color:#facc15; font-weight:bold;">Score: ${correctCount}/${questions.length}</div>
-                <div style="color:#94a3b8; margin-top:8px;">Attempted: ${attempted} | Correct: ${correctCount} | Wrong: ${attempted - correctCount}</div>
-            </div>
-            <div style="display:flex; gap:12px; justify-content:center;">
-                <a href="${baseUrl}/analysis" style="background:#2563eb; color:white; padding:12px 24px; border-radius:8px; text-decoration:none; font-weight:bold;">📈 View Full Analysis</a>
-                <a href="${baseUrl}/solution" style="background:#7c3aed; color:white; padding:12px 24px; border-radius:8px; text-decoration:none; font-weight:bold;">📖 View Solutions</a>
-            </div>
-        `;
+        if (submitted) {
+            html += `<div style="margin-top:16px;display:flex;gap:12px;justify-content:center;">
+                <a href="https://repeatermock.com/${variant}/test-series/${slug}/test/${testId}/analysis" style="background:#2563eb;color:white;padding:12px 24px;border-radius:8px;text-decoration:none;font-weight:bold;">📈 View Full Analysis</a>
+            </div>`;
+        }
 
-        resultsDiv.innerHTML = html;
-        resultsDiv.scrollIntoView({ behavior: 'smooth' });
+        html += `<button id="rm-download" style="width:100%;background:#2563eb;color:white;border:0;padding:10px;border-radius:6px;cursor:pointer;margin-top:12px;">💾 Download JSON</button>`;
+        html += `</div>`;
 
-        dbg(`Results displayed: ${correctCount}/${questions.length} correct`);
+        overlay.innerHTML = html;
+
+        // Clear page and inject
+        document.body.innerHTML = '';
+        document.body.appendChild(overlay);
+
+        document.getElementById('rm-close').onclick = () => {
+            window.location.href = `https://repeatermock.com/${variant}/test-series/${slug}`;
+        };
+        document.getElementById('rm-download').onclick = () => {
+            const data = { questions, answersData, analysisData, testId, variant, slug };
+            const blob = new Blob([JSON.stringify(data, null, 2)], { type: 'application/json' });
+            const url = URL.createObjectURL(blob);
+            const a = document.createElement('a');
+            a.href = url; a.download = `${testId}.json`; a.click();
+            URL.revokeObjectURL(url);
+        };
+
+        dbg('✓ UI injected');
     }
 
     // ═════════════════════════════════════════════════════════════════════
-    // PART 4: On series pages — unlock buttons
+    // PART 5: Unlock buttons on series pages (with null checks)
     // ═════════════════════════════════════════════════════════════════════
 
     const testCache = new Map();
@@ -622,45 +359,28 @@
     async function fetchTestIds(variant, slug) {
         const cacheKey = `${variant}/${slug}`;
         if (testCache.has(cacheKey)) return testCache.get(cacheKey);
-
         const apiPrefix = variant === 'gd' ? '/api/v2' : '/api/v1';
         const tests = [];
-
         try {
-            const seriesResp = await originalFetch(`${API_BASE}${apiPrefix}/test-series/${slug}${variant !== 'gd' ? `?variant=${variant}` : ''}`, {
-                credentials: 'include', headers: { 'Accept': 'application/json' },
-            });
-            const seriesData = await seriesResp.json();
-            const details = seriesData?.data?.details || seriesData?.details;
-            if (!details || !details.id) return [];
-
-            dbg(`Fetching tests for: ${details.name}`);
-
+            const r = await originalFetch(`${API_BASE}${apiPrefix}/test-series/${slug}${variant !== 'gd' ? `?variant=${variant}` : ''}`, { credentials: 'include', headers: { Accept: 'application/json' } });
+            const d = await r.json();
+            const details = d?.data?.details || d?.details;
+            if (!details?.id) return [];
             for (const sec of details.sections || []) {
                 const subs = sec.subsections || [];
-                if (subs.length === 0) {
-                    const url = `${API_BASE}${apiPrefix}/test-series/${details.id}/sections/${sec.id}/tests?limit=500&offset=0${variant !== 'gd' ? `&variant=${variant}` : ''}`;
-                    const r = await originalFetch(url, { credentials: 'include', headers: { 'Accept': 'application/json' } });
-                    if (r.ok) {
-                        const d = await r.json();
-                        for (const t of d.data || []) tests.push({ id: t.id, title: t.title });
-                    }
-                } else {
-                    for (const sub of subs) {
-                        const url = `${API_BASE}${apiPrefix}/test-series/${details.id}/sections/${sec.id}/tests?limit=500&offset=0${variant !== 'gd' ? `&variant=${variant}` : ''}&subSectionId=${sub.id}`;
-                        const r = await originalFetch(url, { credentials: 'include', headers: { 'Accept': 'application/json' } });
-                        if (r.ok) {
-                            const d = await r.json();
-                            for (const t of d.data || []) tests.push({ id: t.id, title: t.title });
-                        }
+                const fetchList = subs.length ? subs.map(s => ({ subId: s.id })) : [{ subId: null }];
+                for (const { subId } of fetchList) {
+                    let url = `${API_BASE}${apiPrefix}/test-series/${details.id}/sections/${sec.id}/tests?limit=500&offset=0${variant !== 'gd' ? `&variant=${variant}` : ''}`;
+                    if (subId) url += `&subSectionId=${subId}`;
+                    const tr = await originalFetch(url, { credentials: 'include', headers: { Accept: 'application/json' } });
+                    if (tr.ok) {
+                        const td = await tr.json();
+                        for (const t of td.data || []) tests.push({ id: t.id, title: t.title });
                     }
                 }
             }
-            dbg(`✓ Fetched ${tests.length} tests`);
-        } catch (e) {
-            dbg('Fetch tests error:', e.message);
-        }
-
+            dbg(`Fetched ${tests.length} tests for ${cacheKey}`);
+        } catch(e) { dbg('Fetch tests error:', e.message); }
         testCache.set(cacheKey, tests);
         return tests;
     }
@@ -668,26 +388,23 @@
     async function unlockTests() {
         const m = window.location.pathname.match(/^\/(tb-pro|tb|gd)\/test-series\/([\w-]+)/);
         if (!m) return;
-
-        const variant = m[1];
-        const slug = m[2];
+        const variant = m[1], slug = m[2];
         const tests = await fetchTestIds(variant, slug);
-        if (tests.length === 0) return;
+        if (!tests.length) return;
 
         const titleToId = new Map();
-        for (const t of tests) {
-            titleToId.set(t.title.toLowerCase().trim(), t.id);
-        }
+        for (const t of tests) titleToId.set(t.title.toLowerCase().trim(), t.id);
 
         let unlocked = 0;
-        const allBtns = document.querySelectorAll('button, a, span, div');
-
-        for (const btn of allBtns) {
+        const btns = document.querySelectorAll('button, a, span, div');
+        for (const btn of btns) {
+            if (!btn || !btn.parentNode) continue;  // NULL CHECK — fixes the crash
             const text = (btn.textContent || '').trim();
             if (text !== 'Unlock') continue;
 
             let card = btn.parentElement;
-            for (let i = 0; i < 8 && card; i++) {
+            let found = false;
+            for (let i = 0; i < 8 && card && !found; i++) {
                 const cardText = (card.textContent || '').toLowerCase();
                 for (const [title, id] of titleToId) {
                     if (cardText.includes(title.substring(0, Math.min(title.length, 25)))) {
@@ -695,14 +412,16 @@
                         const newLink = document.createElement('a');
                         newLink.href = testUrl;
                         newLink.innerHTML = '▶ Start Test';
-                        newLink.style.cssText = 'display:inline-block; background:#16a34a; color:white !important; padding:8px 16px; border-radius:8px; font-weight:bold; text-decoration:none; cursor:pointer; font-size:14px; border:0;';
-                        btn.parentNode.replaceChild(newLink, btn);
-                        unlocked++;
-                        dbg(`✓ Unlocked: ${title.substring(0, 30)}`);
+                        newLink.style.cssText = 'display:inline-block;background:#16a34a;color:white !important;padding:8px 16px;border-radius:8px;font-weight:bold;text-decoration:none;cursor:pointer;font-size:14px;border:0;';
+                        try {
+                            btn.parentNode.replaceChild(newLink, btn);
+                            unlocked++;
+                        } catch(e) { dbg('Replace error:', e.message); }
+                        found = true;
                         break;
                     }
                 }
-                card = card.parentElement;
+                card = card?.parentElement;
             }
         }
         dbg(`Unlocked ${unlocked} buttons`);
@@ -710,18 +429,11 @@
 
     function addUnlockAllButton() {
         if (document.getElementById('rm-unlock-all-btn')) return;
-        if (!window.location.pathname.includes('/test-series/')) return;
-        if (window.location.pathname.includes('/test/')) return;
-
+        if (!window.location.pathname.includes('/test-series/') || window.location.pathname.includes('/test/')) return;
         const btn = document.createElement('button');
         btn.id = 'rm-unlock-all-btn';
         btn.textContent = '🔓 Unlock All Tests';
-        btn.style.cssText = `
-            position:fixed; bottom:20px; right:20px; z-index:999999;
-            background:#16a34a; color:white; border:0; padding:12px 24px;
-            border-radius:12px; font-size:16px; font-weight:bold; cursor:pointer;
-            box-shadow:0 4px 12px rgba(0,0,0,0.3);
-        `;
+        btn.style.cssText = 'position:fixed;bottom:20px;right:20px;z-index:999999;background:#16a34a;color:white;border:0;padding:12px 24px;border-radius:12px;font-size:16px;font-weight:bold;cursor:pointer;box-shadow:0 4px 12px rgba(0,0,0,0.3);';
         btn.onclick = async () => {
             btn.textContent = '⏳ Unlocking...';
             await unlockTests();
@@ -738,26 +450,21 @@
 
     async function init() {
         dbg('init on:', window.location.pathname);
-
-        // On test pages — inject UI (our fetch interceptor blocks the /pricing redirect)
         if (window.location.pathname.includes('/test/')) {
-            // Wait for page to render, then inject
-            setTimeout(injectTestUI, 3000);
-            setTimeout(injectTestUI, 5000);
+            // Test page — let the SPA try, our interceptor handles 402
+            const m = window.location.pathname.match(/\/test\/([a-f0-9]+)/);
+            if (m) {
+                // Wait for SPA to attempt /start (which will trigger our interceptor)
+                setTimeout(() => {
+                    if (!document.getElementById('rm-viewer')) {
+                        injectQuestionViewer(m[1]);
+                    }
+                }, 4000);
+            }
         }
-
-        // On series pages — unlock buttons
         if (window.location.pathname.includes('/test-series/') && !window.location.pathname.includes('/test/')) {
             addUnlockAllButton();
             await unlockTests();
-        }
-
-        // If we got redirected to /pricing, go back to the test page
-        if (window.location.pathname.includes('/pricing') && lastTestId) {
-            dbg('On /pricing — redirecting back to test...');
-            const m = window.location.pathname;
-            // Can't know variant/slug from /pricing — use history back
-            history.back();
         }
     }
 
@@ -765,19 +472,12 @@
     const observer = new MutationObserver(() => {
         if (window.location.href !== lastUrl) {
             lastUrl = window.location.href;
-            dbg('URL changed:', lastUrl);
             setTimeout(init, 2000);
         }
     });
-
-    if (document.body) {
-        observer.observe(document.body, { childList: true, subtree: true });
-    }
-
+    if (document.body) observer.observe(document.body, { childList: true, subtree: true });
     setTimeout(init, 2000);
     setTimeout(init, 5000);
-
     window.addEventListener('popstate', () => setTimeout(init, 2000));
-
-    dbg('v6 loaded — interceptors active');
+    dbg('v8 loaded');
 })();
