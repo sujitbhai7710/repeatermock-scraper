@@ -207,14 +207,27 @@ def load_cookie_sets_from_disk() -> list[tuple[int, list[dict]]]:
     sets: list[tuple[int, list[dict]]] = []
     cookies_dir = Path(__file__).parent.parent / "cookies"
 
-    env_cookies = os.environ.get("REPEATERMOCK_COOKIES")
-    if env_cookies:
+    # Env-var cookie sets: REPEATERMOCK_COOKIES plus the REPEATERMOCK_COOKIES_JSON
+    # / _1 / _2 variants (matching the repo secrets some users configure).
+    # Env cookies get account_idx = -1 → rotated tokens are NOT persisted to
+    # cookies/ (they live in the secret, which the user updates instead).
+    for env_name in ("REPEATERMOCK_COOKIES", "REPEATERMOCK_COOKIES_JSON",
+                     "REPEATERMOCK_COOKIES_JSON_1", "REPEATERMOCK_COOKIES_JSON_2"):
+        env_cookies = os.environ.get(env_name)
+        if not env_cookies:
+            continue
         try:
             parsed = json.loads(env_cookies)
+            # Accept both a bare array and {"cookies": [...]} wrapper
+            if isinstance(parsed, dict) and isinstance(parsed.get("cookies"), list):
+                parsed = parsed["cookies"]
             if isinstance(parsed, list) and len(parsed) > 0:
-                sets.append((-1, parsed))
+                # Skip exact duplicates of an already-loaded set
+                if not any(cs and cs[0].get("value") == parsed[0].get("value")
+                           for _, cs in sets):
+                    sets.append((-1, parsed))
         except Exception as e:
-            print(f"  Error parsing REPEATERMOCK_COOKIES env var: {e}")
+            print(f"  Error parsing {env_name} env var: {e}")
 
     if cookies_dir.exists():
         for cookie_file in sorted(cookies_dir.glob("account*.json")):
