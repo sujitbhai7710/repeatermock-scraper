@@ -40,15 +40,12 @@
         if (url.includes('/attempts/') && url.includes('/start') && resp.status === 402) {
             dbg('⚠ Intercepted 402 Payment Required from /start:', url);
 
-            // Extract test ID from URL
             const match = url.match(/\/attempts\/([a-f0-9]+)\/start/);
             if (match) {
                 lastTestId = match[1];
                 dbg('Test ID:', lastTestId);
             }
 
-            // Prevent redirect to /pricing by returning a fake success response
-            // The SPA will think the attempt started and render the test UI
             const fakeResponse = {
                 success: true,
                 data: {
@@ -66,25 +63,75 @@
             });
         }
 
-        // Also intercept /submit to handle the case where no real attempt exists
-        if (url.includes('/attempts/') && url.includes('/submit') && resp.status === 404) {
-            dbg('⚠ Intercepted 404 from /submit — no active attempt');
-            // Return success so the UI proceeds to solution page
-            // (we'll fetch solution/analysis separately)
+        // Intercept /responses — the SPA tries to POST answer saves here, gets 404
+        // Return fake success to stop the error spam
+        if (url.includes('/attempts/') && url.includes('/responses')) {
+            dbg('⚠ Intercepted /responses call (fake success to prevent 404 spam)');
+            return new Response(JSON.stringify({ success: true, data: {} }), {
+                status: 200,
+                headers: { 'Content-Type': 'application/json' }
+            });
+        }
+
+        // Intercept /submit — return fake success
+        if (url.includes('/attempts/') && url.includes('/submit')) {
+            if (resp.status === 404 || resp.status === 402) {
+                dbg('⚠ Intercepted /submit error — returning fake success');
+                return new Response(JSON.stringify({
+                    success: true,
+                    data: { attemptId: 'rm_unlocked_' + Date.now() }
+                }), {
+                    status: 200,
+                    headers: { 'Content-Type': 'application/json' }
+                });
+            }
+        }
+
+        // Intercept /save-question — return fake success
+        if (url.includes('/save-question')) {
+            return new Response(JSON.stringify({ success: true }), {
+                status: 200,
+                headers: { 'Content-Type': 'application/json' }
+            });
         }
 
         return resp;
     };
 
-    // Also intercept history.pushState to block /pricing navigation
+    // Also intercept XMLHttpRequest (some RepeaterMock calls use XHR)
+    const originalXHROpen = XMLHttpRequest.prototype.open;
+    const originalXHRSend = XMLHttpRequest.prototype.send;
+    XMLHttpRequest.prototype.open = function(method, url, ...rest) {
+        this._rmUrl = url;
+        this._rmMethod = method;
+        return originalXHROpen.apply(this, [method, url, ...rest]);
+    };
+    XMLHttpRequest.prototype.send = function(body) {
+        this.addEventListener('load', function() {
+            if (this._rmUrl && this._rmUrl.includes('/responses')) {
+                dbg('⚠ XHR /responses intercepted');
+            }
+        });
+        // If this is a /responses or /save-question call, fake the response
+        if (this._rmUrl && (this._rmUrl.includes('/responses') || this._rmUrl.includes('/save-question'))) {
+            Object.defineProperty(this, 'status', { value: 200, writable: false });
+            Object.defineProperty(this, 'responseText', { value: '{"success":true,"data":{}}', writable: false });
+            Object.defineProperty(this, 'readyState', { value: 4, writable: false });
+            setTimeout(() => {
+                if (this.onreadystatechange) this.onreadystatechange();
+                if (this.onload) this.onload();
+            }, 10);
+            return;
+        }
+        return originalXHRSend.apply(this, [body]);
+    };
+
+    // Also intercept history.pushState + replaceState to block /pricing navigation
     const originalPushState = history.pushState;
     history.pushState = function(state, title, url) {
         if (url && typeof url === 'string' && url.includes('/pricing')) {
-            dbg('🚫 Blocked navigation to /pricing:', url);
+            dbg('🚫 Blocked pushState to /pricing:', url);
             blockedRedirect = true;
-
-            // Instead of going to /pricing, stay on the test page
-            // and trigger our test UI injection
             setTimeout(() => {
                 dbg('Triggering test UI injection after blocked redirect...');
                 injectTestUI();
@@ -94,12 +141,57 @@
         return originalPushState.apply(this, arguments);
     };
 
-    // Also intercept window.location assignments
-    const originalLocationDescriptor = Object.getOwnPropertyDescriptor(window, 'location');
-    // Can't easily intercept window.location, but the pushState interception
-    // should catch the SPA router's navigation
+    const originalReplaceState = history.replaceState;
+    history.replaceState = function(state, title, url) {
+        if (url && typeof url === 'string' && url.includes('/pricing')) {
+            dbg('🚫 Blocked replaceState to /pricing');
+            return;
+        }
+        return originalReplaceState.apply(this, arguments);
+    };
 
-    dbg('Fetch + pushState interceptors installed');
+    dbg('Fetch + pushState + replaceState interceptors installed');
+
+    // Inject CSS to hide RepeaterMock's payment modals + popups
+    const style = document.createElement('style');
+    style.textContent = `
+        /* Hide pricing/payment modals */
+        [class*="modal"][class*="payment"],
+        [class*="modal"][class*="pricing"],
+        [class*="Modal"][class*="Payment"],
+        [class*="Modal"][class*="Pricing"],
+        [class*="paywall"],
+        [class*="Paywall"],
+        [class*="upgrade"],
+        [class*="Upgrade"],
+        [class*="unlock-modal"],
+        [class*="UnlockModal"],
+        div[class*="overlay"][class*="payment"],
+        div[role="dialog"][class*="payment"],
+        div[role="dialog"][class*="pricing"],
+        div[role="dialog"][class*="upgrade"],
+        [class*="toast"][class*="error"],
+        [class*="Toast"][class*="Error"],
+        [class*="snackbar"][class*="error"],
+        [class*="Snackbar"][class*="Error"],
+        [class*="alert"][class*="error"],
+        [class*="Alert"][class*="Error"] {
+            display: none !important;
+            visibility: hidden !important;
+            opacity: 0 !important;
+            pointer-events: none !important;
+        }
+        /* Keep our injected UI visible */
+        #rm-test-container,
+        #rm-test-container * {
+            display: revert !important;
+            visibility: visible !important;
+            opacity: 1 !important;
+            pointer-events: auto !important;
+        }
+    `;
+    (document.head || document.documentElement).appendChild(style);
+    dbg('Modal-hiding CSS injected');
 
     // ═════════════════════════════════════════════════════════════════════
     // PART 2: Extract questions from RSC payload
