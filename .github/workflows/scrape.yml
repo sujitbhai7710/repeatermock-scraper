@@ -40,7 +40,11 @@ concurrency:
 jobs:
   scrape:
     runs-on: ubuntu-latest
-    timeout-minutes: 60
+    # 90 min: setup (~5) + scrape (40) + D1 full sync (~15) + deploy + commit.
+    # The old 60-min timeout killed jobs mid-D1-sync, BEFORE the cookie-commit
+    # step ran — which destroyed the rotated refresh-token chain and forced
+    # fresh cookie exports. Never again.
+    timeout-minutes: 90
     permissions:
       contents: write
 
@@ -195,6 +199,19 @@ jobs:
           fi
           echo "=== Scraper finished ==="
 
+      # ⚠ COMMIT COOKIES IMMEDIATELY AFTER THE SCRAPER — before the slow D1
+      # sync / deploy steps. The rotated refresh tokens in cookies/ are the
+      # lifeline of the whole chain; if a later step eats the remaining job
+      # time, we still must not lose them.
+      - name: Commit updated cookies + progress
+        if: always() && env.SHOULD_RUN == 'true'
+        run: |
+          git config user.name "Scraper Bot"
+          git config user.email "scraper@bot.local"
+          git add cookies/ data/progress.json data/submit_format.json 2>/dev/null || true
+          git diff --staged --quiet || git commit -m "Auto: update cookies + progress after scrape run [skip ci]"
+          git push 2>&1 || true
+
       - name: Copy scraped data to frontend + generate index.json
         if: always()
         run: |
@@ -269,15 +286,6 @@ jobs:
             --project-name=pwthor-mock-tests \
             --branch=main \
             --commit-dirty=true 2>&1 | tail -5
-
-      - name: Commit updated cookies + progress
-        if: always() && env.SHOULD_RUN == 'true'
-        run: |
-          git config user.name "Scraper Bot"
-          git config user.email "scraper@bot.local"
-          git add cookies/ data/progress.json data/submit_format.json 2>/dev/null || true
-          git diff --staged --quiet || git commit -m "Auto: update cookies + progress after scrape run [skip ci]"
-          git push 2>&1 || true
 
       - name: Summary
         if: always()

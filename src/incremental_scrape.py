@@ -996,8 +996,13 @@ async def run_incremental_scrape(
             save_account_cookies(active_account_idx, active_cookies)
             save_cookies(active_cookies, COOKIES_FILE)
 
-        # Mirror final progress to Cloudflare D1 (dashboard) — full sync, non-fatal
-        d1_periodic_sync(force=True, full=True)
+        # Mirror final progress to Cloudflare D1 (dashboard).
+        # INCREMENTAL (changed tests only) — a full re-upload of 29k+ rows
+        # takes ~15 min inside the "Run scraper" step and used to push the job
+        # past its timeout BEFORE the workflow could commit the rotated
+        # cookies (which killed the token chain). The dedicated D1 step and
+        # the every-15-min D1 workflow do the full sync anyway.
+        d1_periodic_sync(force=True, full=False)
 
         if browser:
             await browser.close()
