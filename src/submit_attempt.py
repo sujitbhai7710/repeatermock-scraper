@@ -55,14 +55,14 @@ async def fetch_via_context_with_cookies(context, url, method="POST", body=None,
 def load_working_format() -> dict | None:
     """Load the last known working submit format."""
     if WORKING_FORMAT_FILE.exists():
-        return json.loads(WORKING_FORMAT_FILE.read_text())
+        return json.loads(WORKING_FORMAT_FILE.read_text(encoding="utf-8"))
     return None
 
 
 def save_working_format(fmt: dict):
     """Save the working submit format for future runs."""
     WORKING_FORMAT_FILE.parent.mkdir(parents=True, exist_ok=True)
-    WORKING_FORMAT_FILE.write_text(json.dumps(fmt, indent=2))
+    WORKING_FORMAT_FILE.write_text(json.dumps(fmt, indent=2), encoding="utf-8")
 
 
 def build_payloads(test_id: str, questions: list[dict]) -> list[dict]:

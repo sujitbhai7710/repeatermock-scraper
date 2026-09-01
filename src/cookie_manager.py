@@ -93,7 +93,7 @@ def load_cookies_from_file(path: Path) -> list[dict[str, Any]]:
     """Load cookies from a JSON file (Playwright storage_state format)."""
     if not path.exists():
         return []
-    data = json.loads(path.read_text())
+    data = json.loads(path.read_text(encoding="utf-8"))
     if isinstance(data, list):
         return data
     return data.get("cookies", [])
@@ -133,7 +133,7 @@ def save_cookies(cookies: list[dict[str, Any]], path: Path):
         "simple": simple,
         "saved_at": time.time(),
         "saved_at_human": time.strftime("%Y-%m-%d %H:%M:%S UTC", time.gmtime()),
-    }, indent=2))
+    }, indent=2), encoding="utf-8")
 
 
 def cookies_to_string(cookies: list[dict[str, Any]]) -> str:

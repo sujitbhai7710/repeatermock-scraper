@@ -1,9 +1,11 @@
 name: Daily Update (Rank + Average + New Tests)
 
 on:
-  # Run once daily at 3 AM UTC
-  schedule:
-    - cron: '0 3 * * *'
+  # Schedule disabled — user runs the scraper locally and CI cookies would
+  # consume/rotate the same account's refresh token, breaking local runs.
+  # Re-enable only if CI uses a DIFFERENT RepeaterMock account.
+  # schedule:
+  #   - cron: '0 3 * * *'
   # Manual trigger
   workflow_dispatch:
 

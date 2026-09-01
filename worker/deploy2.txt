@@ -1,0 +1,12 @@
+﻿
+ Γ¢à∩╕Å wrangler 4.76.0 (update available 4.127.1)
+ΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇ
+Total Upload: 24.84 KiB / gzip: 7.02 KiB
+Your Worker has access to the following bindings:
+Binding                            Resource         
+env.DB (repeatermock-scraper)      D1 Database      
+
+Uploaded repeatermock-dashboard (6.11 sec)
+Deployed repeatermock-dashboard triggers (2.80 sec)
+  https://repeatermock-dashboard.walletxapi.workers.dev
+Current Version ID: ccb5719e-e7e1-41b4-95d3-ab984a258ecb

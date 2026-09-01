@@ -9,9 +9,11 @@ binding = "DB"
 database_name = "repeatermock-scraper"
 database_id = "413ffea1-c5e1-4e5a-89f1-f0c395a7bdaf"  # filled from env at deploy time
 
-# Cron triggers — every hour at :05
-[triggers]
-crons = ["5 * * * *"]
+# Cron triggers — DISABLED: the hourly trigger ran GitHub Actions scrape.yml,
+# which consumes/rotates the SAME account's refresh token and breaks local
+# scraping runs. Re-enable only if CI uses a DIFFERENT RepeaterMock account.
+# [triggers]
+# crons = ["5 * * * *"]
 
 # Environment variables set via `wrangler secret put`:
 #   ADMIN_PASSWORD = "BloggingTest@7"

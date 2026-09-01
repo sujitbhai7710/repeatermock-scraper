@@ -18,6 +18,14 @@ import time
 from pathlib import Path
 from typing import Any
 
+# Never let a print() crash the scraper: force UTF-8 on stdout/stderr with
+# "replace" so Unicode symbols (✓ ✗ →) survive any console or redirect.
+for _stream in (sys.stdout, sys.stderr):
+    try:
+        _stream.reconfigure(encoding="utf-8", errors="replace")
+    except Exception:
+        pass
+
 # Configure logging to stdout (critical for CI debugging)
 logging.basicConfig(
     level=logging.INFO,
@@ -47,15 +55,19 @@ from src.series_config import TARGET_SERIES, get_all_series_urls, get_series_met
 
 PROGRESS_FILE = Path(__file__).parent.parent / "data" / "progress.json"
 DEFAULT_TIME_LIMIT_MINUTES = 0  # 0 = no time limit (run until all tests scraped)
-DEFAULT_RATE_LIMIT_SECONDS = 3
-REFRESH_EVERY_N_TESTS = 8  # Access token lasts 15 min; refresh every ~3 min (8 tests × ~22s)
+DEFAULT_RATE_LIMIT_SECONDS = 1
+# Access tokens last ~15 min. Refresh after 12 min of use (time-based, not
+# test-count-based). Fewer rotations = safer, because the refresh token is
+# SINGLE-USE and rotates on every /auth/refresh — every extra rotation is a
+# chance to lose the chain if anything else touches the account.
+REFRESH_AFTER_SECONDS = 12 * 60
 
 
 # ─── Progress tracking (granular) ──────────────────────────────────────────
 
 def load_progress() -> dict[str, Any]:
     if PROGRESS_FILE.exists():
-        p = json.loads(PROGRESS_FILE.read_text())
+        p = json.loads(PROGRESS_FILE.read_text(encoding="utf-8"))
         # Migrate old format if needed
         if "tests_status" not in p:
             p["tests_status"] = {}
@@ -78,7 +90,55 @@ def load_progress() -> dict[str, Any]:
 
 def save_progress(progress: dict[str, Any]):
     PROGRESS_FILE.parent.mkdir(parents=True, exist_ok=True)
-    PROGRESS_FILE.write_text(json.dumps(progress, indent=2, ensure_ascii=False))
+    PROGRESS_FILE.write_text(json.dumps(progress, indent=2, ensure_ascii=False), encoding="utf-8")
+
+
+def load_d1_env() -> dict | None:
+    """Load Cloudflare creds from environment or .env. Returns None if token missing."""
+    env = dict(os.environ)
+    env_file = Path(__file__).parent.parent / ".env"
+    if env_file.exists():
+        for line in env_file.read_text(encoding="utf-8").splitlines():
+            line = line.strip()
+            if not line or line.startswith("#") or "=" not in line:
+                continue
+            k, v = line.split("=", 1)
+            env.setdefault(k.strip(), v.strip().strip('"').strip("'"))
+    if not env.get("CLOUDFLARE_API_TOKEN"):
+        return None
+    return env
+
+
+def sync_d1_if_configured(progress: dict[str, Any] | None = None,
+                          only_test_ids: set | None = None) -> bool:
+    """Push data/progress.json to Cloudflare D1 (the dashboard's database).
+
+    Non-fatal: never raises. Returns True if the sync succeeded.
+    only_test_ids: if given, only sync those tests (cheap incremental sync);
+    None = sync everything.
+    """
+    env = load_d1_env()
+    if env is None:
+        print("\n  ⚠ D1 sync skipped — CLOUDFLARE_API_TOKEN not set in .env")
+        print("    (local progress is saved in data/progress.json; to mirror it to the")
+        print("     Cloudflare D1 dashboard, add a D1-capable API token to .env)")
+        return False
+
+    if progress is None:
+        progress = load_progress()
+
+    try:
+        from src.update_d1 import sync_series_table, sync_tests_table, sync_runs_table
+        scope = f"{len(only_test_ids)} changed tests" if only_test_ids is not None else "all tests"
+        print(f"\n  → Syncing progress to Cloudflare D1 ({scope})...")
+        sync_series_table(env, progress)
+        sync_tests_table(env, progress, only_test_ids=only_test_ids)
+        sync_runs_table(env, progress)
+        print("  ✓ D1 sync complete — dashboard is up to date")
+        return True
+    except Exception as e:
+        print(f"  ⚠ D1 sync failed (non-fatal — local progress is safe): {e}")
+        return False
 
 
 def update_series_progress(progress: dict, series_url: str, series_name: str, all_tests: list[dict]):
@@ -125,7 +185,7 @@ def save_account_cookies(account_idx: int, cookies: list[dict]):
     cookies_dir = Path(__file__).parent.parent / "cookies"
     cookies_dir.mkdir(exist_ok=True)
     account_file = cookies_dir / f"account{account_idx+1}.json"
-    account_file.write_text(json.dumps(cookies, indent=2, ensure_ascii=False))
+    account_file.write_text(json.dumps(cookies, indent=2, ensure_ascii=False), encoding="utf-8")
     print(f"  ✓ Updated {account_file.name}")
 
 
@@ -176,7 +236,7 @@ async def run_incremental_scrape(
     if cookies_dir.exists():
         for cookie_file in sorted(cookies_dir.glob("account*.json")):
             try:
-                account_cookies = json.loads(cookie_file.read_text())
+                account_cookies = json.loads(cookie_file.read_text(encoding="utf-8"))
                 if account_cookies and len(account_cookies) > 0:
                     # Skip if already in cookie_sets (avoid dupes)
                     if not any(cs[0].get("value") == account_cookies[0].get("value") for cs in cookie_sets if cs):
@@ -247,8 +307,96 @@ async def run_incremental_scrape(
     if not authed:
         print("\n✗ All cookie sets failed. Exiting — NO partial/guest scraping.")
         print("  Only fully-scraped tests (Q + A + Sol + Ana) are saved.")
-        print("  Update cookies/account*.json or set REPEATERMOCK_COOKIES env var with fresh cookies.")
+        print("  The refresh tokens in cookies/account*.json are expired or already consumed")
+        print("  (RepeaterMock rotates the refresh token on every /auth/refresh call).")
+        print("  FIX:")
+        print("    1. Log in to https://repeatermock.com in your browser (Google Authenticator)")
+        print("    2. Install the 'Cookie-Editor' extension → Export (JSON)")
+        print("    3. Paste the JSON array into cookies/account1.json")
+        print("    4. Verify first with:  python scripts/check_cookies.py")
+        print("    5. DO NOT reuse the same cookies in GitHub Secrets AND locally —")
+        print("       whichever uses them first rotates the refresh token and breaks the other.")
+        # Clean up Playwright before returning — otherwise the driver subprocess
+        # is left unclosed and you get "unclosed transport" ResourceWarnings
+        # ("ValueError: I/O operation on closed pipe") at interpreter shutdown.
+        if browser:
+            try:
+                await browser.close()
+            except Exception:
+                pass
+        if p:
+            try:
+                await p.stop()
+            except Exception:
+                pass
         return
+
+    # ─── Cloudflare D1 sync: at startup, every 15 min, and at end of run ──────
+    # Interval is configurable: set D1_SYNC_MINUTES env var (default 15).
+    d1_sync_interval = max(1, int(os.environ.get("D1_SYNC_MINUTES", "15"))) * 60
+    d1_last_sync = 0.0
+    d1_changed_tests: set[str] = set()  # test_ids changed since last D1 push
+    d1_disabled = False                 # set once if token missing — no retry spam
+
+    def d1_periodic_sync(force: bool = False, full: bool = False):
+        """Push progress to D1, throttled to once per interval (unless forced).
+        full=True syncs every test in the cache; otherwise only changed ones."""
+        nonlocal d1_last_sync, d1_disabled
+        if d1_disabled:
+            return
+        if load_d1_env() is None:
+            d1_disabled = True
+            print("\n  ⚠ D1 sync disabled for this run — CLOUDFLARE_API_TOKEN not set in .env")
+            return
+        now = time.time()
+        if not force and (now - d1_last_sync) < d1_sync_interval:
+            return
+        d1_last_sync = now
+        ids = None if full else set(d1_changed_tests)
+        d1_changed_tests.clear()
+        sync_d1_if_configured(progress, only_test_ids=ids)
+
+    # Push existing progress to D1 right away, so the dashboard starts current
+    d1_periodic_sync(force=True, full=True)
+
+    # Track when the current access token was issued (time-based refresh)
+    last_refresh_time = time.time()
+
+    async def switch_to_next_account(dead_idx: int) -> bool:
+        """Mid-run fallback: the current account's refresh token died (it was
+        rotated elsewhere or expired). Try every OTHER cookie set and take
+        over with the first that authenticates, WITHOUT ending the run.
+        Returns True if we have a working session again."""
+        nonlocal p, browser, context, page, active_account_idx, active_cookies
+        for offset in range(1, len(cookie_sets)):
+            idx = (dead_idx + offset) % len(cookie_sets)
+            print(f"\n  ↻ Account {dead_idx + 1}'s refresh token is dead — switching to account {idx + 1}...")
+            try:
+                if p:
+                    try:
+                        await browser.close()
+                        await p.stop()
+                    except Exception:
+                        pass
+                    p = browser = None
+                p, browser, context = await create_browser_session(cookie_sets[idx])
+                page = await context.new_page()
+                result = await refresh_cookies_if_needed(context, page, original_cookies=cookie_sets[idx])
+                if result is None:
+                    print(f"  ✗ Account {idx + 1} is also dead")
+                    continue
+                active_account_idx = idx
+                active_cookies = result
+                refreshed = await force_refresh_cookies(context, page, original_cookies=active_cookies)
+                if refreshed is not None:
+                    active_cookies = refreshed
+                save_account_cookies(idx, active_cookies)
+                print(f"  ✓ Switched to account {idx + 1} — continuing scrape")
+                return True
+            except Exception as e:
+                print(f"  ✗ Switch to account {idx + 1} failed: {e}")
+        print("  ✗ No other account could authenticate")
+        return False
 
     tests_scraped_this_run = 0
     tests_partial_this_run = 0
@@ -262,16 +410,20 @@ async def run_incremental_scrape(
         Note: failure here doesn't abort the run — the test may still scrape
         fully if it was previously attempted (solution/analysis pages return
         data for previously-attempted tests regardless of auth)."""
-        nonlocal active_cookies
+        nonlocal active_cookies, context, page, p, browser, active_account_idx, last_refresh_time
         print("    ↻ Force-refreshing cookies due to 401 from submit...")
         refreshed = await force_refresh_cookies(context, page, original_cookies=active_cookies)
         if refreshed is not None:
             active_cookies = refreshed
             save_account_cookies(active_account_idx, refreshed)
+            last_refresh_time = time.time()
             return refreshed
-        else:
-            print(f"    ⚠ Force refresh failed — will continue with current cookies (GETs may still work)")
-            return None
+        # Refresh token dead — take over with another account before giving up
+        if await switch_to_next_account(active_account_idx):
+            last_refresh_time = time.time()
+            return active_cookies
+        print("    ⚠ All accounts failed — continuing with current cookies (GETs may still work)")
+        return None
 
     try:
         for series_url in get_all_series_urls():
@@ -281,6 +433,11 @@ async def run_incremental_scrape(
                 if elapsed >= time_limit_seconds:
                     print(f"\n  ⏰ Time limit reached ({elapsed/60:.1f} min)")
                     break
+
+            # Max tests reached — don't waste time fetching test lists for remaining series
+            if max_tests > 0 and (tests_scraped_this_run + tests_partial_this_run + tests_failed_this_run) >= max_tests:
+                print(f"\n  Max tests limit reached ({max_tests}) — stopping run")
+                break
 
             config = parse_series_url(series_url)
             variant = config["variant"]
@@ -347,28 +504,35 @@ async def run_incremental_scrape(
                     print(f"\n  Max tests limit reached ({max_tests})")
                     break
 
-                # Proactive refresh every N tests — FORCE refresh (not just check)
-                # because access tokens expire and we need fresh ones for submit
+                # Time-based proactive refresh: access tokens last ~15 min, so
+                # refresh after 12 min of scraping. (Fewer rotations = safer —
+                # the refresh token is single-use and rotates on each refresh.)
                 if (tests_scraped_this_run + tests_partial_this_run + tests_failed_this_run) > 0 and \
-                   (tests_scraped_this_run + tests_partial_this_run + tests_failed_this_run) % REFRESH_EVERY_N_TESTS == 0:
-                    print(f"\n  Proactive token refresh ({tests_scraped_this_run + tests_partial_this_run + tests_failed_this_run} tests done)...")
+                   (time.time() - last_refresh_time) >= REFRESH_AFTER_SECONDS:
+                    token_age_min = (time.time() - last_refresh_time) / 60
+                    print(f"\n  Proactive token refresh (access token {token_age_min:.0f} min old)...")
                     refreshed = await force_refresh_cookies(context, page, original_cookies=active_cookies)
                     if refreshed is not None:
                         active_cookies = refreshed
                         save_account_cookies(active_account_idx, refreshed)
+                        last_refresh_time = time.time()
                         consecutive_auth_failures = 0
                         print(f"  ✓ Token refreshed proactively")
                     else:
-                        consecutive_auth_failures += 1
-                        print(f"  ⚠ Force refresh failed (attempt {consecutive_auth_failures})")
-                        # DON'T abort here — tests may still scrape fully even without
-                        # a valid access token, because:
-                        # 1. GET /attempt returns questions regardless of auth (public page)
-                        # 2. GET /solution + /analysis return data if test was previously attempted
-                        # Only abort if we get 10 consecutive failures with NO successful scrapes
-                        if consecutive_auth_failures >= 10:
-                            print("  ✗ 10 consecutive auth failures — aborting run")
-                            break
+                        # Refresh token consumed/invalidated — take over with another account
+                        if await switch_to_next_account(active_account_idx):
+                            last_refresh_time = time.time()
+                            consecutive_auth_failures = 0
+                        else:
+                            consecutive_auth_failures += 1
+                            print(f"  ⚠ All accounts failed refresh (attempt {consecutive_auth_failures})")
+                            # DON'T abort immediately — GETs may still work:
+                            # 1. GET /attempt returns questions regardless of auth (public page)
+                            # 2. GET /solution + /analysis return data if previously attempted
+                            # Abort only after repeated total failures with no successful scrapes.
+                            if consecutive_auth_failures >= 3:
+                                print("  ✗ 3 total auth-failure cycles — aborting run")
+                                break
 
                 if time_limit_seconds > 0:
                     time_remaining = time_limit_seconds - elapsed
@@ -456,6 +620,10 @@ async def run_incremental_scrape(
                 progress["total_scraped"] = len(scraped_ids)
                 save_progress(progress)
 
+                # Mark this test for the next D1 push (fires every 15 minutes)
+                d1_changed_tests.add(test_id)
+                d1_periodic_sync()
+
                 await asyncio.sleep(DEFAULT_RATE_LIMIT_SECONDS)
 
             # Check if we hit time limit
@@ -505,6 +673,9 @@ async def run_incremental_scrape(
         if active_cookies:
             save_account_cookies(active_account_idx, active_cookies)
             save_cookies(active_cookies, COOKIES_FILE)
+
+        # Mirror final progress to Cloudflare D1 (dashboard) — full sync, non-fatal
+        d1_periodic_sync(force=True, full=True)
 
         if browser:
             await browser.close()

@@ -39,6 +39,13 @@ from pathlib import Path
 from typing import Any
 from urllib.parse import urlparse
 
+# Never let a print() crash the scraper: force UTF-8 on stdout/stderr.
+for _stream in (sys.stdout, sys.stderr):
+    try:
+        _stream.reconfigure(encoding="utf-8", errors="replace")
+    except Exception:
+        pass
+
 # Load .env file if it exists (for local dev)
 try:
     from dotenv import load_dotenv
@@ -603,7 +610,7 @@ async def scrape_test(context, test: dict[str, Any], variant: str, slug: str) ->
     # Save to file
     TESTS_DIR.mkdir(parents=True, exist_ok=True)
     out_file = TESTS_DIR / f"{test_id}.json"
-    out_file.write_text(json.dumps(result, indent=2, ensure_ascii=False))
+    out_file.write_text(json.dumps(result, indent=2, ensure_ascii=False), encoding="utf-8")
 
     print(f"    ✓ Saved {len(q_data['questions'])} questions to {out_file.name}" +
           (f" (+ answers)" if has_answers else " (no answers)"))
